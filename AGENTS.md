@@ -1,0 +1,22 @@
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
+
+## HydroGig-Mesh engineering rules
+
+- Frontend lives in `frontend/`; backend lives in `backend/`. Read Next.js guides at `frontend/node_modules/next/dist/docs/` before changing framework code.
+- Prefer shadcn/ui and Radix primitives for accessible UI. Preserve keyboard navigation, labels, focus handling, and touch targets. Do not build replacement primitives.
+- Use Sonner for toasts, Recharts for charts, and Lucide React for icons. Do not add decorative charts or redundant UI frameworks.
+- Use TanStack Query for client server state, the typed API client for requests, and React Hook Form with Zod for validated forms. No forms are needed in Phase 1.
+- Keep FastAPI controllers thin; business logic belongs in services and future persistence queries in repositories. Never connect to a database at import or migrate at startup.
+- Follow the scientific contracts in `docs/SCIENTIFIC-MODULES.md`. No unvalidated constants, risk thresholds, trained-model claims, or fabricated research results.
+- Distinguish observed, simulated, and model-predicted data across storage, APIs, maps, charts, and exports. Label simulations visibly. Unknown data must never imply safety.
+- Keep secrets server-side and out of Git/logs/status responses. Use environment examples without credentials.
+- Run backend pytest/Ruff and frontend typecheck/lint/build; run Playwright after a production build for UI changes. Report unavailable infrastructure honestly.
+- Preserve `PROMPT.md` as a local input: never stage it. Do not push or deploy unless explicitly requested.
