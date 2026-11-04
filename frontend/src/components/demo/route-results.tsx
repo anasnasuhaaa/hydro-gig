@@ -45,6 +45,7 @@ export function RouteResults({
   network: RoadNetwork;
 }) {
   const t = useTranslations("Results");
+  const timeline = useTranslations("Timeline");
   const format = useFormatter();
   const weighted = [
     ...result.origin_to_pickup.demonstration_weighted.edge_ids,
@@ -59,17 +60,8 @@ export function RouteResults({
     <section aria-label={t("results")} className="space-y-4" aria-live="polite">
       <div>
         <h2 className="text-xl font-semibold">
-          {t("comparison", { step: result.request.step })}
+          {t("comparison", { step: timeline(result.request.step) })}
         </h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {t("snapshot")}{" "}
-          <time dateTime={result.frame.frame.timestamp}>
-            {format.dateTime(new Date(result.frame.frame.timestamp), {
-              dateStyle: "medium",
-              timeStyle: "short",
-            })}
-          </time>
-        </p>
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
         {(
@@ -127,6 +119,21 @@ export function RouteResults({
           <ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180" />
         </summary>
         <div className="space-y-4 border-t p-4 text-sm">
+          <p className="text-sm text-muted-foreground">
+            {t("snapshot")}{" "}
+            <time dateTime={result.frame.frame.timestamp}>
+              {format.dateTime(new Date(result.frame.frame.timestamp), {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}
+            </time>
+          </p>
+          <p>
+            {t("frame")}: {result.request.step} · {t("provenance")}
+          </p>
+          <p>
+            {t("network")}: {result.network_id}
+          </p>
           <p className="break-words text-muted-foreground">
             {t("scenario")} {result.request.scenario_id}
           </p>
@@ -175,6 +182,7 @@ export function RouteResults({
                 <dt className="font-medium">{title}</dt>
                 <dd className="break-words text-muted-foreground">
                   {result.origin_to_pickup[mode].calculation.algorithm} ·{" "}
+                  {result.origin_to_pickup[mode].calculation.engine_version} ·{" "}
                   {result.origin_to_pickup[mode].calculation.weighting_version}
                 </dd>
               </div>

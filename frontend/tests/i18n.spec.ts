@@ -39,13 +39,16 @@ test("Indonesian SSR default, invalid cookie fallback and English persistence", 
     id.Screen.title,
   );
   await page
+    .getByRole("button", { name: id.Screen.changeLocations, exact: true })
+    .click();
+  await page
     .getByRole("combobox", { name: id.Screen.origin, exact: true })
     .click();
   await page.getByRole("option", { name: /^A ·/ }).click();
   await page.getByRole("button", { name: "English", exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(
-    page.getByRole("combobox", { name: "Origin", exact: true }),
+    page.getByRole("combobox", { name: "My starting point", exact: true }),
   ).toContainText("A ·");
   await page.reload();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
@@ -133,7 +136,7 @@ test("each route switches locale and metadata; selected EWS frame survives", asy
       await page.getByRole("button", { name: "t2", exact: true }).click();
       await expect(
         page.getByRole("heading", {
-          name: "Route comparison · t2",
+          name: "Route comparison · 10 minutes later",
           exact: true,
         }),
       ).toBeVisible();
@@ -149,7 +152,7 @@ test("each route switches locale and metadata; selected EWS frame survives", asy
       ).toHaveAttribute("aria-pressed", "true");
       await expect(
         page.getByRole("heading", {
-          name: "Perbandingan rute · t2",
+          name: "Perbandingan rute · 10 menit kemudian",
           exact: true,
         }),
       ).toBeVisible();

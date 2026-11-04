@@ -38,7 +38,7 @@
     "title": "Periksa rute Anda.",
     "subtitle": "Pilih titik perjalanan dan bandingkan rute demo.",
     "trip": "Perjalanan Anda",
-    "origin": "Titik awal",
+    "origin": "Lokasi awal",
     "pickup": "Penjemputan",
     "destination": "Tujuan",
     "scenario": "Skenario",
@@ -46,11 +46,11 @@
     "direction": "Jaringan satu arah · perjalanan dari H mungkin tidak terjangkau.",
     "screen": "Periksa rute",
     "screening": "Memeriksa…",
-    "open": "Buka navigasi",
-    "success": "Pemeriksaan rute demo selesai.",
+    "open": "Lanjut ke navigasi",
+    "success": "Perbandingan rute demo dimuat.",
     "error": "Demonstrasi gagal dimuat. Periksa koneksi lalu coba lagi.",
     "required": "Pilih titik yang valid.",
-    "distinct": "Pilih tiga titik berbeda untuk awal, penjemputan, dan tujuan.",
+    "distinct": "Pilih tiga titik perjalanan yang berbeda.",
     "scenarioName": "Perubahan koridor sintetis",
     "nodes": {
       "A": "Awal pengemudi",
@@ -61,7 +61,12 @@
       "F": "Tujuan",
       "G": "Jalur atas",
       "H": "Ujung satu arah"
-    }
+    },
+    "example": "Coba contoh perjalanan",
+    "changeLocations": "Ubah lokasi",
+    "settings": "Pengaturan simulasi",
+    "startHint": "Pilih contoh, lalu periksa rute. Anda juga dapat mengubah titik perjalanan.",
+    "notSelected": "Pilih contoh atau ubah lokasi"
   },
   "Navigation": {
     "title": "Jelajahi rute Anda.",
@@ -89,14 +94,14 @@
     }
   },
   "Results": {
-    "unavailable": "Rute tidak tersedia — tidak ada jalur searah yang menghubungkan titik ini.",
+    "unavailable": "Rute tidak tersedia — titik ini tidak terhubung dalam demo satu arah. Ubah lokasi untuk mencoba lagi.",
     "results": "Hasil pemeriksaan",
-    "baseline": "Acuan jarak",
-    "weighted": "Rute berbobot demo",
-    "first": "Awal → penjemputan",
+    "baseline": "Rute terpendek",
+    "weighted": "Rute alternatif (simulasi)",
+    "first": "Lokasi awal → penjemputan",
     "second": "Penjemputan → tujuan",
     "risk": "Risiko ilmiah: belum tersedia untuk seluruh ruas.",
-    "details": "Rincian ruas dan perhitungan",
+    "details": "Rincian teknis",
     "change": "Perubahan biaya simulasi",
     "unchanged": "Tanpa perubahan buatan",
     "empty": "Ruas rute belum tersedia.",
@@ -107,15 +112,18 @@
     "segments": "Ruas:",
     "scenario": "Skenario:",
     "limits": "Bobot sintetis buatan; snapshot tetap tidak memprediksi kondisi saat tiba.",
-    "affectedCount": "Ruas rute terpengaruh: {count}"
+    "affectedCount": "Ruas rute terpengaruh: {count}",
+    "frame": "ID bingkai",
+    "network": "ID jaringan",
+    "provenance": "Eksperimental · simulasi"
   },
   "Network": {
     "unavailable": "Posisi skema belum tersedia.",
     "title": "Skema jaringan jalan — simulasi, bukan peta geografis",
-    "desc": "Panah menunjukkan arah perjalanan. Garis biru utuh adalah rute berbobot demo; garis ungu putus-putus adalah acuan jarak. Label kuning menunjukkan perubahan biaya buatan.",
+    "desc": "Panah menunjukkan arah perjalanan. Garis biru utuh adalah rute alternatif (simulasi); garis ungu putus-putus adalah rute terpendek. Label kuning menunjukkan perubahan biaya buatan.",
     "legend": "Legenda jaringan",
-    "weighted": "Berbobot demo",
-    "baseline": "Acuan jarak",
+    "weighted": "Rute alternatif (simulasi)",
+    "baseline": "Rute terpendek",
     "change": "* Perubahan biaya buatan",
     "caveat": "Hanya skema · bukan geografi Bogor atau informasi keselamatan.",
     "label": "Jaringan jalan searah sintetis pada {step}",
@@ -273,5 +281,10 @@
     "weather": "Cuaca: kondisi terkini berbasis model Open-Meteo, dengan waktu model. Gunakan lokasi perangkat atas izin atau pilih Bogor manual di Dasbor.",
     "simulation": "Simulasi banjir: jalan sintetis dan biaya buatan. Terpisah dari cuaca, tanpa pengukuran banjir pada ruas jalan.",
     "safety": "Rute tersedia bukan jaminan keselamatan. Jangan memasuki genangan untuk menguji purwarupa ini."
+  },
+  "Timeline": {
+    "t0": "Kondisi awal",
+    "t1": "5 menit kemudian",
+    "t2": "10 menit kemudian"
   }
 }

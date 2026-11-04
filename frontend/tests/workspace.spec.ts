@@ -46,7 +46,7 @@ test("routes, navigation, and responsive workspace", async ({
     {
       path: "/pre-order",
       heading: "Screen your route.",
-      action: "Screen route",
+      action: "Check route",
     },
     {
       path: "/navigation",
@@ -194,10 +194,10 @@ test("demo loading is explicit before real results arrive", async ({
     page.getByRole("status", { name: "Loading demonstration" }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Screen route", exact: true }),
+    page.getByRole("button", { name: "Check route", exact: true }),
   ).not.toBeVisible();
   release();
   await expect(
-    page.getByRole("button", { name: "Screen route", exact: true }),
+    page.getByRole("button", { name: "Check route", exact: true }),
   ).toBeEnabled();
 });

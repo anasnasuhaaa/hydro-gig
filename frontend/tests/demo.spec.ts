@@ -1,13 +1,30 @@
 import { expect, test, type Page } from "@playwright/test";
 
 async function select(page: Page, label: string, option: string | RegExp) {
+  if (
+    label === "Simulation frame" &&
+    !(await page
+      .getByRole("combobox", { name: label, exact: true })
+      .isVisible())
+  )
+    await page
+      .getByRole("button", { name: "Simulation settings", exact: true })
+      .click();
   await page.getByRole("combobox", { name: label, exact: true }).click();
   await page
     .getByRole("option", { name: option, exact: typeof option === "string" })
     .click();
 }
 async function trip(page: Page, origin = "A") {
-  await select(page, "Origin", new RegExp(`^${origin} ·`));
+  if (
+    !(await page
+      .getByRole("combobox", { name: "My starting point", exact: true })
+      .isVisible())
+  )
+    await page
+      .getByRole("button", { name: "Change locations", exact: true })
+      .click();
+  await select(page, "My starting point", new RegExp(`^${origin} ·`));
   await select(page, "Pickup", /^C ·/);
   await select(page, "Destination", /^F ·/);
 }
@@ -149,16 +166,12 @@ test("form validates selections and distinct nodes without requesting screening"
     if (request.url().endsWith("/api/v1/demo/screen")) requests++;
   });
   await page.goto("/pre-order");
-  await page.getByRole("button", { name: "Screen route", exact: true }).click();
+  await page.getByRole("button", { name: "Check route", exact: true }).click();
   await expect(page.locator('#origin[aria-invalid="true"]')).toBeVisible();
   await trip(page);
   await select(page, "Destination", /^C ·/);
-  await page.getByRole("button", { name: "Screen route", exact: true }).click();
-  await expect(
-    page.getByText(
-      "Choose three different nodes for origin, pickup and destination.",
-    ),
-  ).toBeVisible();
+  await page.getByRole("button", { name: "Check route", exact: true }).click();
+  await expect(page.getByText("Choose three different stops.")).toBeVisible();
   expect(requests).toBe(0);
 });
 
@@ -169,22 +182,22 @@ test("real screening, shared trip and frames, schematic warnings and themes", as
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/pre-order");
   await trip(page);
-  await select(page, "Simulation frame", "t1");
+  await select(page, "Simulation frame", "5 minutes later");
   const response = page.waitForResponse(
     (response) =>
       response.url().endsWith("/api/v1/demo/screen") &&
       response.request().method() === "POST",
   );
-  await page.getByRole("button", { name: "Screen route", exact: true }).click();
+  await page.getByRole("button", { name: "Check route", exact: true }).click();
   expect((await response).status()).toBe(200);
   await expect(
-    page.getByRole("heading", { name: "Route comparison · t1" }),
+    page.getByRole("heading", { name: "Route comparison · 5 minutes later" }),
   ).toBeVisible();
   await expect(
     page.getByText("Segments: AG, GC", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByText("Demo route screening completed.", { exact: true }),
+    page.getByText("Demo route comparison loaded.", { exact: true }),
   ).toBeVisible();
   await expect(
     page.getByText("Scientific risk: unavailable for all segments."),
@@ -201,7 +214,7 @@ test("real screening, shared trip and frames, schematic warnings and themes", as
     path: testInfo.outputPath("pre-order-light.png"),
     fullPage: true,
   });
-  await page.getByRole("link", { name: "Open navigation" }).click();
+  await page.getByRole("link", { name: "Continue to navigation" }).click();
   await expect(
     page.getByRole("button", { name: "t1", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
@@ -213,7 +226,7 @@ test("real screening, shared trip and frames, schematic warnings and themes", as
   ).toBeVisible();
   await page.getByRole("button", { name: "Next frame" }).click();
   await expect(
-    page.getByRole("heading", { name: "Route comparison · t2" }),
+    page.getByRole("heading", { name: "Route comparison · 10 minutes later" }),
   ).toBeVisible();
   await expect(
     page.getByText("Affected segments: DF.", { exact: true }),
@@ -224,7 +237,7 @@ test("real screening, shared trip and frames, schematic warnings and themes", as
   await expect(page.getByRole("button", { name: "Next frame" })).toBeDisabled();
   await page.getByRole("button", { name: "t0", exact: true }).click();
   await expect(
-    page.getByRole("heading", { name: "Route comparison · t0" }),
+    page.getByRole("heading", { name: "Route comparison · Initial condition" }),
   ).toBeVisible();
   await expect(
     page.getByText(/No authored cost changes in t0/).first(),
@@ -246,10 +259,12 @@ test("real screening, shared trip and frames, schematic warnings and themes", as
 test("unreachable directed journey is explicit", async ({ page }) => {
   await page.goto("/pre-order");
   await trip(page, "H");
-  await page.getByRole("button", { name: "Screen route", exact: true }).click();
+  await page.getByRole("button", { name: "Check route", exact: true }).click();
   await expect(
     page
-      .getByText("Route unavailable — no directed path connects these nodes.")
+      .getByText(
+        "Route unavailable — these stops cannot be connected in this one-way demo. Change locations to try again.",
+      )
       .first(),
   ).toBeVisible();
 });
@@ -262,19 +277,19 @@ test("screening failure has no success toast and retry recovers", async ({
   );
   await page.goto("/pre-order");
   await trip(page);
-  await page.getByRole("button", { name: "Screen route", exact: true }).click();
+  await page.getByRole("button", { name: "Check route", exact: true }).click();
   await expect(
     page.getByText("Demonstration unavailable", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByText("Demo route screening completed.", { exact: true }),
+    page.getByText("Demo route comparison loaded.", { exact: true }),
   ).not.toBeVisible();
   await page.unroute("**/api/v1/demo/screen");
   await page.getByRole("button", { name: "Retry" }).click();
   await expect(
-    page.getByRole("heading", { name: "Route comparison · t0" }),
+    page.getByRole("heading", { name: "Route comparison · Initial condition" }),
   ).toBeVisible();
-  await select(page, "Simulation frame", "t2");
+  await select(page, "Simulation frame", "10 minutes later");
   await expect(
     page.getByRole("region", { name: "Screening results" }),
   ).not.toBeVisible();
@@ -296,7 +311,7 @@ test("malformed demo responses are rejected", async ({ page }) => {
 test("failed frame switch removes stale route results", async ({ page }) => {
   await page.goto("/navigation");
   await expect(
-    page.getByRole("heading", { name: "Route comparison · t0" }),
+    page.getByRole("heading", { name: "Route comparison · Initial condition" }),
   ).toBeVisible();
   await page.route("**/api/v1/demo/screen", (route) =>
     route.fulfill({ status: 503 }),
@@ -306,7 +321,7 @@ test("failed frame switch removes stale route results", async ({ page }) => {
     page.getByText("Demonstration unavailable", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Route comparison · t0" }),
+    page.getByRole("heading", { name: "Route comparison · Initial condition" }),
   ).not.toBeVisible();
   await expect(
     page.getByRole("img", { name: /Synthetic directed/ }),

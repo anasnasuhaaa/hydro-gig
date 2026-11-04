@@ -2,19 +2,26 @@
 import { useTranslations } from "next-intl";
 
 import Link from "next/link";
+import { useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ArrowRight, Route } from "lucide-react";
+import { ArrowRight, ChevronDown, Route } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
 import { GuideLink } from "@/components/shared/guide-link";
 import { PageHeading } from "@/components/shared/page-heading";
 import { useDemoData } from "@/hooks/use-demo";
 import { demoApi } from "@/lib/api/demo";
 import {
   screenRequestSchema,
+  stepSchema,
   type RoadNetwork,
   type ScreenRequest,
 } from "@/lib/contracts/data";
@@ -27,13 +34,17 @@ import { RouteResults } from "./route-results";
 function ScreeningForm({
   network,
   scenarios,
+  exampleTrip,
 }: {
   network: RoadNetwork;
+  exampleTrip: { origin: string; pickup: string; destination: string };
   scenarios: z.infer<typeof scenariosSchema>["scenarios"];
 }) {
   const t = useTranslations("Screen");
+  const timeline = useTranslations("Timeline");
 
   const session = useDemoSession();
+  const [locationsOpen, setLocationsOpen] = useState(false);
   const form = useForm<ScreenRequest>({
     resolver: zodResolver(screenRequestSchema),
     defaultValues: session.request ?? {
@@ -48,6 +59,14 @@ function ScreeningForm({
   const mutation = useMutation({
     mutationFn: (request: ScreenRequest) => demoApi.screen(request),
     onSuccess: (result) => {
+      if (
+        Object.keys(result.request).some(
+          (key) =>
+            result.request[key as keyof ScreenRequest] !==
+            form.getValues()[key as keyof ScreenRequest],
+        )
+      )
+        return;
       session.rememberTrip(result.request);
       toast.success(t("success"));
     },
@@ -81,80 +100,160 @@ function ScreeningForm({
         <CardContent>
           <form
             className="space-y-5"
-            onSubmit={form.handleSubmit((request) => mutation.mutate(request))}
+            onSubmit={form.handleSubmit(
+              (request) => mutation.mutate(request),
+              () => setLocationsOpen(true),
+            )}
           >
-            <div className="grid gap-4 sm:grid-cols-3">
-              {(
-                [
-                  ["origin", t("origin")],
-                  ["pickup", t("pickup")],
-                  ["destination", t("destination")],
-                ] as const
-              ).map(([name, label]) => (
-                <Controller
-                  key={name}
-                  control={form.control}
-                  name={name}
-                  render={({ field, fieldState }) => (
-                    <DemoSelect
-                      id={name}
-                      label={label}
-                      value={field.value}
-                      onChange={field.onChange}
-                      onBlur={field.onBlur}
-                      inputRef={field.ref}
-                      options={nodeOptions}
-                      error={
-                        fieldState.error
-                          ? t(
-                              fieldState.error.type === "custom"
-                                ? "distinct"
-                                : "required",
-                            )
-                          : undefined
-                      }
+            <p className="text-sm text-muted-foreground">{t("startHint")}</p>
+            <Button
+              type="button"
+              variant="outline"
+              className="min-h-11 w-full sm:w-auto"
+              onClick={() => {
+                mutation.reset();
+                form.reset({
+                  ...exampleTrip,
+                  scenario_id: scenarios[0].scenario_id,
+                  step: stepSchema.parse(scenarios[0].time_steps[0].step),
+                });
+                setLocationsOpen(false);
+              }}
+            >
+              {t("example")}
+            </Button>
+            <ol
+              className="grid gap-3 rounded-xl bg-accent/40 p-4 sm:grid-cols-3"
+              aria-label={t("trip")}
+            >
+              {(["origin", "pickup", "destination"] as const).map(
+                (name, index) => (
+                  <li key={name} className="flex min-w-0 items-start gap-3">
+                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full border border-primary/30 text-sm text-primary">
+                      {index + 1}
+                    </span>
+                    <div className="min-w-0 text-sm">
+                      <p className="font-medium">{t(name)}</p>
+                      <p className="break-words text-muted-foreground">
+                        {values[name]
+                          ? t(`nodes.${values[name]}`)
+                          : t("notSelected")}
+                      </p>
+                    </div>
+                    {index < 2 && (
+                      <ArrowRight
+                        className="mt-1 hidden size-4 shrink-0 text-muted-foreground sm:block"
+                        aria-hidden="true"
+                      />
+                    )}
+                  </li>
+                ),
+              )}
+            </ol>
+            <Collapsible open={locationsOpen} onOpenChange={setLocationsOpen}>
+              <CollapsibleTrigger asChild>
+                <Button type="button" variant="ghost" className="min-h-11">
+                  {t("changeLocations")}
+                  <ChevronDown />
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-4 pt-3">
+                <div className="grid gap-4 sm:grid-cols-3">
+                  {(
+                    [
+                      ["origin", t("origin")],
+                      ["pickup", t("pickup")],
+                      ["destination", t("destination")],
+                    ] as const
+                  ).map(([name, label]) => (
+                    <Controller
+                      key={name}
+                      control={form.control}
+                      name={name}
+                      render={({ field, fieldState }) => (
+                        <DemoSelect
+                          id={name}
+                          label={label}
+                          value={field.value}
+                          onChange={(value) => {
+                            mutation.reset();
+                            field.onChange(value);
+                          }}
+                          onBlur={field.onBlur}
+                          inputRef={field.ref}
+                          options={nodeOptions}
+                          error={
+                            fieldState.error
+                              ? t(
+                                  fieldState.error.type === "custom"
+                                    ? "distinct"
+                                    : "required",
+                                )
+                              : undefined
+                          }
+                        />
+                      )}
                     />
-                  )}
-                />
-              ))}
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Controller
-                control={form.control}
-                name="scenario_id"
-                render={({ field }) => (
-                  <DemoSelect
-                    id="scenario"
-                    label={t("scenario")}
-                    value={field.value}
-                    onChange={field.onChange}
-                    options={scenarios.map((scenario) => ({
-                      value: scenario.scenario_id,
-                      label: t("scenarioName"),
-                    }))}
+                  ))}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {t("direction")}
+                </p>
+              </CollapsibleContent>
+            </Collapsible>
+            <Collapsible>
+              <CollapsibleTrigger asChild>
+                <Button type="button" variant="ghost" className="min-h-11">
+                  {t("settings")}
+                  <ChevronDown />
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-3">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Controller
+                    control={form.control}
+                    name="scenario_id"
+                    render={({ field }) => (
+                      <DemoSelect
+                        id="scenario"
+                        label={t("scenario")}
+                        value={field.value}
+                        onChange={(value) => {
+                          mutation.reset();
+                          field.onChange(value);
+                        }}
+                        options={scenarios.map((scenario) => ({
+                          value: scenario.scenario_id,
+                          label: t("scenarioName"),
+                        }))}
+                      />
+                    )}
                   />
-                )}
-              />
-              <Controller
-                control={form.control}
-                name="step"
-                render={({ field }) => (
-                  <DemoSelect
-                    id="frame"
-                    label={t("frame")}
-                    value={field.value}
-                    onChange={field.onChange}
-                    options={scenario.time_steps.map((frame) => ({
-                      value: frame.step,
-                      label: frame.step,
-                    }))}
+                  <Controller
+                    control={form.control}
+                    name="step"
+                    render={({ field }) => (
+                      <DemoSelect
+                        id="frame"
+                        label={t("frame")}
+                        value={field.value}
+                        onChange={(value) => {
+                          mutation.reset();
+                          field.onChange(value);
+                        }}
+                        options={scenario.time_steps.map((frame) => ({
+                          value: frame.step,
+                          label: timeline(frame.step),
+                        }))}
+                      />
+                    )}
                   />
-                )}
-              />
-            </div>
-            <p className="text-sm text-muted-foreground">{t("direction")}</p>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
             <Button
               type="submit"
+              variant={currentResult ? "outline" : "default"}
               className="min-h-11 w-full sm:w-auto"
               disabled={mutation.isPending}
             >
@@ -176,7 +275,7 @@ function ScreeningForm({
       {currentResult && !mutation.isPending && !mutation.isError && (
         <>
           <RouteResults result={currentResult} network={network} />
-          <Button asChild variant="outline" className="min-h-11">
+          <Button asChild className="min-h-11 w-full sm:w-auto">
             <Link href="/navigation">
               {t("open")}
               <ArrowRight />
@@ -213,6 +312,7 @@ export function PreOrderWorkspace() {
         <ScreeningForm
           network={data.network.data.network}
           scenarios={data.scenarios.data.scenarios}
+          exampleTrip={data.manifest.data.default_trip}
         />
       ) : (
         <DemoLoading />
