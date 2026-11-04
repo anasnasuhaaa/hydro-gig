@@ -6,6 +6,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from app.api.v1.endpoints.demo import router as demo_router
 from app.api.v1.endpoints.system import router
 from app.core.config import get_settings
 from app.core.logging import configure_logging
@@ -25,10 +26,11 @@ def create_app() -> FastAPI:
     application.add_middleware(
         CORSMiddleware,
         allow_origins=settings.allowed_origins,
-        allow_methods=["GET"],
+        allow_methods=["GET", "POST"],
         allow_headers=["Accept", "Content-Type"],
     )
     application.include_router(router, prefix="/api/v1")
+    application.include_router(demo_router, prefix="/api/v1")
 
     @application.get("/", response_model=RootInfo, tags=["system"])
     def root() -> RootInfo:

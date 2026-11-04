@@ -1,3 +1,4 @@
+import { DemoSessionProvider } from "@/components/demo/demo-session";
 import { AppShell } from "@/components/layout/app-shell";
 
 export default function DashboardLayout({
@@ -5,5 +6,9 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <AppShell>{children}</AppShell>;
+  return (
+    <DemoSessionProvider>
+      <AppShell>{children}</AppShell>
+    </DemoSessionProvider>
+  );
 }

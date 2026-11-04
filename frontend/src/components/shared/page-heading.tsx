@@ -24,7 +24,7 @@ export function PageHeading({
       </div>
       <Badge variant="outline" className="mt-1 gap-2 rounded-full px-3 py-1.5">
         <span className="size-1.5 rounded-full bg-primary" />
-        Phase 1 · Development
+        Phase 1.5 · Experimental
       </Badge>
     </div>
   );

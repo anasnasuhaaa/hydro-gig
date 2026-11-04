@@ -1,5 +1,6 @@
 from functools import lru_cache
 from typing import Literal
+from urllib.parse import urlsplit
 
 from pydantic import SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -14,6 +15,28 @@ class Settings(BaseSettings):
     direct_database_url: SecretStr = SecretStr("")
     cors_origins: str = "http://localhost:3000"
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] = "INFO"
+
+    @field_validator("cors_origins")
+    @classmethod
+    def explicit_cors_origins(cls, value: str) -> str:
+        for origin in value.split(","):
+            if not origin.strip():
+                continue
+            parsed = urlsplit(origin.strip())
+            if (
+                parsed.scheme not in {"http", "https"}
+                or not parsed.hostname
+                or "*" in origin
+                or parsed.username is not None
+                or parsed.password is not None
+                or parsed.path
+                or parsed.query
+                or parsed.fragment
+            ):
+                raise ValueError(
+                    "CORS requires explicit HTTP(S) origins without paths or wildcards"
+                )
+        return value
 
     @field_validator("database_url", "direct_database_url")
     @classmethod

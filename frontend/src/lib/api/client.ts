@@ -35,3 +35,40 @@ export async function getSystemStatus(
     throw new Error("The API returned an unexpected status response.");
   return parsed.data;
 }
+
+export async function apiRequest<T>(
+  path: string,
+  schema: z.ZodType<T>,
+  options: { signal?: AbortSignal; body?: unknown } = {},
+): Promise<T> {
+  const response = await fetch(`${baseUrl}/api/v1/demo${path}`, {
+    method: options.body === undefined ? "GET" : "POST",
+    signal: options.signal
+      ? AbortSignal.any([options.signal, AbortSignal.timeout(8_000)])
+      : AbortSignal.timeout(8_000),
+    headers: {
+      Accept: "application/json",
+      ...(options.body === undefined
+        ? {}
+        : { "Content-Type": "application/json" }),
+    },
+    ...(options.body === undefined
+      ? {}
+      : { body: JSON.stringify(options.body) }),
+    cache: "no-store",
+  });
+  if (!response.ok)
+    throw new Error(
+      response.status === 422
+        ? "The demo request is invalid. Check the selected nodes and frame."
+        : response.status === 404
+          ? "The demo scenario or frame is unavailable."
+          : "The demonstration API is unavailable. Please retry.",
+    );
+  const parsed = schema.safeParse(await response.json());
+  if (!parsed.success)
+    throw new Error(
+      "The API returned invalid demonstration data. Results are unavailable.",
+    );
+  return parsed.data;
+}

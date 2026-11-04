@@ -41,12 +41,12 @@ test("routes, navigation, and responsive workspace", async ({
     {
       path: "/pre-order",
       heading: "Know the route before the ride.",
-      action: "Screen a route",
+      action: "Screen Route",
     },
     {
       path: "/navigation",
       heading: "A clearer view of the road ahead.",
-      action: "Start navigation",
+      action: "Advance simulation",
     },
     {
       path: "/claims",
@@ -59,9 +59,20 @@ test("routes, navigation, and responsive workspace", async ({
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       route.heading,
     );
-    await expect(
-      page.getByRole("button", { name: route.action }),
-    ).toBeDisabled();
+    if (route.path === "/claims") {
+      await expect(
+        page.getByRole("button", { name: route.action }),
+      ).toBeDisabled();
+    } else {
+      await expect(
+        page.getByRole("button", { name: route.action }),
+      ).toBeEnabled();
+      await expect(
+        page.getByText("SIMULATED DATA — NOT REAL-TIME FLOOD MONITORING", {
+          exact: true,
+        }),
+      ).toBeVisible();
+    }
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth,

@@ -1,4 +1,35 @@
-# Phase 1 validation record
+# Phase 1.5 validation record
+
+Validated locally on 2026-11-04 (Asia/Jakarta) with Node.js 22.22.1, pnpm 12.16.1 and Python 3.14.4. Commands ran in the existing backend virtual environment and frontend installation. The Python 3.12 Vercel runtime remains unverified here.
+
+| Check | Result |
+| --- | --- |
+| `backend: python -m pytest -q` | **47 passed**, including the 13 existing tests |
+| `backend: ruff check .` | Passed |
+| `backend: ruff format --check .` | Passed; 33 Python files formatted |
+| `frontend: pnpm typecheck` | Passed |
+| `frontend: pnpm lint` | Passed |
+| `frontend: pnpm format:check` | Passed |
+| `frontend: pnpm build` | Passed, Next.js 16.4.4 production Webpack build |
+| `frontend: pnpm test:e2e` | **22 passed, 2 intentionally skipped** across desktop Chromium and Pixel 7 emulation, after the production build |
+| `git diff --check` | Passed |
+| Visual review | Desktop light screening and mobile dark navigation screenshots reviewed; no visible clipping or horizontal overflow |
+
+The two skips are viewport-specific: the desktop-only collapse test is skipped on mobile, and the mobile-only focus/dialog test is skipped on desktop. Both run and pass in their applicable project. The original eight browser checks remain, with disabled-placeholder expectations updated for the now-interactive demo pages.
+
+Backend coverage includes database-free manifest/scenario/network/frame/screen requests, deterministic fixture isolation, complete route reconstruction and costs across all three frames, directed/unreachable legs, parallel/two-way/zero-cost routing, invalid IDs/payloads/steps, invalid networks/CRS/timestamps/risk, missing/negative/nonfinite costs, request/response schemas, claim unavailability and restricted POST CORS. Frontend coverage includes header collapse/expand, icon tooltips, content resizing, keyboard shortcut, mobile close/Escape/focus return, validated form selections, successful real backend screening, shared trip/frame state, EWS warnings and changes, unavailable journeys, malformed/failing API data, recovery, stale-result removal, themes and overflow.
+
+The first expanded browser run found that the official mobile Sidebar's programmatic trigger did not restore focus when its sheet closed. The generated component now records the opener and restores it via Radix onCloseAutoFocus; the complete suite subsequently passed. The generated media-query hook was updated to useSyncExternalStore to satisfy the repository's React lint rules and preserve hydration behavior.
+
+FastAPI's Starlette test client emits its existing HTTPX deprecation warning; there are no test failures. Playwright reports a harmless terminal color-environment warning.
+
+No PostgreSQL credentials, live Neon/PostGIS migration cycle, external scientific module, geographic tile service, physical mobile device or cloud deployment was used. No migration, infrastructure creation, commit, push or deployment was performed. SQLAlchemy models and Alembic history are unchanged. PROMPT.md remains an untouched, untracked local input. All runnable demo features use clearly labeled deterministic synthetic fixtures; no hydrodynamic model, calibrated risk engine or real-time flood monitoring is claimed.
+
+The earlier Phase 1 record below is retained as historical evidence; its feature-availability statements describe that earlier phase.
+
+---
+
+# Phase 1 validation record (historical)
 
 Validated locally on 2026-11-03 using Node.js 22.22.1, pnpm 12.16.1, and Python 3.14.4. Backend source targets Python 3.12+ and Vercel is configured for 3.12; that deployment runtime has not been executed here.
 

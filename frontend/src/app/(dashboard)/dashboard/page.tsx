@@ -22,16 +22,16 @@ const features = [
     icon: Route,
     title: "Screen before you accept",
     description:
-      "Plan to check pickup and destination routes for potential flood exposure before taking an order.",
+      "Compare synthetic pickup and destination routes using deterministic demonstration costs.",
     href: "/pre-order",
     action: "Explore screening",
   },
   {
     number: "02",
     icon: Navigation,
-    title: "A safer way forward",
+    title: "Explore changing conditions",
     description:
-      "A future navigation workspace for early warnings and risk-aware route alternatives during a trip.",
+      "Explore t0, t1 and t2 in a user-driven early-warning simulation with schematic roads.",
     href: "/navigation",
     action: "Open navigation",
   },
@@ -94,8 +94,8 @@ export default function Dashboard() {
           </CardHeader>
           <CardContent>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              This is an early development workspace. Flood screening, live
-              warnings, and evidence tokens are planned features.
+              Synthetic route screening and frame-based simulation are
+              available. Live warnings and evidence tokens remain unavailable.
             </p>
             <div className="mt-5 rounded-lg bg-muted p-3 text-xs leading-relaxed text-muted-foreground">
               No live flood monitoring, validated hydrological dataset, or

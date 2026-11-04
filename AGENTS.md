@@ -13,7 +13,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Frontend lives in `frontend/`; backend lives in `backend/`. Read Next.js guides at `frontend/node_modules/next/dist/docs/` before changing framework code.
 - Prefer shadcn/ui and Radix primitives for accessible UI. Preserve keyboard navigation, labels, focus handling, and touch targets. Do not build replacement primitives.
 - Use Sonner for toasts, Recharts for charts, and Lucide React for icons. Do not add decorative charts or redundant UI frameworks.
-- Use TanStack Query for client server state, the typed API client for requests, and React Hook Form with Zod for validated forms. No forms are needed in Phase 1.
+- Use TanStack Query for client server state, the typed API client for requests, and React Hook Form with Zod for validated forms. Phase 1.5 demo forms use these validation boundaries.
 - Keep FastAPI controllers thin; business logic belongs in services and future persistence queries in repositories. Never connect to a database at import or migrate at startup.
 - Follow the scientific contracts in `docs/SCIENTIFIC-MODULES.md`. No unvalidated constants, risk thresholds, trained-model claims, or fabricated research results.
 - Distinguish observed, simulated, and model-predicted data across storage, APIs, maps, charts, and exports. Label simulations visibly. Unknown data must never imply safety.

@@ -1,0 +1,717 @@
+{
+  "manifest": {
+    "dataset_id": "hydrogig-synthetic-v1",
+    "version": "1.0.0",
+    "origin": "Hand-authored schematic graph and demonstration costs for software interaction tests.",
+    "limitations": [
+      "SIMULATED DATA \u2014 NOT REAL-TIME FLOOD MONITORING",
+      "No Bogor geometry or street measurements. Coordinates are unitless drawing positions.",
+      "Lengths and costs are synthetic. Costs have arbitrary demonstration units and no calibrated physical interpretation.",
+      "No depth, velocity, hydrodynamic forecast or scientific risk calculation is supplied.",
+      "Frames are fixed snapshots at fictional timestamps, not traversal-time forecasts.",
+      "H is a directed sink; reverse journeys may be unreachable."
+    ],
+    "default_trip": {
+      "origin": "A",
+      "pickup": "C",
+      "destination": "F"
+    }
+  },
+  "network": {
+    "network_id": "synthetic-network-v1",
+    "provenance": "simulated",
+    "crs": "LOCAL:SCHEMATIC",
+    "nodes": [
+      {
+        "node_id": "A",
+        "label": "Driver start",
+        "coordinates": {
+          "crs": "LOCAL:SCHEMATIC",
+          "position": [
+            50,
+            160
+          ]
+        }
+      },
+      {
+        "node_id": "B",
+        "label": "Central approach",
+        "coordinates": {
+          "crs": "LOCAL:SCHEMATIC",
+          "position": [
+            180,
+            160
+          ]
+        }
+      },
+      {
+        "node_id": "C",
+        "label": "Pickup hub",
+        "coordinates": {
+          "crs": "LOCAL:SCHEMATIC",
+          "position": [
+            320,
+            160
+          ]
+        }
+      },
+      {
+        "node_id": "D",
+        "label": "Direct corridor",
+        "coordinates": {
+          "crs": "LOCAL:SCHEMATIC",
+          "position": [
+            460,
+            160
+          ]
+        }
+      },
+      {
+        "node_id": "E",
+        "label": "Lower detour",
+        "coordinates": {
+          "crs": "LOCAL:SCHEMATIC",
+          "position": [
+            460,
+            290
+          ]
+        }
+      },
+      {
+        "node_id": "F",
+        "label": "Destination",
+        "coordinates": {
+          "crs": "LOCAL:SCHEMATIC",
+          "position": [
+            600,
+            160
+          ]
+        }
+      },
+      {
+        "node_id": "G",
+        "label": "Upper detour",
+        "coordinates": {
+          "crs": "LOCAL:SCHEMATIC",
+          "position": [
+            180,
+            40
+          ]
+        }
+      },
+      {
+        "node_id": "H",
+        "label": "One-way terminal",
+        "coordinates": {
+          "crs": "LOCAL:SCHEMATIC",
+          "position": [
+            730,
+            160
+          ]
+        }
+      }
+    ],
+    "segments": [
+      {
+        "edge_id": "AB",
+        "source_node": "A",
+        "target_node": "B",
+        "length_m": 100,
+        "oneway": true,
+        "metadata": {
+          "origin": "authored synthetic length; not measured"
+        }
+      },
+      {
+        "edge_id": "BC",
+        "source_node": "B",
+        "target_node": "C",
+        "length_m": 100,
+        "oneway": true,
+        "metadata": {
+          "origin": "authored synthetic length; not measured"
+        }
+      },
+      {
+        "edge_id": "CD",
+        "source_node": "C",
+        "target_node": "D",
+        "length_m": 100,
+        "oneway": true,
+        "metadata": {
+          "origin": "authored synthetic length; not measured"
+        }
+      },
+      {
+        "edge_id": "DF",
+        "source_node": "D",
+        "target_node": "F",
+        "length_m": 100,
+        "oneway": true,
+        "metadata": {
+          "origin": "authored synthetic length; not measured"
+        }
+      },
+      {
+        "edge_id": "AG",
+        "source_node": "A",
+        "target_node": "G",
+        "length_m": 140,
+        "oneway": true,
+        "metadata": {
+          "origin": "authored synthetic length; not measured"
+        }
+      },
+      {
+        "edge_id": "GC",
+        "source_node": "G",
+        "target_node": "C",
+        "length_m": 140,
+        "oneway": true,
+        "metadata": {
+          "origin": "authored synthetic length; not measured"
+        }
+      },
+      {
+        "edge_id": "CE",
+        "source_node": "C",
+        "target_node": "E",
+        "length_m": 160,
+        "oneway": true,
+        "metadata": {
+          "origin": "authored synthetic length; not measured"
+        }
+      },
+      {
+        "edge_id": "EF",
+        "source_node": "E",
+        "target_node": "F",
+        "length_m": 160,
+        "oneway": true,
+        "metadata": {
+          "origin": "authored synthetic length; not measured"
+        }
+      },
+      {
+        "edge_id": "FH",
+        "source_node": "F",
+        "target_node": "H",
+        "length_m": 100,
+        "oneway": true,
+        "metadata": {
+          "origin": "authored synthetic length; not measured"
+        }
+      }
+    ]
+  },
+  "scenario": {
+    "scenario_id": "synthetic-corridors-v1",
+    "name": "Synthetic corridor changes",
+    "network_id": "synthetic-network-v1",
+    "provenance": "simulated",
+    "time_steps": [
+      {
+        "step": "t0",
+        "timestamp": "2026-01-01T00:00:00Z"
+      },
+      {
+        "step": "t1",
+        "timestamp": "2026-01-01T00:05:00Z"
+      },
+      {
+        "step": "t2",
+        "timestamp": "2026-01-01T00:10:00Z"
+      }
+    ]
+  },
+  "frames": {
+    "t0": {
+      "scenario_id": "synthetic-corridors-v1",
+      "network_id": "synthetic-network-v1",
+      "frame": {
+        "step": "t0",
+        "timestamp": "2026-01-01T00:00:00Z"
+      },
+      "weighting_version": "authored-costs-v1",
+      "edge_costs": {
+        "AB": 100,
+        "BC": 100,
+        "CD": 100,
+        "DF": 100,
+        "AG": 140,
+        "GC": 140,
+        "CE": 160,
+        "EF": 160,
+        "FH": 100
+      },
+      "affected_edge_ids": [],
+      "observations": [
+        {
+          "edge_id": "AB",
+          "timestamp": "2026-01-01T00:00:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "BC",
+          "timestamp": "2026-01-01T00:00:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "CD",
+          "timestamp": "2026-01-01T00:00:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "DF",
+          "timestamp": "2026-01-01T00:00:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "AG",
+          "timestamp": "2026-01-01T00:00:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "GC",
+          "timestamp": "2026-01-01T00:00:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "CE",
+          "timestamp": "2026-01-01T00:00:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "EF",
+          "timestamp": "2026-01-01T00:00:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "FH",
+          "timestamp": "2026-01-01T00:00:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "edge_id": "AB",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "BC",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "CD",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "DF",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "AG",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "GC",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "CE",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "EF",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "FH",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        }
+      ],
+      "warning": "No authored cost changes in t0. Flood conditions remain unknown; this does not imply safety."
+    },
+    "t1": {
+      "scenario_id": "synthetic-corridors-v1",
+      "network_id": "synthetic-network-v1",
+      "frame": {
+        "step": "t1",
+        "timestamp": "2026-01-01T00:05:00Z"
+      },
+      "weighting_version": "authored-costs-v1",
+      "edge_costs": {
+        "AB": 100,
+        "BC": 900,
+        "CD": 900,
+        "DF": 100,
+        "AG": 140,
+        "GC": 140,
+        "CE": 160,
+        "EF": 160,
+        "FH": 100
+      },
+      "affected_edge_ids": [
+        "BC",
+        "CD"
+      ],
+      "observations": [
+        {
+          "edge_id": "AB",
+          "timestamp": "2026-01-01T00:05:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "BC",
+          "timestamp": "2026-01-01T00:05:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "CD",
+          "timestamp": "2026-01-01T00:05:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "DF",
+          "timestamp": "2026-01-01T00:05:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "AG",
+          "timestamp": "2026-01-01T00:05:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "GC",
+          "timestamp": "2026-01-01T00:05:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "CE",
+          "timestamp": "2026-01-01T00:05:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "EF",
+          "timestamp": "2026-01-01T00:05:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "FH",
+          "timestamp": "2026-01-01T00:05:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "edge_id": "AB",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "BC",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "CD",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "DF",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "AG",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "GC",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "CE",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "EF",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "FH",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        }
+      ],
+      "warning": "Simulated cost changes on BC, CD. No measured flood or validated risk is available."
+    },
+    "t2": {
+      "scenario_id": "synthetic-corridors-v1",
+      "network_id": "synthetic-network-v1",
+      "frame": {
+        "step": "t2",
+        "timestamp": "2026-01-01T00:10:00Z"
+      },
+      "weighting_version": "authored-costs-v1",
+      "edge_costs": {
+        "AB": 100,
+        "BC": 100,
+        "CD": 100,
+        "DF": 900,
+        "AG": 140,
+        "GC": 140,
+        "CE": 160,
+        "EF": 160,
+        "FH": 100
+      },
+      "affected_edge_ids": [
+        "DF"
+      ],
+      "observations": [
+        {
+          "edge_id": "AB",
+          "timestamp": "2026-01-01T00:10:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "BC",
+          "timestamp": "2026-01-01T00:10:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "CD",
+          "timestamp": "2026-01-01T00:10:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "DF",
+          "timestamp": "2026-01-01T00:10:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "AG",
+          "timestamp": "2026-01-01T00:10:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "GC",
+          "timestamp": "2026-01-01T00:10:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "CE",
+          "timestamp": "2026-01-01T00:10:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "EF",
+          "timestamp": "2026-01-01T00:10:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        },
+        {
+          "edge_id": "FH",
+          "timestamp": "2026-01-01T00:10:00Z",
+          "depth_m": null,
+          "velocity_u_mps": null,
+          "velocity_v_mps": null,
+          "provenance": "simulated"
+        }
+      ],
+      "risk_assessments": [
+        {
+          "edge_id": "AB",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "BC",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "CD",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "DF",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "AG",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "GC",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "CE",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "EF",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        },
+        {
+          "edge_id": "FH",
+          "risk_index": null,
+          "parameter_version": "not-integrated",
+          "provenance": "simulated",
+          "status": "unavailable"
+        }
+      ],
+      "warning": "Simulated cost changes on DF. No measured flood or validated risk is available."
+    }
+  }
+}

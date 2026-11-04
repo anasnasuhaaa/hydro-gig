@@ -1,6 +1,6 @@
 # Future scientific integration contracts
 
-No validated hydrological dataset, trained DeepONet checkpoint, calibrated risk engine, or operational flood prediction service is available. These are proposed boundaries, not implemented algorithms. Add modules under `backend/app/services/` when real implementations have evidence and tests; avoid placeholder methods returning plausible values.
+No validated hydrological dataset, trained DeepONet checkpoint, calibrated risk engine, or operational flood prediction service is available. The scientific boundaries below are proposed, not implemented scientific algorithms. Phase 1.5 adds a temporary deterministic routing algorithm over synthetic fixtures; its authored costs do not implement the research risk expressions. Add modules under `backend/app/services/` when real implementations have evidence and tests; avoid placeholder methods returning plausible values.
 
 ```mermaid
 flowchart TD
@@ -36,3 +36,11 @@ The following equations describe research intent. No values are assigned to phys
 - Risk-weighted edge cost: `W(edge,t) = L(edge) * (1 + beta * exp(gamma * Phi))`. Define nonnegative preference parameters, numerical overflow handling, time-dependent graph semantics, missing-risk policy and impassability separately. Increasing cost alone cannot establish route safety.
 
 Each future provider must have a reproducible dataset manifest, uncertainty evaluation, tests against trusted reference cases, and explicit limitations before integration. Never substitute fabricated observations or random model outputs for unavailable science.
+
+## Phase 1.5 integration preparation
+
+[DATA-CONTRACTS.md](DATA-CONTRACTS.md) defines executable Pydantic/Zod transport contracts, units, CRS, identity, timestamp, provenance and missing-data rules. [DEMO-SIMULATION.md](DEMO-SIMULATION.md) describes the reproducible synthetic fixtures and engine replacement procedure. The NetworkAdapter, ScenarioProvider, WeightingProvider and RoutingEngine protocols in `backend/app/services/boundaries.py` separate input normalization, frame delivery, edge weighting and path calculation. The demo service never calls a hydrodynamic formula.
+
+The team can wrap its Python risk module in WeightingProvider and Modified Dijkstra in RoutingEngine, carrying source/model/parameter versions into output metadata. Before connecting real data, agree on units, edge mapping, vector/CRS conventions, time/issue/freshness semantics, missing/impassable edge policies, uncertainty and validation reference cases. Scientific risk values must be independent of arbitrary demo costs. Fixed frames do not model conditions encountered at future arrival times. Keep observed and model-predicted endpoints and presentation distinct from `/demo`.
+
+Every synthetic frame has null depth/velocity/risk. An authored affected-edge marker only changes demonstration cost. Neither low cost nor lack of a marker implies a safe or dry road. There are no calibrated motorcycle parameters, trained checkpoints or validated thresholds. Future claim evidence must retain exact trip/network/scenario/frame and source-version references before authorization, canonicalization and server-only HMAC integration. No token generation or automatic platform penalty waiver is available.

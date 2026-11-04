@@ -2,24 +2,26 @@
 
 A research-oriented foundation for flood-aware motorcycle ride-hailing navigation and early warnings in Bogor, Indonesia.
 
-**Current phase: Phase 1 — Foundation, Architecture & UI Design System.** The application provides a responsive workspace, real infrastructure status, FastAPI endpoints, and a preliminary spatial schema. Route screening, live warnings, hydrological prediction, telemetry ingestion, and evidence-token generation are not operational. There is no validated flood dataset or trained DeepONet checkpoint.
+**Current phase: Phase 1.5 — UI Refinement & Dataset-Independent MVP Preparation.** The application provides official shadcn sidebar navigation, real infrastructure status, validated data contracts, a deterministic synthetic routing API, interactive demo screening and user-driven EWS snapshots. Live monitoring, hydrological prediction, scientific risk calculation, telemetry ingestion and evidence-token generation are not operational. There is no validated flood dataset or trained DeepONet checkpoint.
+
+**SIMULATED DATA — NOT REAL-TIME FLOOD MONITORING.** [Demo instructions and API examples](docs/DEMO-SIMULATION.md) · [Data contracts](docs/DATA-CONTRACTS.md). The entire demo works without PostgreSQL credentials. [Phase 1.5 implementation report and file inventory](docs/PHASE-1.5-IMPLEMENTATION.md).
 
 ## What is available
 
 - `/dashboard`: project overview, three workflow cards, and API/database connectivity from real backend responses.
-- `/pre-order`: intended pre-order screening process with an explicit unavailable state.
-- `/navigation`: future navigation workspace, with no active trip or live flood layer.
+- `/pre-order`: validated origin/pickup/destination/frame selectors, real API screening and baseline versus demonstration-weighted results.
+- `/navigation`: shared screened trip or default fixture trip, t0/t1/t2 controls, simulated warnings and a responsive directed-network schematic.
 - `/claims`: future incident/evidence workflow, with token creation disabled.
-- Responsive collapsible desktop sidebar, mobile Radix drawer, light/dark/system theme support, self-hosted Geist, loading/error/empty states, and Sonner notifications.
+- Official shadcn SidebarProvider/Sidebar with `collapsible="icon"`, header collapse/expand trigger, navigation tooltips and a single mobile Radix sheet; light/dark/system themes, self-hosted Geist, loading/error states, and Sonner notifications.
 - Database-independent liveness and bounded database status checks; six PostgreSQL/PostGIS models and a manual Alembic migration.
 
 Unknown environmental data is never presented as low risk. No operational metrics or decorative chart data are fabricated. These pages do not offer flood-safety guidance.
 
 ## Stack and library conventions
 
-Frontend: Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, shadcn/ui Radix Nova, Lucide React, Sonner, next-themes, TanStack Query, and Zod. React Hook Form with `@hookform/resolvers`, Recharts, and MapLibre GL JS are installed for later forms, meaningful charts, and maps. No redundant component framework or Axios is used.
+Frontend: Next.js 16 App Router, React 19, TypeScript, Tailwind CSS 4, shadcn/ui Radix Nova, Lucide React, Sonner, next-themes, TanStack Query, and Zod. React Hook Form with `@hookform/resolvers` validates the screening form. Recharts and MapLibre GL JS remain available for meaningful charts and licensed geographic maps. No redundant component framework or Axios is used.
 
-Use generated shadcn primitives for common UI and preserve Radix accessibility. Use Sonner exclusively for toasts, Lucide for icons, Recharts for charts, React Hook Form/Zod for validated forms, and TanStack Query for client server state. There are no input forms or charts requiring invented functionality in Phase 1. `frontend/components.json` contains the component registry, aliases, and theme configuration. Add components from `frontend/` using `pnpm dlx shadcn@latest add <component>`.
+Use generated shadcn primitives for common UI and preserve Radix accessibility. Use Sonner exclusively for toasts, Lucide for icons, Recharts for charts, React Hook Form/Zod for validated forms, and TanStack Query for client server state. The demo form uses normalized synthetic network selectors; no decorative charts are included. `frontend/components.json` contains the component registry, aliases, and theme configuration. Add components from `frontend/` using `pnpm dlx shadcn@latest add <component>`.
 
 Backend: Python 3.12+, FastAPI, Pydantic v2, pydantic-settings, SQLAlchemy 2.x with asyncio, psycopg 3, GeoAlchemy2, Alembic, Uvicorn, pytest, HTTPX, and Ruff. Database target: Neon PostgreSQL with PostGIS.
 
@@ -33,10 +35,12 @@ frontend/
   src/components/ui/       Generated shadcn/Radix components
   src/components/layout/   Sidebar, mobile drawer, header, theme toggle
   src/components/dashboard/ API-backed infrastructure status
+  src/components/demo/     Screening, EWS, schematic, shared session and result UI
   src/components/shared/   Page headings and feature empty states
   src/components/maps/     Isolated client-only MapLibre adapter
   src/hooks/               TanStack Query hooks
-  src/lib/api/             Typed fetch client and Zod response schema
+  src/lib/api/             Typed fetch clients
+  src/lib/contracts/       Matching Zod network/scenario/route/claim schemas
   src/lib/providers/       Theme, Query, Tooltip, Sonner providers
   tests/                   Desktop/mobile Playwright checks
 backend/
@@ -45,7 +49,8 @@ backend/
   app/db/                  Declarative base and lazy engine factory
   app/models/              Six preliminary spatial domain models
   app/schemas/             Safe public response schemas
-  app/services/            Status service; future scientific boundary
+  app/services/            Status, demo orchestration, routing and provider protocols
+  demo/                    Isolated deterministic fixtures and provider (no DB seed)
   alembic/                 Manual immutable PostgreSQL migration
   tests/                   API, config, deadline, and model checks
 docs/                      Architecture, database, science contracts, roadmap
@@ -99,6 +104,9 @@ Examples contain no credentials. `.env` files are ignored; `.env.example` files 
 | `GET /` | API name, version, docs path |
 | `GET /health` | Application liveness (`{"status":"ok"}`), independent of database |
 | `GET /api/v1/system/status` | Phase, timestamp, safe database configured/reachable state, and flood-data availability |
+| `GET /api/v1/demo/manifest`, `/scenarios`, `/network` | Experimental synthetic metadata, frames and network |
+| `GET /api/v1/demo/scenarios/{scenario_id}/frames/{step}` | Explicit t0/t1/t2 fixture snapshot, costs and unavailable physical fields |
+| `POST /api/v1/demo/screen` | Origin → pickup and pickup → destination; baseline and demo-weighted alternatives |
 | `GET /docs`, `/openapi.json` | Automatic API documentation and schema |
 
 Status uses HTTP 200 when the application can report a degraded database: `not_configured`, `reachable`, or `unreachable`. It exposes no URLs, credentials, stack traces, or infrastructure hostnames. Database checks have a four-second deadline, three-second connection timeout, and two-second statement timeout. No connection opens at import/startup. No production migration runs automatically.
@@ -135,7 +143,7 @@ pnpm exec playwright install chromium
 pnpm test:e2e
 ```
 
-Playwright starts the production frontend and backend automatically; build first and install backend development dependencies. Tests use the real local backend without a database, and explicitly stub failure/malformed responses to verify UI recovery. Desktop/mobile checks cover direct routes, navigation, overflow, themes, notifications, and connectivity. On Linux, Chromium may require system libraries installed by your administrator. See [VALIDATION.md](docs/VALIDATION.md) for actual results and environmental limits.
+Playwright starts the production frontend and backend automatically; build first and install backend development dependencies. Tests use the real local backend without a database, and explicitly stub failure/malformed responses to verify UI recovery. Desktop/mobile checks cover header collapse/expand and tooltips, mobile navigation/focus, forms, real route requests, frame switching, simulated warnings, unavailable routes, API failure recovery, themes and connectivity. On Linux, Chromium may require system libraries installed by your administrator. See [VALIDATION.md](docs/VALIDATION.md) for actual results and environmental limits.
 
 ## Independent Vercel deployment preparation
 
@@ -152,4 +160,4 @@ The backend has no persistent workers or long-running WebSockets. Runtime connec
 
 [ARCHITECTURE.md](docs/ARCHITECTURE.md) explains component/service boundaries and request flow. [SCIENTIFIC-MODULES.md](docs/SCIENTIFIC-MODULES.md) documents the intended telemetry → assimilation → hydrodynamics → risk → routing → evidence pipeline, equations, inputs, units, calibration dependencies, and limitations. [ROADMAP.md](docs/ROADMAP.md) covers all five phases.
 
-Remaining manual work: provision Neon/PostGIS, provide credentials, and validate a live migration cycle on a disposable development branch. Mapping needs a licensed style/tile provider and actual route/data integration. Scientific datasets, vehicle-specific thresholds, model checkpoints, evidence signing, authentication, and claim platform agreements are not available or implemented. The recommended next development phase is a separately tested mathematical risk and routing engine with defensible parameter sources and explicit uncertainty.
+Remaining manual work: provision Neon/PostGIS, provide credentials, and validate a live migration cycle on a disposable development branch. Mapping needs a licensed style/tile provider and actual route/data integration. Scientific datasets, vehicle-specific thresholds, model checkpoints, evidence signing, authentication, and claim platform agreements are not available or implemented. Before the November 6 MVP, integrate licensed GraphML/GeoJSON through the normalization boundary, the research team’s versioned risk/Modified Dijkstra modules, and agreed scenario/evidence specifications. The temporary Dijkstra demonstrates authored costs only. See [DEMO-SIMULATION.md](docs/DEMO-SIMULATION.md) for replacement instructions and remaining work.
