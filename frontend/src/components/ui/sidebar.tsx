@@ -1,5 +1,8 @@
 "use client";
 
+// Official shadcn Radix Nova sidebar: https://ui.shadcn.com/r/styles/radix-nova/sidebar.json
+// Local adaptations: Lucide state icons and mobile trigger focus restoration.
+
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";

@@ -3,23 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  Activity,
   ArrowUpRight,
   Droplets,
   LayoutDashboard,
-  MapPin,
   Navigation,
   Route,
   ShieldCheck,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
-  SidebarGroupLabel,
+  SidebarGroupContent,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -31,15 +27,15 @@ import {
 } from "@/components/ui/sidebar";
 
 const links = [
-  { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { href: "/pre-order", label: "Pre-order screening", icon: Route },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/pre-order", label: "Pre-order", icon: Route },
   { href: "/navigation", label: "Navigation", icon: Navigation },
-  { href: "/claims", label: "Evidence & claims", icon: ShieldCheck },
+  { href: "/claims", label: "Claims", icon: ShieldCheck },
 ];
 
 function Workspace({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { state, isMobile, setOpenMobile } = useSidebar();
+  const { state, isMobile, openMobile, setOpenMobile } = useSidebar();
   const title =
     links.find((link) => link.href === pathname)?.label ?? "Workspace";
   return (
@@ -51,24 +47,19 @@ function Workspace({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
       <Sidebar collapsible="icon">
-        <SidebarHeader className="gap-3 border-b px-3 py-4 group-data-[collapsible=icon]:items-center group-data-[collapsible=icon]:px-1">
-          <div className="flex w-full items-center justify-between gap-1 group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:gap-2">
+        <SidebarHeader className="h-20 justify-center border-b px-3 group-data-[collapsible=icon]:px-2.5">
+          <div className="flex items-center justify-between gap-1">
             <Link
               href="/dashboard"
               aria-label="HydroGig-Mesh overview"
               onClick={() => setOpenMobile(false)}
-              className="flex min-h-11 items-center gap-2 rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+              className="flex min-h-11 min-w-0 items-center gap-2 rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none group-data-[collapsible=icon]:hidden"
             >
               <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-                <Droplets className="size-6" />
+                <Droplets className="size-5" />
               </span>
-              <span className="leading-tight group-data-[collapsible=icon]:hidden">
-                <span className="block text-sm font-semibold tracking-tight">
-                  HydroGig<span className="text-primary">-Mesh</span>
-                </span>
-                <span className="text-[9px] tracking-[0.14em] text-muted-foreground uppercase">
-                  Climate intelligence
-                </span>
+              <span className="truncate text-sm font-semibold tracking-tight">
+                HydroGig<span className="text-primary">-Mesh</span>
               </span>
             </Link>
             <SidebarTrigger
@@ -80,87 +71,69 @@ function Workspace({ children }: { children: React.ReactNode }) {
                     ? "Expand sidebar"
                     : "Collapse sidebar"
               }
-              aria-expanded={isMobile ? true : state === "expanded"}
+              aria-expanded={isMobile ? openMobile : state === "expanded"}
+              title={
+                isMobile ? "Close navigation" : "Toggle sidebar (Ctrl/⌘ B)"
+              }
             />
           </div>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Driver workspace</SidebarGroupLabel>
-            <nav aria-label="Main navigation">
-              <SidebarMenu className="gap-2">
-                {links.map(({ href, label, icon: Icon }) => (
-                  <SidebarMenuItem key={href}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={pathname === href}
-                      tooltip={label}
-                      className="min-h-11 min-w-11 gap-3"
-                    >
-                      <Link
-                        href={href}
-                        aria-label={label}
-                        aria-current={pathname === href ? "page" : undefined}
-                        onClick={() => setOpenMobile(false)}
+          <SidebarGroup className="px-2.5 py-5">
+            <SidebarGroupContent>
+              <nav aria-label="Main navigation">
+                <SidebarMenu className="gap-2">
+                  {links.map(({ href, label, icon: Icon }) => (
+                    <SidebarMenuItem key={href}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={pathname === href}
+                        tooltip={label}
+                        className="min-h-11 min-w-11 gap-3 group-data-[collapsible=icon]:justify-center"
                       >
-                        <Icon />
-                        <span>{label}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </nav>
+                        <Link
+                          href={href}
+                          aria-label={label}
+                          aria-current={pathname === href ? "page" : undefined}
+                          onClick={() => setOpenMobile(false)}
+                        >
+                          <Icon />
+                          <span>{label}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </nav>
+            </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-        <SidebarFooter className="p-4 group-data-[collapsible=icon]:hidden">
-          <div className="rounded-xl border bg-muted/40 p-4">
-            <Activity className="mb-3 size-5 text-primary" />
-            <p className="text-sm font-medium">
-              Flood-aware mobility research.
-            </p>
-            <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-              An experimental workspace for motorcycle journeys.
-            </p>
-            <Badge variant="outline" className="mt-3">
-              Phase 1.5 · Demo preparation
-            </Badge>
-          </div>
-        </SidebarFooter>
       </Sidebar>
-      <SidebarInset id="main-content" className="min-w-0">
-        <header className="flex min-h-20 items-center justify-between gap-3 border-b bg-card/80 px-4 sm:px-8">
+      <SidebarInset className="min-w-0">
+        <header className="flex min-h-16 items-center justify-between gap-3 border-b bg-card px-4 sm:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <SidebarTrigger
               className="size-11 md:hidden"
               aria-label="Open navigation"
+              aria-expanded={openMobile}
             />
-            <div className="flex items-center gap-2 text-sm">
-              <span className="hidden text-muted-foreground sm:inline">
-                Workspace /
-              </span>
-              <span className="truncate font-medium">{title}</span>
-            </div>
+            <span className="truncate text-sm font-medium">{title}</span>
           </div>
-          <div className="flex shrink-0 items-center gap-3">
-            <span className="hidden items-center gap-1.5 text-xs text-muted-foreground sm:flex">
-              <MapPin className="size-3.5" />
-              Bogor research project
-            </span>
-            <ThemeToggle />
-          </div>
+          <ThemeToggle />
         </header>
-        <div className="mx-auto w-full max-w-[1500px] flex-1 space-y-7 px-4 py-7 sm:px-8 sm:py-9">
+        <div
+          id="main-content"
+          tabIndex={-1}
+          className="mx-auto w-full max-w-[1440px] flex-1 space-y-6 px-4 py-6 outline-none sm:px-8 sm:py-8"
+        >
           {children}
         </div>
-        <footer className="mx-auto flex w-full max-w-[1500px] flex-wrap items-center justify-between gap-3 px-4 pb-7 text-xs text-muted-foreground sm:px-8">
-          <span>HydroGig-Mesh · Research & development</span>
+        <footer className="mx-auto flex w-full max-w-[1440px] justify-end px-4 pb-5 text-sm text-muted-foreground sm:px-8">
           <Link
             href="/dashboard#system-status"
-            className="inline-flex min-h-11 items-center gap-1 hover:text-primary"
+            className="inline-flex min-h-11 items-center gap-1 rounded-md hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
-            System status
-            <ArrowUpRight className="size-3" />
+            System status <ArrowUpRight className="size-4" />
           </Link>
         </footer>
       </SidebarInset>
