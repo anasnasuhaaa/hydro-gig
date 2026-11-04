@@ -71,7 +71,7 @@ function ScreeningForm({
   }));
   return (
     <>
-      <Card className="shadow-none [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(6)]">
+      <Card className="border-primary/15 shadow-sm [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(6)]">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Route className="size-5 text-primary" />

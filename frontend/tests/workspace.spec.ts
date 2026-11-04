@@ -14,6 +14,7 @@ test("routes, navigation, and responsive workspace", async ({
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
   await expect(page).toHaveURL(/\/dashboard$/);
+  await page.getByText("Technical diagnostics", { exact: true }).click();
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
     "Navigate with flood awareness.",
   );
@@ -65,8 +66,11 @@ test("routes, navigation, and responsive workspace", async ({
     );
     if (route.path === "/claims") {
       await expect(
+        page.getByText("Coming soon", { exact: true }),
+      ).toBeVisible();
+      await expect(
         page.getByRole("button", { name: route.action }),
-      ).toBeDisabled();
+      ).toHaveCount(0);
       await page.screenshot({
         path: testInfo.outputPath("claims-light.png"),
         fullPage: true,
@@ -94,10 +98,12 @@ test("theme persists and status refresh reports a completed check", async ({
   page,
 }, testInfo) => {
   await page.goto("/dashboard");
+  await page.getByText("Technical diagnostics", { exact: true }).click();
   await expect(page.getByText("Connected", { exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Toggle color theme" }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
   await page.reload();
+  await page.getByText("Technical diagnostics", { exact: true }).click();
   await expect(page.locator("html")).toHaveClass(/dark/);
   await page.screenshot({
     path: testInfo.outputPath("dashboard-dark.png"),
@@ -116,6 +122,7 @@ test("API errors recover after a successful response", async ({ page }) => {
     route.fulfill({ status: 503, body: "unavailable" }),
   );
   await page.goto("/dashboard");
+  await page.getByText("Technical diagnostics", { exact: true }).click();
   await expect(
     page.getByText("Backend connection unavailable", { exact: true }),
   ).toBeVisible();
@@ -131,6 +138,7 @@ test("malformed API data never appears as connected", async ({ page }) => {
     route.fulfill({ json: { application: "operational" } }),
   );
   await page.goto("/dashboard");
+  await page.getByText("Technical diagnostics", { exact: true }).click();
   await expect(
     page.getByText("Backend connection unavailable", { exact: true }),
   ).toBeVisible();
@@ -144,6 +152,7 @@ test("compact screens remain usable at 320px in both themes", async ({
   await page.emulateMedia({ reducedMotion: "reduce" });
   for (const theme of ["light", "dark"]) {
     await page.goto("/dashboard");
+    await page.getByText("Technical diagnostics", { exact: true }).click();
     if (theme === "dark")
       await page.getByRole("button", { name: "Toggle color theme" }).click();
     for (const path of ["/dashboard", "/pre-order", "/navigation", "/claims"]) {

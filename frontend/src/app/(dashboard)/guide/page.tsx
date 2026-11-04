@@ -54,7 +54,10 @@ export default function Guide() {
                     </Link>
                   </Button>
                 ) : (
-                  <Badge variant="secondary" className="px-3 py-2 text-sm">
+                  <Badge
+                    variant="secondary"
+                    className="h-auto px-3 py-2 text-sm"
+                  >
                     {t("planned")}
                   </Badge>
                 )}

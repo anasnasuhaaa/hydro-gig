@@ -18,6 +18,11 @@ const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
       containerAriaLabel={t("label")}
+      mobileOffset={{
+        bottom: "calc(5rem + env(safe-area-inset-bottom))",
+        left: 16,
+        right: 16,
+      }}
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       icons={{

@@ -103,12 +103,13 @@
     "cost": " · {value} demo cost units",
     "segments": "Segments:",
     "scenario": "Scenario:",
-    "limits": "Authored synthetic weights; fixed snapshots do not predict conditions at arrival time."
+    "limits": "Authored synthetic weights; fixed snapshots do not predict conditions at arrival time.",
+    "affectedCount": "Affected route segments: {count}"
   },
   "Network": {
     "unavailable": "Schematic positions are unavailable.",
     "title": "Schematic road network — simulated, not a geographic map",
-    "desc": "Arrows indicate permitted direction. Solid teal is the demonstration-weighted route; dashed blue is the distance baseline. Amber labels identify authored cost changes.",
+    "desc": "Arrows indicate permitted direction. Solid blue is the demonstration-weighted route; dashed violet is the distance baseline. Amber labels identify authored cost changes.",
     "legend": "Network legend",
     "weighted": "Demo-weighted",
     "baseline": "Distance baseline",
@@ -144,7 +145,7 @@
     "title": "Navigate with flood awareness.",
     "subtitle": "Explore a synthetic trip before you ride.",
     "screen": "Screen route",
-    "prototype": "Prototype · simulated data.",
+    "prototype": "SIMULATION · research prototype",
     "limits": "No live flood monitoring or safety guidance. Evidence tokens are unavailable.",
     "workflows": "Workflows",
     "preOrder": "Pre-order",
@@ -152,14 +153,19 @@
     "navigation": "Navigation",
     "navigationDesc": "Explore scenario changes.",
     "claims": "Claims",
-    "claimsDesc": "Evidence tools unavailable."
+    "claimsDesc": "Evidence tools unavailable.",
+    "guide": "Guide",
+    "guideDesc": "Get started in three steps.",
+    "diagnostics": "Technical diagnostics"
   },
   "Claims": {
     "title": "Claims",
     "empty": "Claims are not available yet",
     "description": "Claim storage, signed evidence tokens, and verification are unavailable. No records have been created; platform acceptance is not guaranteed.",
     "create": "Create evidence token",
-    "screen": "Screen a demo route"
+    "screen": "Screen a demo route",
+    "planned": "Coming soon",
+    "guide": "Read the guide"
   },
   "Common": {
     "error": "This workspace could not be loaded",

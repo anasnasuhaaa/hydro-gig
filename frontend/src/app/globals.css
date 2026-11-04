@@ -210,3 +210,34 @@ body {
   --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
 }
+
+/* Decorative climate colors are independent of scientific risk semantics. */
+:root {
+  --hero: #1264d1;
+  --hero-foreground: #ffffff;
+  --hero-action: #ffffff;
+  --hero-action-foreground: #1455aa;
+  --route-baseline: #7651b7;
+}
+.dark {
+  --hero: #164b92;
+  --hero-foreground: #ffffff;
+  --hero-action: #edf4ff;
+  --hero-action-foreground: #174e96;
+  --route-baseline: #c9a7ff;
+}
+@theme inline {
+  --color-route-baseline: var(--route-baseline);
+}
+.climate-hero {
+  background: var(--hero);
+  color: var(--hero-foreground);
+}
+.hero-action {
+  background: var(--hero-action);
+  color: var(--hero-action-foreground);
+}
+.hero-action:hover {
+  background: var(--hero-action);
+  opacity: 0.92;
+}

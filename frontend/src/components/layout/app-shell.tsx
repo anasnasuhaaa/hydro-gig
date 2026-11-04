@@ -115,8 +115,8 @@ function Workspace({ children }: { children: React.ReactNode }) {
         </SidebarContent>
       </Sidebar>
       <SidebarInset className="min-w-0 pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0">
-        <header className="flex min-h-16 items-center justify-between gap-3 border-b bg-card px-4 sm:px-8">
-          <div className="flex min-w-0 items-center gap-3">
+        <header className="flex min-h-16 items-center justify-between gap-2 border-b bg-card px-3 sm:px-8">
+          <div className="flex min-w-0 items-center gap-1 sm:gap-3">
             <SidebarTrigger
               className="size-11 md:hidden"
               aria-label={t("open")}
@@ -148,6 +148,7 @@ function Workspace({ children }: { children: React.ReactNode }) {
       <nav
         aria-label={t("quick")}
         hidden={openMobile}
+        style={openMobile ? { display: "none" } : undefined}
         className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t bg-card/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
       >
         {links
@@ -168,9 +169,16 @@ function Workspace({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function AppShell({ children }: { children: React.ReactNode }) {
+export function AppShell({
+  children,
+  defaultOpen = true,
+}: {
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
   return (
     <SidebarProvider
+      defaultOpen={defaultOpen}
       style={{ "--sidebar-width-icon": "4rem" } as React.CSSProperties}
     >
       <Workspace>{children}</Workspace>

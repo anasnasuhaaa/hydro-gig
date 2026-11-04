@@ -80,14 +80,37 @@ export function RouteResults({
         ).map(([mode, title]) => (
           <Card
             key={mode}
-            className={`min-w-0 shadow-none ${mode === "demonstration_weighted" ? "ring-primary/30" : ""}`}
+            className={`min-w-0 shadow-sm ${mode === "demonstration_weighted" ? "border-primary/40 bg-accent/20 ring-primary/20" : "border-route-baseline/30"}`}
           >
             <CardHeader>
               <CardTitle>
-                <h3>{title}</h3>
+                <h3
+                  className={
+                    mode === "demonstration_weighted"
+                      ? "text-primary"
+                      : "text-route-baseline"
+                  }
+                >
+                  {title}
+                </h3>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <Badge
+                variant="secondary"
+                className="h-auto min-h-7 whitespace-normal text-sm"
+              >
+                {t("affectedCount", {
+                  count: new Set(
+                    [
+                      ...result.origin_to_pickup[mode].edge_ids,
+                      ...result.pickup_to_destination[mode].edge_ids,
+                    ].filter((id) =>
+                      result.frame.affected_edge_ids.includes(id),
+                    ),
+                  ).size,
+                })}
+              </Badge>
               <Leg title={t("first")} route={result.origin_to_pickup[mode]} />
               <Leg
                 title={t("second")}

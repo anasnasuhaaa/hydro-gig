@@ -129,7 +129,7 @@ export function NavigationWorkspace() {
             />
           </div>
           <div
-            className="flex flex-wrap items-center gap-3"
+            className="flex flex-wrap items-center gap-2 rounded-xl bg-muted/60 p-2"
             role="group"
             aria-label={t("frames")}
           >
@@ -176,7 +176,7 @@ export function NavigationWorkspace() {
       ) : (
         <>
           <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_19rem]">
-            <Card className="min-w-0 shadow-none">
+            <Card className="min-w-0 border-primary/20 shadow-sm">
               <CardHeader>
                 <CardTitle>
                   <h2>{t("network")}</h2>

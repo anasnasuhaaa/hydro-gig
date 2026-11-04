@@ -40,7 +40,6 @@ export function SystemStatus() {
   ];
   return (
     <section
-      id="system-status"
       aria-labelledby="system-status-title"
       className="scroll-mt-6 space-y-4 border-t pt-5"
     >

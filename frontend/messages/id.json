@@ -103,12 +103,13 @@
     "cost": " · {value} unit biaya demo",
     "segments": "Ruas:",
     "scenario": "Skenario:",
-    "limits": "Bobot sintetis buatan; snapshot tetap tidak memprediksi kondisi saat tiba."
+    "limits": "Bobot sintetis buatan; snapshot tetap tidak memprediksi kondisi saat tiba.",
+    "affectedCount": "Ruas rute terpengaruh: {count}"
   },
   "Network": {
     "unavailable": "Posisi skema belum tersedia.",
     "title": "Skema jaringan jalan — simulasi, bukan peta geografis",
-    "desc": "Panah menunjukkan arah perjalanan. Garis biru utuh adalah rute berbobot demo; garis putus-putus adalah acuan jarak. Label kuning menunjukkan perubahan biaya buatan.",
+    "desc": "Panah menunjukkan arah perjalanan. Garis biru utuh adalah rute berbobot demo; garis ungu putus-putus adalah acuan jarak. Label kuning menunjukkan perubahan biaya buatan.",
     "legend": "Legenda jaringan",
     "weighted": "Berbobot demo",
     "baseline": "Acuan jarak",
@@ -144,7 +145,7 @@
     "title": "Kenali rute sebelum berangkat.",
     "subtitle": "Jelajahi perjalanan sintetis sebelum berkendara.",
     "screen": "Periksa rute",
-    "prototype": "Purwarupa · data simulasi.",
+    "prototype": "SIMULASI · purwarupa riset",
     "limits": "Pemantauan banjir langsung dan panduan keselamatan belum tersedia. Token bukti belum tersedia.",
     "workflows": "Alur penggunaan",
     "preOrder": "Pra-pesanan",
@@ -152,14 +153,19 @@
     "navigation": "Navigasi",
     "navigationDesc": "Jelajahi perubahan skenario.",
     "claims": "Klaim",
-    "claimsDesc": "Fitur bukti belum tersedia."
+    "claimsDesc": "Fitur bukti belum tersedia.",
+    "guide": "Panduan",
+    "guideDesc": "Mulai dengan tiga langkah.",
+    "diagnostics": "Diagnostik teknis"
   },
   "Claims": {
     "title": "Klaim",
     "empty": "Klaim belum tersedia",
     "description": "Penyimpanan klaim, token bukti bertanda tangan, dan verifikasi belum tersedia. Belum ada catatan dibuat; penerimaan platform tidak dijamin.",
     "create": "Buat token bukti",
-    "screen": "Periksa rute demo"
+    "screen": "Periksa rute demo",
+    "planned": "Belum tersedia",
+    "guide": "Baca panduan"
   },
   "Common": {
     "error": "Ruang kerja gagal dimuat",

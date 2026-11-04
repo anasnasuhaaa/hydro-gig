@@ -1,21 +1,21 @@
 import { useTranslations } from "next-intl";
-import { WeatherCard } from "@/components/weather/weather-card";
 import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
+  BookOpen,
+  Droplets,
   Navigation,
   Route,
-  ShieldCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { WeatherCard } from "@/components/weather/weather-card";
 import { SystemStatus } from "@/components/dashboard/system-status";
-
 export { dashboardMetadata as generateMetadata } from "@/i18n/metadata";
 
 export default function Dashboard() {
   const t = useTranslations("Dashboard");
-
   const workflows = [
     {
       icon: Route,
@@ -30,69 +30,86 @@ export default function Dashboard() {
       href: "/navigation",
     },
     {
-      icon: ShieldCheck,
-      title: t("claims"),
-      description: t("claimsDesc"),
-      href: "/claims",
+      icon: BookOpen,
+      title: t("guide"),
+      description: t("guideDesc"),
+      href: "/guide",
     },
   ];
   return (
     <>
       <section
-        className="rounded-2xl bg-[#0c4e49] px-6 py-10 text-white sm:px-10 sm:py-14"
+        className="climate-hero relative overflow-hidden rounded-3xl p-6 shadow-sm sm:p-9"
         aria-labelledby="dashboard-title"
       >
-        <div className="max-w-xl">
+        <div className="relative z-10 max-w-2xl space-y-5">
+          <Badge
+            variant="outline"
+            className="h-auto min-h-7 border-current/30 px-3 py-1 text-current"
+          >
+            <Droplets className="size-4" />
+            {t("prototype")}
+          </Badge>
           <h1
             id="dashboard-title"
             className="text-3xl leading-tight font-semibold tracking-tight sm:text-5xl"
           >
             {t("title")}
           </h1>
-          <p className="mt-4 text-base leading-relaxed text-teal-50">
-            {t("subtitle")}
-          </p>
-          <Button
-            asChild
-            className="mt-7 min-h-11 bg-white text-[#0c4e49] hover:bg-teal-50"
-          >
+          <p className="max-w-lg text-base opacity-95">{t("subtitle")}</p>
+          <Button asChild className="hero-action min-h-12 px-5 text-base">
             <Link href="/pre-order">
-              {t("screen")} <ArrowRight />
+              {t("screen")}
+              <ArrowRight />
             </Link>
           </Button>
         </div>
+        <Droplets
+          className="pointer-events-none absolute -right-9 -bottom-10 size-64 opacity-10"
+          strokeWidth={1}
+          aria-hidden="true"
+        />
       </section>
-      <p className="text-sm leading-relaxed text-muted-foreground">
-        <strong className="font-medium text-foreground">
-          {t("prototype")}
-        </strong>{" "}
-        {t("limits")}
-      </p>
-      <section
-        className="grid gap-3 md:grid-cols-3"
-        aria-label={t("workflows")}
-      >
-        {workflows.map(({ icon: Icon, title, description, href }) => (
-          <Link
-            key={href}
-            href={href}
-            className="group flex min-w-0 items-center gap-4 rounded-xl border bg-card p-5 transition-colors hover:border-primary/50 hover:bg-accent/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+      <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+        <WeatherCard />
+        <section className="space-y-3" aria-label={t("workflows")}>
+          {workflows.map(({ icon: Icon, title, description, href }) => (
+            <Link
+              key={href}
+              href={href}
+              className="group flex min-w-0 items-center gap-4 rounded-2xl border bg-card p-5 shadow-sm transition-colors hover:border-primary/50 hover:bg-accent/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            >
+              <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-accent text-primary">
+                <Icon className="size-6" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <h2 className="font-semibold">{title}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {description}
+                </p>
+              </div>
+              <ArrowUpRight className="size-5 shrink-0 text-muted-foreground group-hover:text-primary" />
+            </Link>
+          ))}
+          <p
+            role="note"
+            className="px-1 pt-2 text-sm leading-relaxed text-muted-foreground"
           >
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-accent text-primary">
-              <Icon className="size-5" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <h2 className="font-semibold">{title}</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {description}
-              </p>
-            </div>
-            <ArrowUpRight className="size-4 shrink-0 text-muted-foreground group-hover:text-primary" />
-          </Link>
-        ))}
-      </section>
-      <WeatherCard />
-      <SystemStatus />
+            {t("limits")}
+          </p>
+        </section>
+      </div>
+      <details
+        id="system-status"
+        className="group scroll-mt-4 rounded-2xl border bg-card"
+      >
+        <summary className="min-h-12 cursor-pointer rounded-2xl p-4 text-sm font-medium focus-visible:ring-2 focus-visible:ring-ring">
+          {t("diagnostics")}
+        </summary>
+        <div className="px-4 pb-4">
+          <SystemStatus />
+        </div>
+      </details>
     </>
   );
 }

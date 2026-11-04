@@ -90,7 +90,7 @@ export function SchematicNetwork({
                 weighted.has(edge.edge_id)
                   ? "text-primary"
                   : baseline.has(edge.edge_id)
-                    ? "text-secondary-foreground"
+                    ? "text-route-baseline"
                     : "text-muted-foreground"
               }
             >
@@ -168,7 +168,7 @@ export function SchematicNetwork({
           </li>
           <li className="flex items-center gap-2">
             <span
-              className="w-6 border-t-2 border-dashed border-secondary-foreground"
+              className="w-6 border-t-2 border-dashed border-route-baseline"
               aria-hidden="true"
             />
             {t("baseline")}
