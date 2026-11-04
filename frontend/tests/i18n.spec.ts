@@ -113,3 +113,47 @@ test("main UI text uses translation catalogs", async () => {
   }
   expect(untranslated).toEqual([]);
 });
+
+test("each route switches locale and metadata; selected EWS frame survives", async ({
+  page,
+}) => {
+  const routes = [
+    ["dashboard", "dashboard", en.Dashboard.title, id.Dashboard.title],
+    ["pre-order", "preOrder", en.Screen.title, id.Screen.title],
+    ["navigation", "navigation", en.Navigation.title, id.Navigation.title],
+    ["claims", "claims", en.Claims.title, id.Claims.title],
+    ["guide", "guide", en.Guide.title, id.Guide.title],
+  ] as const;
+  for (const [path, key, enTitle, idTitle] of routes) {
+    await page.goto(`/${path}`);
+    await page.getByRole("button", { name: "English", exact: true }).click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(enTitle);
+    await expect(page).toHaveTitle(`${en.Shell[key]} | HydroGig-Mesh`);
+    if (path === "navigation") {
+      await page.getByRole("button", { name: "t2", exact: true }).click();
+      await expect(
+        page.getByRole("heading", {
+          name: "Route comparison · t2",
+          exact: true,
+        }),
+      ).toBeVisible();
+    }
+    await page
+      .getByRole("button", { name: "Bahasa Indonesia", exact: true })
+      .click();
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(idTitle);
+    await expect(page).toHaveTitle(`${id.Shell[key]} | HydroGig-Mesh`);
+    if (path === "navigation") {
+      await expect(
+        page.getByRole("button", { name: "t2", exact: true }),
+      ).toHaveAttribute("aria-pressed", "true");
+      await expect(
+        page.getByRole("heading", {
+          name: "Perbandingan rute · t2",
+          exact: true,
+        }),
+      ).toBeVisible();
+    }
+    await expect(page).toHaveURL(new RegExp(`/${path}$`));
+  }
+});

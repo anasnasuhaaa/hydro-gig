@@ -1,3 +1,40 @@
+# Phase 1.6 validation record
+
+Validated locally on 2026-11-04 (Asia/Jakarta), Node.js 22.22.1, pnpm 12.16.1, Python 3.14.4 in the existing backend venv. Vercel's requested Python 3.12 runtime is not verified by this run.
+
+| Check | Final result |
+| --- | --- |
+| Backend `python -m pytest -q` | **70 passed** |
+| Backend `ruff check .` | Passed |
+| Backend `ruff format --check .` | Passed; 37 files |
+| Backend `python -m pip check` | No broken requirements |
+| Frontend `pnpm typecheck` | Passed |
+| Frontend `pnpm lint` | Passed |
+| Frontend `pnpm format:check` | Passed |
+| Frontend `pnpm build` | Passed; production Webpack build, isolated output/API environment below |
+| Frontend `pnpm test:e2e` | **63 passed, 3 intentionally skipped**; desktop Chromium and mobile touch emulation |
+| Live Open-Meteo smoke | A valid normalized response, units and model timestamp returned on retry after an unavailable first attempt |
+| Documentation links / `git diff --check` | Passed |
+| Visual review | Dashboard, Guide, Claims, screening and navigation, ID/EN, light/dark; loaded weather at 320px; screenshots remain ignored local artifacts |
+
+The required production command ran as `NEXT_DIST_DIR=.next-e2e NEXT_PUBLIC_API_BASE_URL=http://localhost:8100 pnpm build` from frontend. `pnpm build:e2e` provides the same configuration. Browser tests start fresh production frontend 3100 and backend 8100, with blank DB URLs and test-only explicit CORS. This avoids reusing or overwriting concurrent dev servers on 3000/8000. No live DB is needed; external weather is mocked for deterministic API/browser tests.
+
+Coverage includes transparent sidebar trigger/default/hover, expanded/collapsed state, icon tooltips, Ctrl+B/Enter, visible focus, persisted official sidebar cookie, mobile Sheet close/Escape/route-selection focus restoration, bottom bar touch targets and footer clearance, all five routes, 320/375px phone and 1280px desktop, both locales/themes, and no horizontal overflow or hydration/message errors. Translation tests compare all keys/placeholders, reject obvious hardcoded JSX copy, check invalid-cookie fallback and SSR, metadata on every locale switch, and preserve a selected form stop/EWS frame.
+
+Weather tests verify no GPS/API request on initial load, one explicit location request, two-decimal request coordinates, honest manual/device labeling, denied/unsupported/timeout/offline states, loading, normalized units and attribution, model/retrieval timestamp semantics, partial/null values, malformed/empty/HTTP/timeout provider errors, throttled interval retry, stale model timestamps, and retaining the last response with an outdated-data label after failed refresh. Logging sanitization is covered without printing upstream bodies/coordinates. Demo tests retain real local API routing, distinct-stop validation, unreachable routes, t0/t1/t2 changes, shared trip state, simulated warnings, malformed-data rejection, stale-result removal, and honest unavailable Claims.
+
+Three intentional skips are viewport-specific: mobile Sheet checks are skipped in the desktop project; desktop collapse and desktop cookie/focus checks are skipped in the mobile project. Each runs in its applicable project. Responsive suites use 1280px in desktop and 320/375px in touch emulation, avoiding duplicate cross-project screenshots.
+
+During development, a reused dev server disrupted one browser run; dedicated build directories/ports resolved this. ESLint initially scanned the new generated build directory; `.next-*/**` is now excluded. A combined long build/test command was terminated before completion; the final browser phase ran separately. A test refactor omitted the `isMobile` fixture argument; typecheck and browser tests caught it, the test was corrected, and the final suite was rerun. These intermediate failures are not counted as successful validation.
+
+Nonblocking notices: Starlette TestClient emits the existing HTTPX-to-HTTPX2 deprecation warning; Playwright emits its terminal color warning. Optional next-intl extraction/watcher native build scripts are explicitly disabled; this application does not use extraction, and production builds pass.
+
+Unverified: live Neon/PostGIS migration and schema checks, real geographic road/tile integration, calibrated scientific data/models, auth/RBAC and evidence persistence/signing, actual phone/Safari/Firefox, Vercel/serverless execution and hosting-level query-log redaction. Client throttling is not global provider quota enforcement. No push, PR, deployment or migration was performed. `PROMPT.md` was not staged. An unrelated deletion of `docs/HydroGig_UI_Refinement_Codex_Prompt.md` and the untracked Phase 1.6 input guide were preserved outside the commits.
+
+Historical validation records follow; their feature status and test counts apply to the earlier phase only.
+
+---
+
 # UI refinement validation record
 
 Validated locally on 2026-11-04 (Asia/Jakarta), using the existing Node.js 22.22.1, pnpm 12.16.1 and Python 3.14.4 installations. The existing uncommitted Phase 1.5 foundation was preserved in a separate checkpoint commit before the frontend refinement stages. No backend logic was changed by the refinement.

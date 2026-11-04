@@ -6,6 +6,7 @@ for (const locale of ["id", "en"] as const)
   test(`responsive screens, themes and focus in ${locale}`, async ({
     page,
     context,
+    isMobile,
   }, testInfo) => {
     test.setTimeout(120_000);
     const m = locale === "id" ? id : en;
@@ -25,7 +26,7 @@ for (const locale of ["id", "en"] as const)
         url: testInfo.project.use.baseURL ?? "http://localhost:3100",
       },
     ]);
-    for (const width of [320, 375, 1280]) {
+    for (const width of isMobile ? [320, 375] : [1280]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto("/dashboard");
       for (const theme of ["light", "dark"]) {

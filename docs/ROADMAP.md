@@ -8,7 +8,13 @@ Independently deployable Next.js and FastAPI apps, accessible library-based UI, 
 
 Implemented: official shadcn sidebar with a header trigger and icon collapse; Pydantic/Zod contracts; an isolated, deterministic eight-node synthetic graph; replaceable normalization/provider/weighting/routing interfaces; heap Dijkstra; versioned experimental API; interactive pre-order form; user-driven t0/t1/t2 EWS schematic; claim envelope/signing boundaries; backend/browser tests and integration documentation. No database or external dataset is required for the demonstration.
 
-### Remaining before November 6 MVP
+## Phase 1.6 — UI, localization, guide and weather context
+
+Implemented: transparent official sidebar trigger, climate-blue light/dark tokens, mobile bottom navigation, server-rendered Indonesian/English with persistent cookie and stable routes, optional single-fix GPS and manual Bogor selection, bounded Open-Meteo weather provider/API, visual three-step Guide, compact diagnostics and redesigned functional screens. Weather conditions are model-derived and independent of synthetic flood scenarios. See [PHASE-1.6-IMPLEMENTATION.md](PHASE-1.6-IMPLEMENTATION.md) and [WEATHER.md](WEATHER.md).
+
+Browser testing uses an isolated production build and separate 3100/8100 ports to coexist with development. Authentication, scientific validation, real geographic navigation, evidence signing and deployment remain future work.
+
+### Remaining before a dataset-backed MVP
 
 - Obtain licensed road data and normalize source-specific GraphML/GeoJSON fields, CRS, topology, units and stable edge IDs.
 - Receive and validate the team's risk parameters/Python module, Modified Dijkstra and scenario frames against trusted reference cases; integrate through service protocols.

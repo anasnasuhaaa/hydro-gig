@@ -20,3 +20,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Keep secrets server-side and out of Git/logs/status responses. Use environment examples without credentials.
 - Run backend pytest/Ruff and frontend typecheck/lint/build; run Playwright after a production build for UI changes. Report unavailable infrastructure honestly.
 - Preserve `PROMPT.md` as a local input: never stage it. Do not push or deploy unless explicitly requested.
+
+## Phase 1.6 UI and weather conventions
+
+- User-facing text belongs in both `frontend/messages/id.json` and `en.json` via next-intl. Preserve stable URLs, API IDs/provenance and the Asia/Jakarta display timezone; use safe localized errors.
+- Geolocation requires an explicit user action, a single fix and rounded weather coordinates. Do not store location histories or log query coordinates. Weather is model-derived Open-Meteo context, independent of synthetic flood routing; preserve attribution, nullable fields and model/retrieval times.
+- Run `pnpm build:e2e` before `pnpm test:e2e` in `frontend/`. The production tests use `.next-e2e` and dedicated ports 3100/8100, with no server reuse or database. Keep generated `.next-*` outputs ignored by Git and ESLint. If development is active, run the required `pnpm build` with `NEXT_DIST_DIR=.next-e2e NEXT_PUBLIC_API_BASE_URL=http://localhost:8100` to avoid writing its `.next` directory.

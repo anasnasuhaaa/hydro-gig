@@ -220,3 +220,65 @@ test("offline device location reports an actionable state", async ({
   ).toContainText("offline");
   await context.setOffline(false);
 });
+
+test("failed scheduled refresh retains last weather with a stale label", async ({
+  page,
+}) => {
+  await page.clock.install();
+  let requests = 0;
+  await page.route("**/api/v1/weather/current?**", (route) => {
+    requests++;
+    return requests === 1
+      ? route.fulfill({ json: weather() })
+      : route.fulfill({ status: 503 });
+  });
+  await page.goto("/dashboard");
+  await page
+    .getByRole("button", { name: "Pilih Bogor manual", exact: true })
+    .click();
+  await expect(page.getByText("27,5", { exact: false })).toBeVisible();
+  await page.clock.fastForward(11 * 60_000);
+  await expect(page.getByRole("status")).toContainText("kedaluwarsa");
+  await expect(page.getByText("27,5", { exact: false })).toBeVisible();
+  expect(requests).toBe(2);
+});
+
+test("loaded weather fits a 320px phone in both themes", async ({
+  page,
+}, testInfo) => {
+  await page.setViewportSize({ width: 320, height: 740 });
+  await page.route("**/api/v1/weather/current?**", (route) =>
+    route.fulfill({ json: weather() }),
+  );
+  await page.goto("/dashboard");
+  await page
+    .getByRole("button", { name: "Pilih Bogor manual", exact: true })
+    .click();
+  await expect(page.getByText("27,5", { exact: false })).toBeVisible();
+  for (const theme of ["light", "dark"]) {
+    const dark = await page
+      .locator("html")
+      .evaluate((element) => element.classList.contains("dark"));
+    if (dark !== (theme === "dark"))
+      await page
+        .getByRole("button", { name: "Ganti tema warna", exact: true })
+        .click();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await expect(page.getByText("1,2 mm", { exact: true })).toBeVisible();
+    await expect(page.getByText("81 %", { exact: true })).toBeVisible();
+    await expect(page.getByText("8,4 km/h", { exact: true })).toBeVisible();
+    await page
+      .locator('[aria-labelledby="weather-title"]')
+      .evaluate((element) =>
+        window.scrollTo(0, element.getBoundingClientRect().top + scrollY - 8),
+      );
+    await page.screenshot({
+      path: testInfo.outputPath(`weather-${theme}-320.png`),
+      fullPage: false,
+    });
+  }
+});
