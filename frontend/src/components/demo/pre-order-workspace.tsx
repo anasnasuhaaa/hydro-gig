@@ -67,11 +67,11 @@ function ScreeningForm({
   }));
   return (
     <>
-      <Card className="shadow-none">
+      <Card className="shadow-none [--card-spacing:--spacing(5)] sm:[--card-spacing:--spacing(6)]">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Route className="size-5 text-primary" />
-            Screen a synthetic trip
+            Your trip
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -141,15 +141,14 @@ function ScreeningForm({
               />
             </div>
             <p className="text-sm text-muted-foreground">
-              All selectors use the synthetic network. Edges are directed;
-              journeys starting at terminal H can be unreachable.
+              One-way network · trips starting at H may be unreachable.
             </p>
             <Button
               type="submit"
-              className="min-h-11"
+              className="min-h-11 w-full sm:w-auto"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Screening…" : "Screen Route"}
+              {mutation.isPending ? "Screening…" : "Screen route"}
               <ArrowRight />
             </Button>
           </form>
@@ -169,7 +168,7 @@ function ScreeningForm({
           <RouteResults result={currentResult} network={network} />
           <Button asChild variant="outline" className="min-h-11">
             <Link href="/navigation">
-              Explore this trip in EWS simulation
+              Open navigation
               <ArrowRight />
             </Link>
           </Button>
@@ -185,8 +184,8 @@ export function PreOrderWorkspace() {
   return (
     <>
       <PageHeading
-        title="Know the route before the ride."
-        description="Compare a distance baseline with authored demonstration costs before exploring frame changes."
+        title="Screen your route."
+        description="Choose your stops and compare demo routes."
       />
       <SimulationNotice />
       {error ? (

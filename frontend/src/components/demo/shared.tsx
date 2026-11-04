@@ -2,7 +2,6 @@
 
 import { AlertTriangle, FlaskConical, RefreshCw } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -16,19 +15,15 @@ import { SIMULATION_LABEL } from "@/lib/contracts/data";
 
 export function SimulationNotice() {
   return (
-    <Alert className="border-primary/30 bg-accent/50">
+    <Alert role="note" className="border-primary/20 bg-accent/40 p-4">
       <FlaskConical />
       <AlertTitle>{SIMULATION_LABEL}</AlertTitle>
       <AlertDescription>
-        Experimental software demonstration. Schematic roads and authored costs
-        are synthetic. Flood conditions and scientific risk are unknown. Route
-        availability is not a safety guarantee.
+        Synthetic roads and costs. Flood conditions and scientific risk are
+        unknown; an available route does not mean it is safe.
       </AlertDescription>
     </Alert>
   );
-}
-export function ProvenanceBadge() {
-  return <Badge variant="outline">Simulated · experimental</Badge>;
 }
 export function DemoLoading() {
   return (
@@ -55,7 +50,7 @@ export function DemoError({
         <p>{error.message}</p>
         <Button variant="outline" className="mt-3 min-h-11" onClick={retry}>
           <RefreshCw />
-          Retry demonstration
+          Retry
         </Button>
       </AlertDescription>
     </Alert>

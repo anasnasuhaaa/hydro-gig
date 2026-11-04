@@ -47,7 +47,7 @@ function Workspace({ children }: { children: React.ReactNode }) {
         Skip to content
       </a>
       <Sidebar collapsible="icon">
-        <SidebarHeader className="h-20 justify-center border-b px-3 group-data-[collapsible=icon]:px-2.5">
+        <SidebarHeader className="h-16 justify-center border-b px-3 group-data-[collapsible=icon]:px-2.5">
           <div className="flex items-center justify-between gap-1">
             <Link
               href="/dashboard"
@@ -98,7 +98,9 @@ function Workspace({ children }: { children: React.ReactNode }) {
                           onClick={() => setOpenMobile(false)}
                         >
                           <Icon />
-                          <span>{label}</span>
+                          <span className="group-data-[collapsible=icon]:hidden">
+                            {label}
+                          </span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

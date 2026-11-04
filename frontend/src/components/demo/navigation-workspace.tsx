@@ -69,95 +69,89 @@ export function NavigationWorkspace() {
   return (
     <>
       <PageHeading
-        title="A clearer view of the road ahead."
-        description="Advance through fixed synthetic snapshots and inspect how authored costs change route selection."
+        title="Explore your route."
+        description="Compare fixed scenario frames on a schematic network."
       />
       <SimulationNotice />
       {request && scenario && (
-        <Card className="shadow-none">
-          <CardHeader>
-            <CardTitle>Simulation controls</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <DemoSelect
-                id="demo-route"
-                label="Demonstration route"
-                value={selectedScreened ? "screened" : "default"}
-                onChange={(value) => {
-                  const trip = value === "screened" ? screened : fallback;
-                  if (trip) {
-                    session.setRouteChoice(
-                      value === "screened" ? "screened" : "default",
-                    );
-                    session.setRequest({ ...trip, step: request.step });
-                  }
-                }}
-                options={[
-                  {
-                    value: "default",
-                    label: `Fixture trip · ${fallback?.origin} → ${fallback?.pickup} → ${fallback?.destination}`,
-                  },
-                  ...(screened
-                    ? [
-                        {
-                          value: "screened",
-                          label: `Last screened trip · ${screened.origin} → ${screened.pickup} → ${screened.destination}`,
-                        },
-                      ]
-                    : []),
-                ]}
-              />
-              <DemoSelect
-                id="navigation-scenario"
-                label="Scenario"
-                value={request.scenario_id}
-                onChange={(scenario_id) =>
-                  session.setRequest({ ...request, scenario_id, step: "t0" })
+        <section
+          aria-label="Simulation controls"
+          className="space-y-4 rounded-xl border bg-card p-4 sm:p-5"
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            <DemoSelect
+              id="demo-route"
+              label="Trip"
+              value={selectedScreened ? "screened" : "default"}
+              onChange={(value) => {
+                const trip = value === "screened" ? screened : fallback;
+                if (trip) {
+                  session.setRouteChoice(
+                    value === "screened" ? "screened" : "default",
+                  );
+                  session.setRequest({ ...trip, step: request.step });
                 }
-                options={data.scenarios.data!.scenarios.map((scenario) => ({
-                  value: scenario.scenario_id,
-                  label: scenario.name,
-                }))}
-              />
-            </div>
-            <div
-              className="flex flex-wrap items-center gap-3"
-              role="group"
-              aria-label="Simulation frames"
-            >
-              {scenario.time_steps.map((frame) => (
-                <Button
-                  key={frame.step}
-                  variant={frame.step === request.step ? "default" : "outline"}
-                  className="min-h-11 min-w-11"
-                  aria-pressed={frame.step === request.step}
-                  onClick={() =>
-                    session.setRequest({
-                      ...request,
-                      step: stepSchema.parse(frame.step),
-                    })
-                  }
-                >
-                  {frame.step}
-                </Button>
-              ))}
+              }}
+              options={[
+                {
+                  value: "default",
+                  label: `Fixture trip · ${fallback?.origin} → ${fallback?.pickup} → ${fallback?.destination}`,
+                },
+                ...(screened
+                  ? [
+                      {
+                        value: "screened",
+                        label: `Last screened trip · ${screened.origin} → ${screened.pickup} → ${screened.destination}`,
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+            <DemoSelect
+              id="navigation-scenario"
+              label="Scenario"
+              value={request.scenario_id}
+              onChange={(scenario_id) =>
+                session.setRequest({ ...request, scenario_id, step: "t0" })
+              }
+              options={data.scenarios.data!.scenarios.map((scenario) => ({
+                value: scenario.scenario_id,
+                label: scenario.name,
+              }))}
+            />
+          </div>
+          <div
+            className="flex flex-wrap items-center gap-3"
+            role="group"
+            aria-label="Simulation frames"
+          >
+            {scenario.time_steps.map((frame) => (
               <Button
-                variant="outline"
-                className="min-h-11"
-                disabled={request.step === scenario.time_steps.at(-1)?.step}
-                onClick={advance}
+                key={frame.step}
+                variant={frame.step === request.step ? "default" : "outline"}
+                className="min-h-11 min-w-11"
+                aria-pressed={frame.step === request.step}
+                onClick={() =>
+                  session.setRequest({
+                    ...request,
+                    step: stepSchema.parse(frame.step),
+                  })
+                }
               >
-                Advance simulation
-                <SkipForward />
+                {frame.step}
               </Button>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Selected frame: <strong>{request.step}</strong>. Fixed snapshots
-              only; controls do not move a vehicle or start live monitoring.
-            </p>
-          </CardContent>
-        </Card>
+            ))}
+            <Button
+              variant="outline"
+              className="min-h-11"
+              disabled={request.step === scenario.time_steps.at(-1)?.step}
+              onClick={advance}
+            >
+              Next frame
+              <SkipForward />
+            </Button>
+          </div>
+        </section>
       )}
       {error ? (
         <DemoError
@@ -173,46 +167,47 @@ export function NavigationWorkspace() {
         <DemoLoading />
       ) : (
         <>
-          <Alert
-            className="border-risk-moderate/50 bg-risk-moderate/5"
-            role="status"
-          >
-            <AlertTriangle className="text-risk-moderate" />
-            <AlertTitle>
-              Simulated experimental warning · {result.request.step}
-            </AlertTitle>
-            <AlertDescription>
-              <p>{result.frame.warning}</p>
-              <p>
-                Affected segments:{" "}
-                {result.frame.affected_edge_ids.join(", ") || "none authored"}.
-              </p>
-              <p>
-                Selected weighted route:{" "}
-                {result.origin_to_pickup.demonstration_weighted.status ===
-                  "unreachable" ||
-                result.pickup_to_destination.demonstration_weighted.status ===
-                  "unreachable"
-                  ? "incomplete — at least one leg is unavailable"
-                  : affectedSelected.length
-                    ? `includes authored cost changes on ${affectedSelected.join(", ")}`
-                    : "no authored cost changes on selected segments; flood conditions remain unknown"}
-                .
-              </p>
-            </AlertDescription>
-          </Alert>
-          <Card className="shadow-none">
-            <CardHeader>
-              <CardTitle>Synthetic road-network schematic</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <SchematicNetwork
-                network={data.network.data.network}
-                result={result}
-                frame={result.frame}
-              />
-            </CardContent>
-          </Card>
+          <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1fr)_19rem]">
+            <Card className="min-w-0 shadow-none">
+              <CardHeader>
+                <CardTitle>
+                  <h2>Synthetic road-network schematic</h2>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <SchematicNetwork
+                  network={data.network.data.network}
+                  result={result}
+                  frame={result.frame}
+                />
+              </CardContent>
+            </Card>
+            <Alert
+              className="min-w-0 border-risk-moderate/30 bg-risk-moderate/5 p-4"
+              role="status"
+            >
+              <AlertTriangle className="text-risk-moderate" />
+              <AlertTitle>Simulated warning · {result.request.step}</AlertTitle>
+              <AlertDescription className="space-y-3 [&_p:not(:last-child)]:mb-0">
+                <p>{result.frame.warning}</p>
+                <p>
+                  Affected segments:{" "}
+                  {result.frame.affected_edge_ids.join(", ") || "none authored"}
+                  .
+                </p>
+                <p>
+                  {result.origin_to_pickup.demonstration_weighted.status ===
+                    "unreachable" ||
+                  result.pickup_to_destination.demonstration_weighted.status ===
+                    "unreachable"
+                    ? "Selected route incomplete: at least one leg is unavailable."
+                    : affectedSelected.length
+                      ? `Selected route includes cost changes on ${affectedSelected.join(", ")}.`
+                      : "No authored cost changes on the selected route. Flood conditions remain unknown."}
+                </p>
+              </AlertDescription>
+            </Alert>
+          </div>
           <RouteResults result={result} network={data.network.data.network} />
         </>
       )}

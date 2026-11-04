@@ -1,4 +1,5 @@
 "use client";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type {
   DemoFrame,
   RoadNetwork,
@@ -15,6 +16,7 @@ export function SchematicNetwork({
   result: ScreenResponse;
   frame: DemoFrame;
 }) {
+  const isMobile = useIsMobile();
   if (
     network.crs !== "LOCAL:SCHEMATIC" ||
     network.nodes.some((node) => !node.coordinates)
@@ -31,8 +33,12 @@ export function SchematicNetwork({
     network.nodes.map((node) => [
       node.node_id,
       {
-        x: 50 + ((node.coordinates!.position[0] - minX) / dx) * 680,
-        y: 45 + ((node.coordinates!.position[1] - minY) / dy) * 250,
+        x: isMobile
+          ? 50 + ((node.coordinates!.position[1] - minY) / dy) * 200
+          : 50 + ((node.coordinates!.position[0] - minX) / dx) * 680,
+        y: isMobile
+          ? 35 + ((node.coordinates!.position[0] - minX) / dx) * 390
+          : 45 + ((node.coordinates!.position[1] - minY) / dy) * 250,
       },
     ]),
   );
@@ -47,7 +53,7 @@ export function SchematicNetwork({
   return (
     <figure className="space-y-3">
       <svg
-        viewBox="0 0 780 340"
+        viewBox={isMobile ? "0 0 300 460" : "0 0 780 340"}
         role="img"
         aria-label={`Synthetic directed road network at ${frame.frame.step}`}
         className="w-full rounded-xl border bg-muted/40"
@@ -109,13 +115,13 @@ export function SchematicNetwork({
                 markerEnd="url(#schematic-arrow)"
               />
               <text
-                x={(source.x + target.x) / 2}
-                y={(source.y + target.y) / 2 - 10}
+                x={(source.x + target.x) / 2 + (isMobile && dy !== 0 ? -24 : 0)}
+                y={(source.y + target.y) / 2 - (isMobile && dy !== 0 ? 0 : 12)}
                 textAnchor="middle"
                 className={
                   affected
-                    ? "fill-risk-moderate text-[14px] font-bold"
-                    : "fill-foreground text-[13px]"
+                    ? "fill-risk-moderate text-[16px] font-bold"
+                    : "fill-foreground text-[16px]"
                 }
               >
                 {edge.edge_id}
@@ -142,7 +148,7 @@ export function SchematicNetwork({
                 x={point.x}
                 y={point.y + 5}
                 textAnchor="middle"
-                className="fill-foreground text-[14px] font-semibold"
+                className="fill-foreground text-[16px] font-semibold"
               >
                 {node.node_id}
               </text>
@@ -150,11 +156,28 @@ export function SchematicNetwork({
           );
         })}
       </svg>
-      <figcaption className="text-xs leading-relaxed text-muted-foreground">
-        Schematic only · no geographic relationship to Bogor. Teal:
-        demonstration-weighted selection. Dashed blue: baseline-only segments. *
-        Authored cost change. Colors convey software state, with no official
-        safety meaning.
+      <figcaption className="space-y-2 text-sm leading-relaxed text-muted-foreground">
+        <ul
+          className="flex flex-wrap gap-x-5 gap-y-2"
+          aria-label="Network legend"
+        >
+          <li className="flex items-center gap-2">
+            <span
+              className="w-6 border-t-4 border-primary"
+              aria-hidden="true"
+            />
+            Demo-weighted
+          </li>
+          <li className="flex items-center gap-2">
+            <span
+              className="w-6 border-t-2 border-dashed border-secondary-foreground"
+              aria-hidden="true"
+            />
+            Distance baseline
+          </li>
+          <li>* Authored cost change</li>
+        </ul>
+        <p>Schematic only · no Bogor geography or safety meaning.</p>
       </figcaption>
     </figure>
   );
