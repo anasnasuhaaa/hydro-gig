@@ -69,7 +69,6 @@ export function NavigationWorkspace() {
   return (
     <>
       <PageHeading
-        eyebrow="Experimental early-warning simulation"
         title="A clearer view of the road ahead."
         description="Advance through fixed synthetic snapshots and inspect how authored costs change route selection."
       />

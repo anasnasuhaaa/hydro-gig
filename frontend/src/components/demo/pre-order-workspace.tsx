@@ -185,7 +185,6 @@ export function PreOrderWorkspace() {
   return (
     <>
       <PageHeading
-        eyebrow="Experimental pre-order screening"
         title="Know the route before the ride."
         description="Compare a distance baseline with authored demonstration costs before exploring frame changes."
       />
