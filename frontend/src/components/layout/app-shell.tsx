@@ -115,7 +115,7 @@ function Workspace({ children }: { children: React.ReactNode }) {
         </SidebarContent>
       </Sidebar>
       <SidebarInset className="min-w-0 pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0">
-        <header className="flex min-h-16 items-center justify-between gap-2 border-b bg-card px-3 sm:px-8">
+        <header className="sticky top-0 z-40 flex min-h-16 shrink-0 items-center justify-between gap-2 border-b bg-card px-3 sm:px-8">
           <div className="flex min-w-0 items-center gap-1 sm:gap-3">
             <SidebarTrigger
               className="size-11 md:hidden"

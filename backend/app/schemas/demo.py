@@ -15,7 +15,7 @@ from app.schemas.contracts import (
     TimeStep,
 )
 
-SIMULATION_LABEL = "SIMULATED DATA — NOT REAL-TIME FLOOD MONITORING"
+SIMULATION_LABEL = "SIMULATED DATA - NOT REAL-TIME FLOOD MONITORING"
 
 
 class DemoEnvelope(Contract):

@@ -156,7 +156,7 @@ export const routeResultSchema = z
   );
 
 export const SIMULATION_LABEL =
-  "SIMULATED DATA — NOT REAL-TIME FLOOD MONITORING";
+  "SIMULATED DATA - NOT REAL-TIME FLOOD MONITORING";
 const envelope = {
   experimental: z.literal(true),
   provenance: z.literal("simulated"),

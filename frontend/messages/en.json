@@ -25,7 +25,7 @@
     "exploreStep": "Explore simulated changes"
   },
   "Demo": {
-    "notice": "SIMULATED DATA — NOT REAL-TIME FLOOD MONITORING",
+    "notice": "SIMULATED DATA - NOT REAL-TIME FLOOD MONITORING",
     "caveat": "Synthetic roads and costs. Flood conditions and scientific risk are unknown; an available route does not mean it is safe.",
     "loading": "Loading demonstration",
     "loadingText": "Loading demonstration…",

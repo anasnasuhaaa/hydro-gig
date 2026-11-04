@@ -25,7 +25,7 @@
     "exploreStep": "Jelajahi perubahan simulasi"
   },
   "Demo": {
-    "notice": "DATA SIMULASI — BUKAN PEMANTAUAN BANJIR LANGSUNG",
+    "notice": "DATA SIMULASI - BUKAN PEMANTAUAN BANJIR LANGSUNG",
     "caveat": "Jalan dan biaya sintetis. Kondisi banjir serta risiko ilmiah belum diketahui; rute tersedia bukan jaminan keselamatan.",
     "loading": "Memuat demonstrasi",
     "loadingText": "Memuat demonstrasi…",

@@ -80,7 +80,7 @@ test("routes, navigation, and responsive workspace", async ({
         page.getByRole("button", { name: route.action }),
       ).toBeEnabled();
       await expect(
-        page.getByText("SIMULATED DATA — NOT REAL-TIME FLOOD MONITORING", {
+        page.getByText("SIMULATED DATA - NOT REAL-TIME FLOOD MONITORING", {
           exact: true,
         }),
       ).toBeVisible();
