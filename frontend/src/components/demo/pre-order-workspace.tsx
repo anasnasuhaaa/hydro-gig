@@ -28,7 +28,7 @@ import {
 import type { z } from "zod";
 import { scenariosSchema } from "@/lib/contracts/data";
 import { DemoError, DemoLoading, DemoSelect, SimulationNotice } from "./shared";
-import { useDemoSession } from "./demo-session";
+import { isAvailableDemoTrip, useDemoSession } from "./demo-session";
 import { RouteResults } from "./route-results";
 
 function ScreeningForm({
@@ -47,13 +47,15 @@ function ScreeningForm({
   const [locationsOpen, setLocationsOpen] = useState(false);
   const form = useForm<ScreenRequest>({
     resolver: zodResolver(screenRequestSchema),
-    defaultValues: session.request ?? {
-      origin: "",
-      pickup: "",
-      destination: "",
-      scenario_id: scenarios[0].scenario_id,
-      step: "t0",
-    },
+    defaultValues: isAvailableDemoTrip(session.request, network, scenarios)
+      ? session.request
+      : {
+          origin: "",
+          pickup: "",
+          destination: "",
+          scenario_id: scenarios[0].scenario_id,
+          step: "t0",
+        },
   });
   const values = useWatch({ control: form.control });
   const mutation = useMutation({

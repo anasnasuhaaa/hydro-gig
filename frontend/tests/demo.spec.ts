@@ -216,31 +216,35 @@ test("real screening, shared trip and frames, schematic warnings and themes", as
   });
   await page.getByRole("link", { name: "Continue to navigation" }).click();
   await expect(
-    page.getByRole("button", { name: "t1", exact: true }),
+    page.getByRole("button", { name: "5 minutes later", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
   await expect(
-    page.getByText("Simulated warning · t1", { exact: true }),
+    page.getByText("Simulated changes · 5 minutes later", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("img", { name: "Synthetic directed road network at t1" }),
+    page.getByRole("img", {
+      name: "Synthetic directed road network at 5 minutes later",
+    }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Next frame" }).click();
+  await page.getByRole("button", { name: "Next" }).click();
   await expect(
     page.getByRole("heading", { name: "Route comparison · 10 minutes later" }),
   ).toBeVisible();
   await expect(
-    page.getByText("Affected segments: DF.", { exact: true }),
+    page.getByText("Road costs increased on DF.", { exact: true }),
   ).toBeVisible();
   await expect(
     page.getByText("Segments: AG, GC", { exact: true }),
   ).not.toBeVisible();
-  await expect(page.getByRole("button", { name: "Next frame" })).toBeDisabled();
-  await page.getByRole("button", { name: "t0", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Next" })).toBeDisabled();
+  await page
+    .getByRole("button", { name: "Initial condition", exact: true })
+    .click();
   await expect(
     page.getByRole("heading", { name: "Route comparison · Initial condition" }),
   ).toBeVisible();
   await expect(
-    page.getByText(/No authored cost changes in t0/).first(),
+    page.getByText(/Initial snapshot: no authored cost increases/).first(),
   ).toBeVisible();
   await page.screenshot({
     path: testInfo.outputPath("navigation-light.png"),
@@ -316,7 +320,9 @@ test("failed frame switch removes stale route results", async ({ page }) => {
   await page.route("**/api/v1/demo/screen", (route) =>
     route.fulfill({ status: 503 }),
   );
-  await page.getByRole("button", { name: "t1", exact: true }).click();
+  await page
+    .getByRole("button", { name: "5 minutes later", exact: true })
+    .click();
   await expect(
     page.getByText("Demonstration unavailable", { exact: true }),
   ).toBeVisible();

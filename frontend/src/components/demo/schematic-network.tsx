@@ -18,6 +18,7 @@ export function SchematicNetwork({
   frame: DemoFrame;
 }) {
   const t = useTranslations("Network");
+  const timeline = useTranslations("Timeline");
   const format = useFormatter();
   const isMobile = useIsMobile();
   if (
@@ -58,7 +59,7 @@ export function SchematicNetwork({
       <svg
         viewBox={isMobile ? "0 0 300 460" : "0 0 780 340"}
         role="img"
-        aria-label={t("label", { step: frame.frame.step })}
+        aria-label={t("label", { step: timeline(frame.frame.step) })}
         className="w-full rounded-xl border bg-muted/40"
       >
         <title>{t("title")}</title>

@@ -133,7 +133,9 @@ test("each route switches locale and metadata; selected EWS frame survives", asy
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(enTitle);
     await expect(page).toHaveTitle(`${en.Shell[key]} | HydroGig-Mesh`);
     if (path === "navigation") {
-      await page.getByRole("button", { name: "t2", exact: true }).click();
+      await page
+        .getByRole("button", { name: "10 minutes later", exact: true })
+        .click();
       await expect(
         page.getByRole("heading", {
           name: "Route comparison · 10 minutes later",
@@ -148,7 +150,7 @@ test("each route switches locale and metadata; selected EWS frame survives", asy
     await expect(page).toHaveTitle(`${id.Shell[key]} | HydroGig-Mesh`);
     if (path === "navigation") {
       await expect(
-        page.getByRole("button", { name: "t2", exact: true }),
+        page.getByRole("button", { name: "10 menit kemudian", exact: true }),
       ).toHaveAttribute("aria-pressed", "true");
       await expect(
         page.getByRole("heading", {

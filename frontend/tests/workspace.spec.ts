@@ -51,7 +51,7 @@ test("routes, navigation, and responsive workspace", async ({
     {
       path: "/navigation",
       heading: "Explore your route.",
-      action: "Next frame",
+      action: "Next",
     },
     {
       path: "/claims",
