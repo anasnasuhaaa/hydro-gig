@@ -19,6 +19,12 @@ async function noOverflow(page: Page) {
   ).toBe(true);
 }
 
+test.beforeEach(async ({ context }) => {
+  await context.addCookies([
+    { name: "hydrogig_locale", value: "en", url: "http://localhost:3000" },
+  ]);
+});
+
 test("sidebar header trigger, icon tooltips, resizing and keyboard controls", async ({
   page,
   isMobile,

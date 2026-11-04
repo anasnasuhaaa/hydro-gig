@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -9,30 +10,31 @@ import {
 import { Button } from "@/components/ui/button";
 import { SystemStatus } from "@/components/dashboard/system-status";
 
-export const metadata = { title: "Dashboard" };
-
-const workflows = [
-  {
-    icon: Route,
-    title: "Pre-order",
-    description: "Compare a demo trip.",
-    href: "/pre-order",
-  },
-  {
-    icon: Navigation,
-    title: "Navigation",
-    description: "Explore scenario changes.",
-    href: "/navigation",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Claims",
-    description: "Evidence tools unavailable.",
-    href: "/claims",
-  },
-];
+export { dashboardMetadata as generateMetadata } from "@/i18n/metadata";
 
 export default function Dashboard() {
+  const t = useTranslations("Dashboard");
+
+  const workflows = [
+    {
+      icon: Route,
+      title: t("preOrder"),
+      description: t("preOrderDesc"),
+      href: "/pre-order",
+    },
+    {
+      icon: Navigation,
+      title: t("navigation"),
+      description: t("navigationDesc"),
+      href: "/navigation",
+    },
+    {
+      icon: ShieldCheck,
+      title: t("claims"),
+      description: t("claimsDesc"),
+      href: "/claims",
+    },
+  ];
   return (
     <>
       <section
@@ -44,29 +46,31 @@ export default function Dashboard() {
             id="dashboard-title"
             className="text-3xl leading-tight font-semibold tracking-tight sm:text-5xl"
           >
-            Navigate with flood awareness.
+            {t("title")}
           </h1>
           <p className="mt-4 text-base leading-relaxed text-teal-50">
-            Explore a synthetic trip before you ride.
+            {t("subtitle")}
           </p>
           <Button
             asChild
             className="mt-7 min-h-11 bg-white text-[#0c4e49] hover:bg-teal-50"
           >
             <Link href="/pre-order">
-              Screen route <ArrowRight />
+              {t("screen")} <ArrowRight />
             </Link>
           </Button>
         </div>
       </section>
       <p className="text-sm leading-relaxed text-muted-foreground">
         <strong className="font-medium text-foreground">
-          Prototype · simulated data.
+          {t("prototype")}
         </strong>{" "}
-        No live flood monitoring or safety guidance. Evidence tokens are
-        unavailable.
+        {t("limits")}
       </p>
-      <section className="grid gap-3 md:grid-cols-3" aria-label="Workflows">
+      <section
+        className="grid gap-3 md:grid-cols-3"
+        aria-label={t("workflows")}
+      >
         {workflows.map(({ icon: Icon, title, description, href }) => (
           <Link
             key={href}

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle, SkipForward } from "lucide-react";
 import { useEffect } from "react";
@@ -16,6 +17,8 @@ import { RouteResults } from "./route-results";
 import { SchematicNetwork } from "./schematic-network";
 
 export function NavigationWorkspace() {
+  const t = useTranslations("Navigation");
+
   const data = useDemoData();
   const session = useDemoSession();
   const fallback: ScreenRequest | null =
@@ -34,8 +37,8 @@ export function NavigationWorkspace() {
     retry: false,
   });
   useEffect(() => {
-    if (query.error) toast.error(query.error.message);
-  }, [query.error]);
+    if (query.error) toast.error(t("error"));
+  }, [query.error, t]);
   const error =
     data.network.error ??
     data.scenarios.error ??
@@ -68,20 +71,17 @@ export function NavigationWorkspace() {
   };
   return (
     <>
-      <PageHeading
-        title="Explore your route."
-        description="Compare fixed scenario frames on a schematic network."
-      />
+      <PageHeading title={t("title")} description={t("subtitle")} />
       <SimulationNotice />
       {request && scenario && (
         <section
-          aria-label="Simulation controls"
+          aria-label={t("controls")}
           className="space-y-4 rounded-xl border bg-card p-4 sm:p-5"
         >
           <div className="grid gap-4 sm:grid-cols-2">
             <DemoSelect
               id="demo-route"
-              label="Trip"
+              label={t("trip")}
               value={selectedScreened ? "screened" : "default"}
               onChange={(value) => {
                 const trip = value === "screened" ? screened : fallback;
@@ -95,13 +95,17 @@ export function NavigationWorkspace() {
               options={[
                 {
                   value: "default",
-                  label: `Fixture trip · ${fallback?.origin} → ${fallback?.pickup} → ${fallback?.destination}`,
+                  label: t("fixture", {
+                    trip: `${fallback?.origin} → ${fallback?.pickup} → ${fallback?.destination}`,
+                  }),
                 },
                 ...(screened
                   ? [
                       {
                         value: "screened",
-                        label: `Last screened trip · ${screened.origin} → ${screened.pickup} → ${screened.destination}`,
+                        label: t("screened", {
+                          trip: `${screened.origin} → ${screened.pickup} → ${screened.destination}`,
+                        }),
                       },
                     ]
                   : []),
@@ -109,21 +113,21 @@ export function NavigationWorkspace() {
             />
             <DemoSelect
               id="navigation-scenario"
-              label="Scenario"
+              label={t("scenario")}
               value={request.scenario_id}
               onChange={(scenario_id) =>
                 session.setRequest({ ...request, scenario_id, step: "t0" })
               }
               options={data.scenarios.data!.scenarios.map((scenario) => ({
                 value: scenario.scenario_id,
-                label: scenario.name,
+                label: t("scenarioName"),
               }))}
             />
           </div>
           <div
             className="flex flex-wrap items-center gap-3"
             role="group"
-            aria-label="Simulation frames"
+            aria-label={t("frames")}
           >
             {scenario.time_steps.map((frame) => (
               <Button
@@ -147,7 +151,7 @@ export function NavigationWorkspace() {
               disabled={request.step === scenario.time_steps.at(-1)?.step}
               onClick={advance}
             >
-              Next frame
+              {t("next")}
               <SkipForward />
             </Button>
           </div>
@@ -171,7 +175,7 @@ export function NavigationWorkspace() {
             <Card className="min-w-0 shadow-none">
               <CardHeader>
                 <CardTitle>
-                  <h2>Synthetic road-network schematic</h2>
+                  <h2>{t("network")}</h2>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -187,23 +191,24 @@ export function NavigationWorkspace() {
               role="status"
             >
               <AlertTriangle className="text-risk-moderate" />
-              <AlertTitle>Simulated warning · {result.request.step}</AlertTitle>
+              <AlertTitle>
+                {t("warning", { step: result.request.step })}
+              </AlertTitle>
               <AlertDescription className="space-y-3 [&_p:not(:last-child)]:mb-0">
-                <p>{result.frame.warning}</p>
+                <p>{t(`warnings.${result.request.step}`)}</p>
                 <p>
-                  Affected segments:{" "}
-                  {result.frame.affected_edge_ids.join(", ") || "none authored"}
-                  .
+                  {t("affected")}{" "}
+                  {result.frame.affected_edge_ids.join(", ") || t("none")}.
                 </p>
                 <p>
                   {result.origin_to_pickup.demonstration_weighted.status ===
                     "unreachable" ||
                   result.pickup_to_destination.demonstration_weighted.status ===
                     "unreachable"
-                    ? "Selected route incomplete: at least one leg is unavailable."
+                    ? t("incomplete")
                     : affectedSelected.length
-                      ? `Selected route includes cost changes on ${affectedSelected.join(", ")}.`
-                      : "No authored cost changes on the selected route. Flood conditions remain unknown."}
+                      ? t("changes", { edges: affectedSelected.join(", ") })
+                      : t("unchanged")}
                 </p>
               </AlertDescription>
             </Alert>

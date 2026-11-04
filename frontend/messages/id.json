@@ -1,0 +1,198 @@
+{
+  "Theme": {
+    "toggle": "Ganti tema warna",
+    "hint": "Ganti tema terang / gelap"
+  },
+  "Shell": {
+    "dashboard": "Dasbor",
+    "preOrder": "Pra-pesanan",
+    "navigation": "Navigasi",
+    "claims": "Klaim",
+    "guide": "Panduan",
+    "workspace": "Ruang kerja",
+    "skip": "Lewati ke konten",
+    "overview": "Ringkasan HydroGig-Mesh",
+    "close": "Tutup navigasi",
+    "open": "Buka menu navigasi",
+    "expand": "Perluas sidebar",
+    "collapse": "Ciutkan sidebar",
+    "shortcut": "Ganti sidebar (Ctrl/⌘ B)",
+    "main": "Navigasi utama",
+    "quick": "Navigasi cepat",
+    "status": "Status sistem"
+  },
+  "Demo": {
+    "notice": "DATA SIMULASI — BUKAN PEMANTAUAN BANJIR LANGSUNG",
+    "caveat": "Jalan dan biaya sintetis. Kondisi banjir serta risiko ilmiah belum diketahui; rute tersedia bukan jaminan keselamatan.",
+    "loading": "Memuat demonstrasi",
+    "loadingText": "Memuat demonstrasi…",
+    "unavailable": "Demonstrasi belum tersedia",
+    "retry": "Coba lagi",
+    "error": "Demonstrasi gagal dimuat. Periksa koneksi lalu coba lagi.",
+    "select": "Pilih {label}"
+  },
+  "Screen": {
+    "title": "Periksa rute Anda.",
+    "subtitle": "Pilih titik perjalanan dan bandingkan rute demo.",
+    "trip": "Perjalanan Anda",
+    "origin": "Titik awal",
+    "pickup": "Penjemputan",
+    "destination": "Tujuan",
+    "scenario": "Skenario",
+    "frame": "Bingkai simulasi",
+    "direction": "Jaringan satu arah · perjalanan dari H mungkin tidak terjangkau.",
+    "screen": "Periksa rute",
+    "screening": "Memeriksa…",
+    "open": "Buka navigasi",
+    "success": "Pemeriksaan rute demo selesai.",
+    "error": "Demonstrasi gagal dimuat. Periksa koneksi lalu coba lagi.",
+    "required": "Pilih titik yang valid.",
+    "distinct": "Pilih tiga titik berbeda untuk awal, penjemputan, dan tujuan.",
+    "scenarioName": "Perubahan koridor sintetis",
+    "nodes": {
+      "A": "Awal pengemudi",
+      "B": "Akses tengah",
+      "C": "Pusat penjemputan",
+      "D": "Koridor langsung",
+      "E": "Jalur bawah",
+      "F": "Tujuan",
+      "G": "Jalur atas",
+      "H": "Ujung satu arah"
+    }
+  },
+  "Navigation": {
+    "title": "Jelajahi rute Anda.",
+    "subtitle": "Bandingkan bingkai skenario tetap pada skema jaringan.",
+    "controls": "Kontrol simulasi",
+    "trip": "Perjalanan",
+    "scenario": "Skenario",
+    "frames": "Bingkai simulasi",
+    "next": "Bingkai berikutnya",
+    "network": "Skema jaringan jalan sintetis",
+    "none": "tidak ada perubahan",
+    "incomplete": "Rute pilihan belum lengkap: sedikitnya satu bagian tidak tersedia.",
+    "unchanged": "Tidak ada perubahan biaya buatan pada rute pilihan. Kondisi banjir tetap belum diketahui.",
+    "error": "Demonstrasi gagal dimuat. Periksa koneksi lalu coba lagi.",
+    "scenarioName": "Perubahan koridor sintetis",
+    "fixture": "Perjalanan bawaan · {trip}",
+    "screened": "Perjalanan terakhir diperiksa · {trip}",
+    "warning": "Peringatan simulasi · {step}",
+    "affected": "Ruas terpengaruh:",
+    "changes": "Rute pilihan memuat perubahan biaya pada {edges}.",
+    "warnings": {
+      "t0": "Tidak ada perubahan biaya buatan pada t0. Kondisi banjir belum diketahui; ini bukan jaminan keselamatan.",
+      "t1": "Perubahan biaya simulasi pada BC, CD. Pengukuran banjir dan risiko tervalidasi belum tersedia.",
+      "t2": "Perubahan biaya simulasi pada DF. Pengukuran banjir dan risiko tervalidasi belum tersedia."
+    }
+  },
+  "Results": {
+    "unavailable": "Rute tidak tersedia — tidak ada jalur searah yang menghubungkan titik ini.",
+    "results": "Hasil pemeriksaan",
+    "baseline": "Acuan jarak",
+    "weighted": "Rute berbobot demo",
+    "first": "Awal → penjemputan",
+    "second": "Penjemputan → tujuan",
+    "risk": "Risiko ilmiah: belum tersedia untuk seluruh ruas.",
+    "details": "Rincian ruas dan perhitungan",
+    "change": "Perubahan biaya simulasi",
+    "unchanged": "Tanpa perubahan buatan",
+    "empty": "Ruas rute belum tersedia.",
+    "comparison": "Perbandingan rute · {step}",
+    "snapshot": "Snapshot fiktif ·",
+    "length": "{value} m sintetis",
+    "cost": " · {value} unit biaya demo",
+    "segments": "Ruas:",
+    "scenario": "Skenario:",
+    "limits": "Bobot sintetis buatan; snapshot tetap tidak memprediksi kondisi saat tiba."
+  },
+  "Network": {
+    "unavailable": "Posisi skema belum tersedia.",
+    "title": "Skema jaringan jalan — simulasi, bukan peta geografis",
+    "desc": "Panah menunjukkan arah perjalanan. Garis biru utuh adalah rute berbobot demo; garis putus-putus adalah acuan jarak. Label kuning menunjukkan perubahan biaya buatan.",
+    "legend": "Legenda jaringan",
+    "weighted": "Berbobot demo",
+    "baseline": "Acuan jarak",
+    "change": "* Perubahan biaya buatan",
+    "caveat": "Hanya skema · bukan geografi Bogor atau informasi keselamatan.",
+    "label": "Jaringan jalan searah sintetis pada {step}",
+    "edge": "{id}: {source} → {target}; {cost} unit demo",
+    "affected": "; perubahan biaya simulasi"
+  },
+  "System": {
+    "reachable": "Terjangkau",
+    "notConfigured": "Belum dikonfigurasi",
+    "unreachable": "Tidak terjangkau",
+    "unknown": "Belum diketahui",
+    "failure": "Status API gagal diperbarui. Periksa koneksi backend.",
+    "success": "Konektivitas sistem diperiksa.",
+    "backend": "API backend",
+    "unavailable": "Belum tersedia",
+    "connected": "Terhubung",
+    "checking": "Memeriksa",
+    "database": "Basis data spasial",
+    "flood": "Data banjir langsung",
+    "title": "Konektivitas sistem",
+    "refresh": "Perbarui status sistem",
+    "refreshText": "Perbarui",
+    "error": "Koneksi backend belum tersedia",
+    "retry": "Periksa koneksi backend lalu perbarui.",
+    "pending": "Memeriksa koneksi",
+    "last": "Terakhir diperiksa:",
+    "refreshing": " · Memperbarui…"
+  },
+  "Dashboard": {
+    "title": "Kenali rute sebelum berangkat.",
+    "subtitle": "Jelajahi perjalanan sintetis sebelum berkendara.",
+    "screen": "Periksa rute",
+    "prototype": "Purwarupa · data simulasi.",
+    "limits": "Pemantauan banjir langsung dan panduan keselamatan belum tersedia. Token bukti belum tersedia.",
+    "workflows": "Alur penggunaan",
+    "preOrder": "Pra-pesanan",
+    "preOrderDesc": "Bandingkan perjalanan demo.",
+    "navigation": "Navigasi",
+    "navigationDesc": "Jelajahi perubahan skenario.",
+    "claims": "Klaim",
+    "claimsDesc": "Fitur bukti belum tersedia."
+  },
+  "Claims": {
+    "title": "Klaim",
+    "empty": "Klaim belum tersedia",
+    "description": "Penyimpanan klaim, token bukti bertanda tangan, dan verifikasi belum tersedia. Belum ada catatan dibuat; penerimaan platform tidak dijamin.",
+    "create": "Buat token bukti",
+    "screen": "Periksa rute demo"
+  },
+  "Common": {
+    "error": "Ruang kerja gagal dimuat",
+    "retryDesc": "Silakan coba muat kembali.",
+    "retry": "Coba lagi"
+  },
+  "Loading": {
+    "label": "Memuat ruang kerja"
+  },
+  "NotFound": {
+    "title": "Halaman tidak ditemukan",
+    "description": "Kembali ke ruang kerja untuk menjelajahi modul tersedia.",
+    "back": "Kembali ke ringkasan"
+  },
+  "Metadata": {
+    "description": "Purwarupa penelitian mobilitas sepeda motor sadar banjir di Bogor, Indonesia."
+  },
+  "Language": {
+    "label": "Bahasa",
+    "error": "Bahasa gagal diganti. Coba lagi."
+  },
+  "Sidebar": {
+    "title": "Navigasi",
+    "description": "Navigasi utama aplikasi.",
+    "close": "Tutup",
+    "toggle": "Ganti sidebar"
+  },
+  "Map": {
+    "unavailable": "Peta belum tersedia",
+    "error": "Peta gagal dimuat. Periksa penyedia data dan dukungan browser."
+  },
+  "Toast": {
+    "label": "Pemberitahuan",
+    "close": "Tutup pemberitahuan"
+  }
+}

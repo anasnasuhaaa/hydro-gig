@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
@@ -9,12 +10,14 @@ export default function ErrorPage({
   error: unknown;
   retry: () => void;
 }) {
+  const t = useTranslations("Common");
+
   return (
     <Alert variant="destructive">
-      <AlertTitle>This workspace could not be loaded</AlertTitle>
-      <AlertDescription>Please try loading it again.</AlertDescription>
+      <AlertTitle>{t("error")}</AlertTitle>
+      <AlertDescription>{t("retryDesc")}</AlertDescription>
       <Button variant="outline" className="mt-4 min-h-11" onClick={retry}>
-        Try again
+        {t("retry")}
       </Button>
     </Alert>
   );

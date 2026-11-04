@@ -1,5 +1,11 @@
 import { expect, test } from "@playwright/test";
 
+test.beforeEach(async ({ context }) => {
+  await context.addCookies([
+    { name: "hydrogig_locale", value: "en", url: "http://localhost:3000" },
+  ]);
+});
+
 test("routes, navigation, and responsive workspace", async ({
   page,
   isMobile,

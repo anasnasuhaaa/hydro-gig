@@ -1,5 +1,7 @@
 "use client";
+import { useTranslations } from "next-intl";
 
+import { LanguageSwitcher } from "./language-switcher";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -27,33 +29,34 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const links = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/pre-order", label: "Pre-order", icon: Route },
-  { href: "/navigation", label: "Navigation", icon: Navigation },
-  { href: "/claims", label: "Claims", icon: ShieldCheck },
-  { href: "/guide", label: "Guide", icon: BookOpen },
-];
-
 function Workspace({ children }: { children: React.ReactNode }) {
+  const t = useTranslations("Shell");
+
+  const links = [
+    { href: "/dashboard", label: t("dashboard"), icon: LayoutDashboard },
+    { href: "/pre-order", label: t("preOrder"), icon: Route },
+    { href: "/navigation", label: t("navigation"), icon: Navigation },
+    { href: "/claims", label: t("claims"), icon: ShieldCheck },
+    { href: "/guide", label: t("guide"), icon: BookOpen },
+  ];
   const pathname = usePathname();
   const { state, isMobile, openMobile, setOpenMobile } = useSidebar();
   const title =
-    links.find((link) => link.href === pathname)?.label ?? "Workspace";
+    links.find((link) => link.href === pathname)?.label ?? t("workspace");
   return (
     <>
       <a
         href="#main-content"
         className="sr-only fixed z-50 rounded-md bg-primary p-3 text-primary-foreground focus:not-sr-only"
       >
-        Skip to content
+        {t("skip")}
       </a>
       <Sidebar collapsible="icon">
         <SidebarHeader className="h-16 justify-center border-b px-3 group-data-[collapsible=icon]:px-2.5">
           <div className="flex items-center justify-between gap-1">
             <Link
               href="/dashboard"
-              aria-label="HydroGig-Mesh overview"
+              aria-label={t("overview")}
               onClick={() => setOpenMobile(false)}
               className="flex min-h-11 min-w-0 items-center gap-2 rounded-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none group-data-[collapsible=icon]:hidden"
             >
@@ -68,22 +71,20 @@ function Workspace({ children }: { children: React.ReactNode }) {
               className="size-11 shrink-0 border-0 bg-transparent shadow-none hover:bg-transparent active:bg-transparent aria-expanded:bg-transparent dark:hover:bg-transparent"
               aria-label={
                 isMobile
-                  ? "Close navigation"
+                  ? t("close")
                   : state === "collapsed"
-                    ? "Expand sidebar"
-                    : "Collapse sidebar"
+                    ? t("expand")
+                    : t("collapse")
               }
               aria-expanded={isMobile ? openMobile : state === "expanded"}
-              title={
-                isMobile ? "Close navigation" : "Toggle sidebar (Ctrl/⌘ B)"
-              }
+              title={isMobile ? t("close") : t("shortcut")}
             />
           </div>
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup className="px-2.5 py-5">
             <SidebarGroupContent>
-              <nav aria-label="Main navigation">
+              <nav aria-label={t("main")}>
                 <SidebarMenu className="gap-2">
                   {links.map(({ href, label, icon: Icon }) => (
                     <SidebarMenuItem key={href}>
@@ -118,12 +119,15 @@ function Workspace({ children }: { children: React.ReactNode }) {
           <div className="flex min-w-0 items-center gap-3">
             <SidebarTrigger
               className="size-11 md:hidden"
-              aria-label="Open navigation"
+              aria-label={t("open")}
               aria-expanded={openMobile}
             />
             <span className="truncate text-sm font-medium">{title}</span>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-1 sm:gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
         </header>
         <div
           id="main-content"
@@ -137,12 +141,12 @@ function Workspace({ children }: { children: React.ReactNode }) {
             href="/dashboard#system-status"
             className="inline-flex min-h-11 items-center gap-1 rounded-md hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
           >
-            System status <ArrowUpRight className="size-4" />
+            {t("status")} <ArrowUpRight className="size-4" />
           </Link>
         </footer>
       </SidebarInset>
       <nav
-        aria-label="Quick navigation"
+        aria-label={t("quick")}
         hidden={openMobile}
         className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t bg-card/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
       >

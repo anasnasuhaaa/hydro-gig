@@ -1,0 +1,198 @@
+{
+  "Theme": {
+    "toggle": "Toggle color theme",
+    "hint": "Switch light / dark theme"
+  },
+  "Shell": {
+    "dashboard": "Dashboard",
+    "preOrder": "Pre-order",
+    "navigation": "Navigation",
+    "claims": "Claims",
+    "guide": "Guide",
+    "workspace": "Workspace",
+    "skip": "Skip to content",
+    "overview": "HydroGig-Mesh overview",
+    "close": "Close navigation",
+    "open": "Open navigation",
+    "expand": "Expand sidebar",
+    "collapse": "Collapse sidebar",
+    "shortcut": "Toggle sidebar (Ctrl/⌘ B)",
+    "main": "Main navigation",
+    "quick": "Quick navigation",
+    "status": "System status"
+  },
+  "Demo": {
+    "notice": "SIMULATED DATA — NOT REAL-TIME FLOOD MONITORING",
+    "caveat": "Synthetic roads and costs. Flood conditions and scientific risk are unknown; an available route does not mean it is safe.",
+    "loading": "Loading demonstration",
+    "loadingText": "Loading demonstration…",
+    "unavailable": "Demonstration unavailable",
+    "retry": "Retry",
+    "error": "The demonstration could not be loaded. Check your connection and retry.",
+    "select": "Select {label}"
+  },
+  "Screen": {
+    "title": "Screen your route.",
+    "subtitle": "Choose your stops and compare demo routes.",
+    "trip": "Your trip",
+    "origin": "Origin",
+    "pickup": "Pickup",
+    "destination": "Destination",
+    "scenario": "Scenario",
+    "frame": "Simulation frame",
+    "direction": "One-way network · trips starting at H may be unreachable.",
+    "screen": "Screen route",
+    "screening": "Screening…",
+    "open": "Open navigation",
+    "success": "Demo route screening completed.",
+    "error": "The demonstration could not be loaded. Check your connection and retry.",
+    "required": "Select a valid stop.",
+    "distinct": "Choose three different nodes for origin, pickup and destination.",
+    "scenarioName": "Synthetic corridor changes",
+    "nodes": {
+      "A": "Driver start",
+      "B": "Central approach",
+      "C": "Pickup hub",
+      "D": "Direct corridor",
+      "E": "Lower detour",
+      "F": "Destination",
+      "G": "Upper detour",
+      "H": "One-way end"
+    }
+  },
+  "Navigation": {
+    "title": "Explore your route.",
+    "subtitle": "Compare fixed scenario frames on a schematic network.",
+    "controls": "Simulation controls",
+    "trip": "Trip",
+    "scenario": "Scenario",
+    "frames": "Simulation frames",
+    "next": "Next frame",
+    "network": "Synthetic road-network schematic",
+    "none": "none authored",
+    "incomplete": "Selected route incomplete: at least one leg is unavailable.",
+    "unchanged": "No authored cost changes on the selected route. Flood conditions remain unknown.",
+    "error": "The demonstration could not be loaded. Check your connection and retry.",
+    "scenarioName": "Synthetic corridor changes",
+    "fixture": "Fixture trip · {trip}",
+    "screened": "Last screened trip · {trip}",
+    "warning": "Simulated warning · {step}",
+    "affected": "Affected segments:",
+    "changes": "Selected route includes cost changes on {edges}.",
+    "warnings": {
+      "t0": "No authored cost changes in t0. Flood conditions remain unknown; this does not imply safety.",
+      "t1": "Simulated cost changes on BC, CD. No measured flood or validated risk is available.",
+      "t2": "Simulated cost changes on DF. No measured flood or validated risk is available."
+    }
+  },
+  "Results": {
+    "unavailable": "Route unavailable — no directed path connects these nodes.",
+    "results": "Screening results",
+    "baseline": "Distance baseline",
+    "weighted": "Demo-weighted route",
+    "first": "Origin → pickup",
+    "second": "Pickup → destination",
+    "risk": "Scientific risk: unavailable for all segments.",
+    "details": "Segment and calculation details",
+    "change": "Simulated cost change",
+    "unchanged": "No authored change",
+    "empty": "No route segments are available.",
+    "comparison": "Route comparison · {step}",
+    "snapshot": "Fictional snapshot ·",
+    "length": "{value} synthetic m",
+    "cost": " · {value} demo cost units",
+    "segments": "Segments:",
+    "scenario": "Scenario:",
+    "limits": "Authored synthetic weights; fixed snapshots do not predict conditions at arrival time."
+  },
+  "Network": {
+    "unavailable": "Schematic positions are unavailable.",
+    "title": "Schematic road network — simulated, not a geographic map",
+    "desc": "Arrows indicate permitted direction. Solid teal is the demonstration-weighted route; dashed blue is the distance baseline. Amber labels identify authored cost changes.",
+    "legend": "Network legend",
+    "weighted": "Demo-weighted",
+    "baseline": "Distance baseline",
+    "change": "* Authored cost change",
+    "caveat": "Schematic only · no Bogor geography or safety meaning.",
+    "label": "Synthetic directed road network at {step}",
+    "edge": "{id}: {source} → {target}; {cost} demo units",
+    "affected": "; simulated cost change"
+  },
+  "System": {
+    "reachable": "Reachable",
+    "notConfigured": "Not configured",
+    "unreachable": "Unreachable",
+    "unknown": "Unknown",
+    "failure": "API status could not be refreshed. Check the backend connection.",
+    "success": "System connectivity checked.",
+    "backend": "Backend API",
+    "unavailable": "Unavailable",
+    "connected": "Connected",
+    "checking": "Checking",
+    "database": "Spatial database",
+    "flood": "Live flood data",
+    "title": "System connectivity",
+    "refresh": "Refresh system status",
+    "refreshText": "Refresh",
+    "error": "Backend connection unavailable",
+    "retry": "Check the backend connection, then refresh.",
+    "pending": "Checking connection",
+    "last": "Last checked:",
+    "refreshing": " · Refreshing…"
+  },
+  "Dashboard": {
+    "title": "Navigate with flood awareness.",
+    "subtitle": "Explore a synthetic trip before you ride.",
+    "screen": "Screen route",
+    "prototype": "Prototype · simulated data.",
+    "limits": "No live flood monitoring or safety guidance. Evidence tokens are unavailable.",
+    "workflows": "Workflows",
+    "preOrder": "Pre-order",
+    "preOrderDesc": "Compare a demo trip.",
+    "navigation": "Navigation",
+    "navigationDesc": "Explore scenario changes.",
+    "claims": "Claims",
+    "claimsDesc": "Evidence tools unavailable."
+  },
+  "Claims": {
+    "title": "Claims",
+    "empty": "Claims are not available yet",
+    "description": "Claim storage, signed evidence tokens, and verification are unavailable. No records have been created; platform acceptance is not guaranteed.",
+    "create": "Create evidence token",
+    "screen": "Screen a demo route"
+  },
+  "Common": {
+    "error": "This workspace could not be loaded",
+    "retryDesc": "Please try loading it again.",
+    "retry": "Try again"
+  },
+  "Loading": {
+    "label": "Loading workspace"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "description": "Return to the workspace to explore available modules.",
+    "back": "Back to overview"
+  },
+  "Metadata": {
+    "description": "Research prototype for flood-aware motorcycle mobility in Bogor, Indonesia."
+  },
+  "Language": {
+    "label": "Language",
+    "error": "Language could not be changed. Try again."
+  },
+  "Sidebar": {
+    "title": "Navigation",
+    "description": "Main application navigation.",
+    "close": "Close",
+    "toggle": "Toggle sidebar"
+  },
+  "Map": {
+    "unavailable": "Map unavailable",
+    "error": "The map could not be loaded. Check the data provider and browser support."
+  },
+  "Toast": {
+    "label": "Notifications",
+    "close": "Close notification"
+  }
+}

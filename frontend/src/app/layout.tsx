@@ -1,19 +1,30 @@
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import "@fontsource-variable/geist";
 import { AppProviders } from "@/lib/providers/app-providers";
 import "./globals.css";
 
-export const metadata: Metadata = {
-  title: { default: "HydroGig-Mesh", template: "%s | HydroGig-Mesh" },
-  description:
-    "Research foundation for flood-aware motorcycle mobility in Bogor, Indonesia.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Metadata");
+  return {
+    title: { default: "HydroGig-Mesh", template: "%s | HydroGig-Mesh" },
+    description: t("description"),
+  };
+}
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const locale = await getLocale();
   return (
-    <html lang="en" suppressHydrationWarning className="min-h-full antialiased">
+    <html
+      lang={locale}
+      suppressHydrationWarning
+      className="min-h-full antialiased"
+    >
       <body className="min-h-full">
-        <AppProviders>{children}</AppProviders>
+        <NextIntlClientProvider>
+          <AppProviders>{children}</AppProviders>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

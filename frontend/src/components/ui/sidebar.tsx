@@ -1,8 +1,9 @@
 "use client";
 
 // Official shadcn Radix Nova sidebar: https://ui.shadcn.com/r/styles/radix-nova/sidebar.json
-// Local adaptations: Lucide state icons and mobile trigger focus restoration.
+// Local adaptations: Lucide state icons, mobile trigger focus restoration, translated assistive labels.
 
+import { useTranslations } from "next-intl";
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "cn";
@@ -167,6 +168,7 @@ function Sidebar({
   variant?: "sidebar" | "floating" | "inset";
   collapsible?: "offcanvas" | "icon" | "none";
 }) {
+  const t = useTranslations("Sidebar");
   const { isMobile, state, openMobile, setOpenMobile, triggerRef } =
     useSidebar();
 
@@ -206,8 +208,8 @@ function Sidebar({
           }}
         >
           <SheetHeader className="sr-only">
-            <SheetTitle>Sidebar</SheetTitle>
-            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
+            <SheetTitle>{t("title")}</SheetTitle>
+            <SheetDescription>{t("description")}</SheetDescription>
           </SheetHeader>
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
@@ -266,11 +268,13 @@ function SidebarTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
+  const t = useTranslations("Sidebar");
   const { toggleSidebar, state, isMobile, openMobile, triggerRef } =
     useSidebar();
 
   return (
     <Button
+      aria-label={t("toggle")}
       data-sidebar="trigger"
       data-slot="sidebar-trigger"
       variant="ghost"
@@ -284,22 +288,22 @@ function SidebarTrigger({
       {...props}
     >
       {state === "collapsed" ? <PanelLeftOpen /> : <PanelLeftClose />}
-      <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );
 }
 
 function SidebarRail({ className, ...props }: React.ComponentProps<"button">) {
+  const t = useTranslations("Sidebar");
   const { toggleSidebar } = useSidebar();
 
   return (
     <button
       data-sidebar="rail"
       data-slot="sidebar-rail"
-      aria-label="Toggle Sidebar"
+      aria-label={t("toggle")}
       tabIndex={-1}
       onClick={toggleSidebar}
-      title="Toggle Sidebar"
+      title={t("toggle")}
       className={cn(
         "absolute inset-y-0 z-20 hidden w-4 transition-all ease-linear group-data-[side=left]:-right-4 group-data-[side=right]:left-0 after:absolute after:inset-y-0 after:start-1/2 after:w-[2px] hover:after:bg-sidebar-border sm:flex ltr:-translate-x-1/2 rtl:-translate-x-1/2",
         "in-data-[side=left]:cursor-w-resize in-data-[side=right]:cursor-e-resize",

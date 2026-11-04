@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import type { StyleSpecification } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -14,6 +15,7 @@ export function MapCanvas({
   style: StyleSpecification;
   label: string;
 }) {
+  const t = useTranslations("Map");
   const container = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
 
@@ -45,11 +47,8 @@ export function MapCanvas({
     <div className="space-y-3">
       {failed && (
         <Alert variant="destructive">
-          <AlertTitle>Map unavailable</AlertTitle>
-          <AlertDescription>
-            The map could not be loaded. Check the data provider and browser
-            support.
-          </AlertDescription>
+          <AlertTitle>{t("unavailable")}</AlertTitle>
+          <AlertDescription>{t("error")}</AlertDescription>
         </Alert>
       )}
       <div

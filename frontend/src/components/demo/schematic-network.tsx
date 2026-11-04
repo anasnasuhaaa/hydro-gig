@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations, useFormatter } from "next-intl";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type {
   DemoFrame,
@@ -16,12 +17,14 @@ export function SchematicNetwork({
   result: ScreenResponse;
   frame: DemoFrame;
 }) {
+  const t = useTranslations("Network");
+  const format = useFormatter();
   const isMobile = useIsMobile();
   if (
     network.crs !== "LOCAL:SCHEMATIC" ||
     network.nodes.some((node) => !node.coordinates)
   )
-    return <p>Schematic positions are unavailable.</p>;
+    return <p>{t("unavailable")}</p>;
   const positions = network.nodes.map((node) => node.coordinates!.position);
   const xs = positions.map((p) => p[0]),
     ys = positions.map((p) => p[1]);
@@ -55,15 +58,11 @@ export function SchematicNetwork({
       <svg
         viewBox={isMobile ? "0 0 300 460" : "0 0 780 340"}
         role="img"
-        aria-label={`Synthetic directed road network at ${frame.frame.step}`}
+        aria-label={t("label", { step: frame.frame.step })}
         className="w-full rounded-xl border bg-muted/40"
       >
-        <title>Schematic road network — simulated, not a geographic map</title>
-        <desc>
-          Arrows indicate permitted direction. Solid teal is the
-          demonstration-weighted route; dashed blue is the distance baseline.
-          Amber labels identify authored cost changes.
-        </desc>
+        <title>{t("title")}</title>
+        <desc>{t("desc")}</desc>
         <defs>
           <marker
             id="schematic-arrow"
@@ -96,9 +95,13 @@ export function SchematicNetwork({
               }
             >
               <title>
-                {edge.edge_id}: {edge.source_node} to {edge.target_node}; cost{" "}
-                {frame.edge_costs[edge.edge_id]} demo units
-                {affected ? "; simulated cost change" : ""}
+                {t("edge", {
+                  id: edge.edge_id,
+                  source: edge.source_node,
+                  target: edge.target_node,
+                  cost: format.number(frame.edge_costs[edge.edge_id]),
+                })}
+                {affected ? t("affected") : ""}
               </title>
               <line
                 x1={source.x + (dx / length) * 20}
@@ -134,9 +137,7 @@ export function SchematicNetwork({
           const point = points.get(node.node_id)!;
           return (
             <g key={node.node_id}>
-              <title>
-                {node.node_id} · {node.label}
-              </title>
+              <title>{node.node_id}</title>
               <circle
                 cx={point.x}
                 cy={point.y}
@@ -157,27 +158,24 @@ export function SchematicNetwork({
         })}
       </svg>
       <figcaption className="space-y-2 text-sm leading-relaxed text-muted-foreground">
-        <ul
-          className="flex flex-wrap gap-x-5 gap-y-2"
-          aria-label="Network legend"
-        >
+        <ul className="flex flex-wrap gap-x-5 gap-y-2" aria-label={t("legend")}>
           <li className="flex items-center gap-2">
             <span
               className="w-6 border-t-4 border-primary"
               aria-hidden="true"
             />
-            Demo-weighted
+            {t("weighted")}
           </li>
           <li className="flex items-center gap-2">
             <span
               className="w-6 border-t-2 border-dashed border-secondary-foreground"
               aria-hidden="true"
             />
-            Distance baseline
+            {t("baseline")}
           </li>
-          <li>* Authored cost change</li>
+          <li>{t("change")}</li>
         </ul>
-        <p>Schematic only · no Bogor geography or safety meaning.</p>
+        <p>{t("caveat")}</p>
       </figcaption>
     </figure>
   );

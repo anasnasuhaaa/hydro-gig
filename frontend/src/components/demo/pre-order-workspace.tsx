@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import Link from "next/link";
 import { Controller, useForm, useWatch } from "react-hook-form";
@@ -29,6 +30,8 @@ function ScreeningForm({
   network: RoadNetwork;
   scenarios: z.infer<typeof scenariosSchema>["scenarios"];
 }) {
+  const t = useTranslations("Screen");
+
   const session = useDemoSession();
   const form = useForm<ScreenRequest>({
     resolver: zodResolver(screenRequestSchema),
@@ -45,9 +48,9 @@ function ScreeningForm({
     mutationFn: (request: ScreenRequest) => demoApi.screen(request),
     onSuccess: (result) => {
       session.rememberTrip(result.request);
-      toast.success("Demo route screening completed.");
+      toast.success(t("success"));
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: () => toast.error(t("error")),
   });
   const currentResult =
     mutation.data &&
@@ -63,7 +66,7 @@ function ScreeningForm({
     scenarios[0];
   const nodeOptions = network.nodes.map((node) => ({
     value: node.node_id,
-    label: `${node.node_id} · ${node.label ?? node.node_id}`,
+    label: `${node.node_id} · ${t(`nodes.${node.node_id}`)}`,
   }));
   return (
     <>
@@ -71,7 +74,7 @@ function ScreeningForm({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Route className="size-5 text-primary" />
-            Your trip
+            {t("trip")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -82,9 +85,9 @@ function ScreeningForm({
             <div className="grid gap-4 sm:grid-cols-3">
               {(
                 [
-                  ["origin", "Origin"],
-                  ["pickup", "Pickup"],
-                  ["destination", "Destination"],
+                  ["origin", t("origin")],
+                  ["pickup", t("pickup")],
+                  ["destination", t("destination")],
                 ] as const
               ).map(([name, label]) => (
                 <Controller
@@ -100,7 +103,15 @@ function ScreeningForm({
                       onBlur={field.onBlur}
                       inputRef={field.ref}
                       options={nodeOptions}
-                      error={fieldState.error?.message}
+                      error={
+                        fieldState.error
+                          ? t(
+                              fieldState.error.type === "custom"
+                                ? "distinct"
+                                : "required",
+                            )
+                          : undefined
+                      }
                     />
                   )}
                 />
@@ -113,12 +124,12 @@ function ScreeningForm({
                 render={({ field }) => (
                   <DemoSelect
                     id="scenario"
-                    label="Scenario"
+                    label={t("scenario")}
                     value={field.value}
                     onChange={field.onChange}
                     options={scenarios.map((scenario) => ({
                       value: scenario.scenario_id,
-                      label: scenario.name,
+                      label: t("scenarioName"),
                     }))}
                   />
                 )}
@@ -129,7 +140,7 @@ function ScreeningForm({
                 render={({ field }) => (
                   <DemoSelect
                     id="frame"
-                    label="Simulation frame"
+                    label={t("frame")}
                     value={field.value}
                     onChange={field.onChange}
                     options={scenario.time_steps.map((frame) => ({
@@ -140,15 +151,13 @@ function ScreeningForm({
                 )}
               />
             </div>
-            <p className="text-sm text-muted-foreground">
-              One-way network · trips starting at H may be unreachable.
-            </p>
+            <p className="text-sm text-muted-foreground">{t("direction")}</p>
             <Button
               type="submit"
               className="min-h-11 w-full sm:w-auto"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Screening…" : "Screen route"}
+              {mutation.isPending ? t("screening") : t("screen")}
               <ArrowRight />
             </Button>
           </form>
@@ -168,7 +177,7 @@ function ScreeningForm({
           <RouteResults result={currentResult} network={network} />
           <Button asChild variant="outline" className="min-h-11">
             <Link href="/navigation">
-              Open navigation
+              {t("open")}
               <ArrowRight />
             </Link>
           </Button>
@@ -178,15 +187,14 @@ function ScreeningForm({
   );
 }
 export function PreOrderWorkspace() {
+  const t = useTranslations("Screen");
+
   const data = useDemoData();
   const error =
     data.network.error ?? data.scenarios.error ?? data.manifest.error;
   return (
     <>
-      <PageHeading
-        title="Screen your route."
-        description="Choose your stops and compare demo routes."
-      />
+      <PageHeading title={t("title")} description={t("subtitle")} />
       <SimulationNotice />
       {error ? (
         <DemoError
