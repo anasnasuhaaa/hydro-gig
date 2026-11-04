@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   ArrowUpRight,
+  BookOpen,
   Droplets,
   LayoutDashboard,
   Navigation,
@@ -31,6 +32,7 @@ const links = [
   { href: "/pre-order", label: "Pre-order", icon: Route },
   { href: "/navigation", label: "Navigation", icon: Navigation },
   { href: "/claims", label: "Claims", icon: ShieldCheck },
+  { href: "/guide", label: "Guide", icon: BookOpen },
 ];
 
 function Workspace({ children }: { children: React.ReactNode }) {
@@ -63,7 +65,7 @@ function Workspace({ children }: { children: React.ReactNode }) {
               </span>
             </Link>
             <SidebarTrigger
-              className="size-11 shrink-0"
+              className="size-11 shrink-0 border-0 bg-transparent shadow-none hover:bg-transparent active:bg-transparent aria-expanded:bg-transparent dark:hover:bg-transparent"
               aria-label={
                 isMobile
                   ? "Close navigation"
@@ -111,7 +113,7 @@ function Workspace({ children }: { children: React.ReactNode }) {
           </SidebarGroup>
         </SidebarContent>
       </Sidebar>
-      <SidebarInset className="min-w-0">
+      <SidebarInset className="min-w-0 pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-0">
         <header className="flex min-h-16 items-center justify-between gap-3 border-b bg-card px-4 sm:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <SidebarTrigger
@@ -139,6 +141,25 @@ function Workspace({ children }: { children: React.ReactNode }) {
           </Link>
         </footer>
       </SidebarInset>
+      <nav
+        aria-label="Quick navigation"
+        hidden={openMobile}
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t bg-card/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+      >
+        {links
+          .filter(({ href }) => href !== "/claims")
+          .map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              aria-current={pathname === href ? "page" : undefined}
+              className={`flex min-h-16 min-w-0 flex-col items-center justify-center gap-1 rounded-lg text-xs font-medium focus-visible:ring-2 focus-visible:ring-ring ${pathname === href ? "text-primary" : "text-muted-foreground"}`}
+            >
+              <Icon className="size-5" />
+              <span>{label}</span>
+            </Link>
+          ))}
+      </nav>
     </>
   );
 }
