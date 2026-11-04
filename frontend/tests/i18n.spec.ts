@@ -101,7 +101,9 @@ test("main UI text uses translation catalogs", async () => {
       if (
         ts.isJsxText(node) &&
         /[a-zA-Z]{3}/.test(node.text) &&
-        !/^(HydroGig|-Mesh|HydroGig-Mesh · 404)$/.test(node.text.trim())
+        !/^(HydroGig|-Mesh|HydroGig-Mesh · 404|Open-Meteo|CC BY 4.0|WIB)$/.test(
+          node.text.trim(),
+        )
       )
         untranslated.push(`${file}: ${node.text.trim()}`);
       ts.forEachChild(node, visit);

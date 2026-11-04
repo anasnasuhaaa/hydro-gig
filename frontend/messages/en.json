@@ -194,5 +194,46 @@
   "Toast": {
     "label": "Notifications",
     "close": "Close notification"
+  },
+  "Weather": {
+    "title": "Weather context",
+    "choose": "Choose a weather location",
+    "bogor": "Bogor (manual selection)",
+    "device": "Device location · approx. {latitude}, {longitude}",
+    "refresh": "Refresh weather",
+    "refreshLimit": "Refresh available every 10 minutes",
+    "locate": "Use my location",
+    "locating": "Finding location…",
+    "manual": "Select Bogor manually",
+    "privacy": "One location fix, only on request. Approximate coordinates are sent to the weather service and Open-Meteo; no location history is stored.",
+    "denied": "Location permission denied. Select Bogor manually.",
+    "timeout": "Location request timed out. Retry or select Bogor.",
+    "unsupported": "Device location is unavailable. Use HTTPS/localhost or select Bogor.",
+    "offline": "You are offline. Reconnect to load weather.",
+    "position": "Location could not be determined. Select Bogor or retry.",
+    "loading": "Loading weather…",
+    "unavailable": "Weather unavailable.",
+    "retry": "Try refreshing after 10 minutes.",
+    "stale": "Weather may be outdated. Check the model timestamp; the last response is shown.",
+    "missing": "Unavailable",
+    "precipitation": "Precipitation",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "modelTime": "Model time:",
+    "retrieved": "Retrieved:",
+    "interval": "Precipitation total over the preceding {minutes} minutes.",
+    "boundary": "Weather does not establish street flood conditions or route safety.",
+    "model": "Model-derived conditions",
+    "conditions": {
+      "clear": "Clear sky",
+      "partlyCloudy": "Partly cloudy",
+      "overcast": "Overcast",
+      "fog": "Fog",
+      "drizzle": "Drizzle",
+      "rain": "Rain / showers",
+      "snow": "Snow",
+      "storm": "Thunderstorm",
+      "unknown": "Condition unavailable"
+    }
   }
 }

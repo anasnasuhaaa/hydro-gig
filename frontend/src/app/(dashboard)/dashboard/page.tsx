@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import { WeatherCard } from "@/components/weather/weather-card";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -90,6 +91,7 @@ export default function Dashboard() {
           </Link>
         ))}
       </section>
+      <WeatherCard />
       <SystemStatus />
     </>
   );

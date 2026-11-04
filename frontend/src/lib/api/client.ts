@@ -40,8 +40,9 @@ export async function apiRequest<T>(
   path: string,
   schema: z.ZodType<T>,
   options: { signal?: AbortSignal; body?: unknown } = {},
+  prefix = "/api/v1/demo",
 ): Promise<T> {
-  const response = await fetch(`${baseUrl}/api/v1/demo${path}`, {
+  const response = await fetch(`${baseUrl}${prefix}${path}`, {
     method: options.body === undefined ? "GET" : "POST",
     signal: options.signal
       ? AbortSignal.any([options.signal, AbortSignal.timeout(8_000)])

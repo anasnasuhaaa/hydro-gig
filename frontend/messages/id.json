@@ -194,5 +194,46 @@
   "Toast": {
     "label": "Pemberitahuan",
     "close": "Tutup pemberitahuan"
+  },
+  "Weather": {
+    "title": "Konteks cuaca",
+    "choose": "Pilih lokasi cuaca",
+    "bogor": "Bogor (pilihan manual)",
+    "device": "Lokasi perangkat · sekitar {latitude}, {longitude}",
+    "refresh": "Perbarui cuaca",
+    "refreshLimit": "Pembaruan tersedia setiap 10 menit",
+    "locate": "Gunakan lokasi saya",
+    "locating": "Mencari lokasi…",
+    "manual": "Pilih Bogor manual",
+    "privacy": "Satu lokasi, hanya atas permintaan. Koordinat perkiraan dikirim ke layanan cuaca dan Open-Meteo; riwayat lokasi tidak disimpan.",
+    "denied": "Izin lokasi ditolak. Pilih Bogor secara manual.",
+    "timeout": "Pencarian lokasi kehabisan waktu. Coba lagi atau pilih Bogor.",
+    "unsupported": "Lokasi perangkat tidak tersedia. Gunakan HTTPS/localhost atau pilih Bogor.",
+    "offline": "Anda sedang offline. Sambungkan kembali untuk memuat cuaca.",
+    "position": "Lokasi gagal ditentukan. Pilih Bogor atau coba lagi.",
+    "loading": "Memuat cuaca…",
+    "unavailable": "Cuaca belum tersedia.",
+    "retry": "Coba perbarui setelah 10 menit.",
+    "stale": "Cuaca mungkin sudah kedaluwarsa. Periksa waktu model; respons terakhir ditampilkan.",
+    "missing": "Tidak tersedia",
+    "precipitation": "Presipitasi",
+    "humidity": "Kelembapan",
+    "wind": "Angin",
+    "modelTime": "Waktu model:",
+    "retrieved": "Diambil:",
+    "interval": "Total presipitasi selama {minutes} menit sebelumnya.",
+    "boundary": "Cuaca tidak menentukan kondisi banjir jalan atau keselamatan rute.",
+    "model": "Kondisi berbasis model",
+    "conditions": {
+      "clear": "Cerah",
+      "partlyCloudy": "Cerah berawan",
+      "overcast": "Mendung",
+      "fog": "Kabut",
+      "drizzle": "Gerimis",
+      "rain": "Hujan",
+      "snow": "Salju",
+      "storm": "Badai petir",
+      "unknown": "Kondisi belum tersedia"
+    }
   }
 }
