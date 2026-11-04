@@ -10,7 +10,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test:e2e": "playwright test",
     "format": "prettier --write src tests *.ts *.mjs",
-    "format:check": "prettier --check src tests *.ts *.mjs"
+    "format:check": "prettier --check src tests *.ts *.mjs",
+    "build:e2e": "NEXT_DIST_DIR=.next-e2e NEXT_PUBLIC_API_BASE_URL=http://localhost:8100 next build --webpack"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",

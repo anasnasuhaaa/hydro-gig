@@ -19,9 +19,9 @@ async function noOverflow(page: Page) {
   ).toBe(true);
 }
 
-test.beforeEach(async ({ context }) => {
+test.beforeEach(async ({ context, baseURL }) => {
   await context.addCookies([
-    { name: "hydrogig_locale", value: "en", url: "http://localhost:3000" },
+    { name: "hydrogig_locale", value: "en", url: baseURL! },
   ]);
 });
 

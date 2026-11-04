@@ -26,11 +26,12 @@ test("translation catalogs have matching keys and placeholders", () => {
 test("Indonesian SSR default, invalid cookie fallback and English persistence", async ({
   page,
   context,
+  baseURL,
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await context.addCookies([
-    { name: "hydrogig_locale", value: "invalid", url: "http://localhost:3000" },
+    { name: "hydrogig_locale", value: "invalid", url: baseURL! },
   ]);
   const response = await page.goto("/pre-order");
   expect(await response?.text()).toContain('lang="id"');

@@ -235,5 +235,33 @@
       "storm": "Badai petir",
       "unknown": "Kondisi belum tersedia"
     }
+  },
+  "Guide": {
+    "title": "Mulai dalam satu menit.",
+    "subtitle": "Tiga langkah untuk menjelajahi HydroGig-Mesh.",
+    "flow": "Pemeriksaan, simulasi, bukti mendatang",
+    "try": "Coba pemeriksaan",
+    "open": "Buka navigasi",
+    "planned": "Belum tersedia",
+    "help": "Bantuan",
+    "screen": {
+      "title": "Periksa rute",
+      "description": "Pilih awal, penjemputan, tujuan, dan skenario demo. Bandingkan acuan jarak dengan alternatif berbobot buatan.",
+      "diagram": "Awal → jemput → tujuan"
+    },
+    "explore": {
+      "title": "Jelajahi simulasi navigasi",
+      "description": "Pilih perjalanan dan majukan bingkai tetap. Amati perubahan skema rute serta peringatan simulasi.",
+      "diagram": "t0 → t1 → t2"
+    },
+    "evidence": {
+      "title": "Bukti perjalanan",
+      "description": "Bukti perjalanan terverifikasi masih direncanakan. Pembuatan serta verifikasi klaim belum tersedia; pembatalan penalti platform tidak dijamin.",
+      "diagram": "Catat → tanda tangani → verifikasi (rencana)"
+    },
+    "dataTitle": "Dua sumber data berbeda",
+    "weather": "Cuaca: kondisi terkini berbasis model Open-Meteo, dengan waktu model. Gunakan lokasi perangkat atas izin atau pilih Bogor manual di Dasbor.",
+    "simulation": "Simulasi banjir: jalan sintetis dan biaya buatan. Terpisah dari cuaca, tanpa pengukuran banjir pada ruas jalan.",
+    "safety": "Rute tersedia bukan jaminan keselamatan. Jangan memasuki genangan untuk menguji purwarupa ini."
   }
 }

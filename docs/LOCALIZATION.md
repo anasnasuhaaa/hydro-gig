@@ -9,3 +9,5 @@ Edit `frontend/messages/id.json` dan `en.json` bersama-sama. Gunakan namespace k
 Jalankan `pnpm test:e2e tests/i18n.spec.ts` setelah build untuk memeriksa kesetaraan kunci/placeholder, default SSR, cookie invalid, pergantian bahasa, persistensi dan form yang tidak direset. Tes lama menggunakan cookie English secara eksplisit agar tetap memverifikasi perilaku baseline.
 
 Rujukan: [setup App Router](https://next-intl.dev/docs/getting-started/app-router), [konfigurasi request](https://next-intl.dev/docs/usage/configuration). Implementasi mengikuti panduan resmi tanpa locale routing, diperiksa 4 November 2026.
+
+Pengujian browser memakai server produksi terisolasi: `pnpm build:e2e` lalu `pnpm test:e2e`. Build `.next-e2e`, frontend port 3100 dan backend tanpa DB port 8100 menjaga server pengembangan 3000/8000 tetap terpisah. Playwright sengaja tidak memakai server yang sudah berjalan. `NEXT_DIST_DIR` dapat digunakan untuk build produksi terpisah saat `pnpm dev` aktif. Jangan menguji build produksi yang direktori keluarannya sedang ditulis server dev.

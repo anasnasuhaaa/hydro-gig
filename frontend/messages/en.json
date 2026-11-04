@@ -235,5 +235,33 @@
       "storm": "Thunderstorm",
       "unknown": "Condition unavailable"
     }
+  },
+  "Guide": {
+    "title": "A quick start.",
+    "subtitle": "Three steps to explore HydroGig-Mesh in a minute.",
+    "flow": "Screening, simulation, future evidence",
+    "try": "Try screening",
+    "open": "Open navigation",
+    "planned": "Coming soon",
+    "help": "Help",
+    "screen": {
+      "title": "Screen route",
+      "description": "Choose origin, pickup, destination and a demo scenario. Compare the distance baseline with authored weighted alternatives.",
+      "diagram": "Origin → pickup → destination"
+    },
+    "explore": {
+      "title": "Explore navigation simulation",
+      "description": "Select your trip and advance the fixed frames. Watch the schematic route and simulated warnings change.",
+      "diagram": "t0 → t1 → t2"
+    },
+    "evidence": {
+      "title": "Trip evidence",
+      "description": "Verifiable trip evidence is planned. Claim creation and verification are unavailable; platform penalty reversal is not guaranteed.",
+      "diagram": "Record → sign → verify (planned)"
+    },
+    "dataTitle": "Two different data sources",
+    "weather": "Weather: model-derived current conditions from Open-Meteo, with a model timestamp. Use device location by permission or select Bogor manually on Dashboard.",
+    "simulation": "Flood simulation: synthetic roads and authored costs. It is separate from weather and contains no measured street flood conditions.",
+    "safety": "An available route is no safety guarantee. Do not enter floodwater to test this prototype."
   }
 }

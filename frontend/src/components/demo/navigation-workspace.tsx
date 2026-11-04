@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GuideLink } from "@/components/shared/guide-link";
 import { PageHeading } from "@/components/shared/page-heading";
 import { useDemoData } from "@/hooks/use-demo";
 import { demoApi } from "@/lib/api/demo";
@@ -71,7 +72,10 @@ export function NavigationWorkspace() {
   };
   return (
     <>
-      <PageHeading title={t("title")} description={t("subtitle")} />
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <PageHeading title={t("title")} description={t("subtitle")} />
+        <GuideLink />
+      </div>
       <SimulationNotice />
       {request && scenario && (
         <section

@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { ArrowRight, Route } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { GuideLink } from "@/components/shared/guide-link";
 import { PageHeading } from "@/components/shared/page-heading";
 import { useDemoData } from "@/hooks/use-demo";
 import { demoApi } from "@/lib/api/demo";
@@ -194,7 +195,10 @@ export function PreOrderWorkspace() {
     data.network.error ?? data.scenarios.error ?? data.manifest.error;
   return (
     <>
-      <PageHeading title={t("title")} description={t("subtitle")} />
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <PageHeading title={t("title")} description={t("subtitle")} />
+        <GuideLink />
+      </div>
       <SimulationNotice />
       {error ? (
         <DemoError
