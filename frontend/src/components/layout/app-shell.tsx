@@ -134,6 +134,15 @@ function Workspace({ children }: { children: React.ReactNode }) {
           tabIndex={-1}
           className="mx-auto w-full max-w-[1440px] flex-1 space-y-6 px-4 py-6 outline-none sm:px-8 sm:py-8"
         >
+          {(pathname === "/pre-order" || pathname === "/navigation") && (
+            <p className="text-sm font-medium text-muted-foreground">
+              {t("step", { step: pathname === "/pre-order" ? 1 : 2 })}
+              <span className="mx-2" aria-hidden="true">
+                ·
+              </span>
+              {pathname === "/pre-order" ? t("screenStep") : t("exploreStep")}
+            </p>
+          )}
           {children}
         </div>
         <footer className="mx-auto flex w-full max-w-[1440px] justify-end px-4 pb-5 text-sm text-muted-foreground sm:px-8">

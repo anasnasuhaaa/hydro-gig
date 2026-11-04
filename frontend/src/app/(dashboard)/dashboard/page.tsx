@@ -63,6 +63,12 @@ export default function Dashboard() {
               <ArrowRight />
             </Link>
           </Button>
+          <p
+            className="max-w-lg text-sm leading-relaxed opacity-95"
+            role="note"
+          >
+            {t("demoFlow")}
+          </p>
         </div>
         <Droplets
           className="pointer-events-none absolute -right-9 -bottom-10 size-64 opacity-10"

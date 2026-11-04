@@ -19,7 +19,10 @@
     "shortcut": "Toggle sidebar (Ctrl/⌘ B)",
     "main": "Main navigation",
     "quick": "Quick navigation",
-    "status": "System status"
+    "status": "System status",
+    "step": "Step {step} of 2",
+    "screenStep": "Check and compare",
+    "exploreStep": "Explore simulated changes"
   },
   "Demo": {
     "notice": "SIMULATED DATA — NOT REAL-TIME FLOOD MONITORING",
@@ -143,8 +146,8 @@
   },
   "Dashboard": {
     "title": "Navigate with flood awareness.",
-    "subtitle": "Explore a synthetic trip before you ride.",
-    "screen": "Screen route",
+    "subtitle": "Try an example trip, compare two routes, then explore simulated road changes.",
+    "screen": "Screen a Route",
     "prototype": "SIMULATION · research prototype",
     "limits": "No live flood monitoring or safety guidance. Evidence tokens are unavailable.",
     "workflows": "Workflows",
@@ -156,7 +159,8 @@
     "claimsDesc": "Evidence tools unavailable.",
     "guide": "Guide",
     "guideDesc": "Get started in three steps.",
-    "diagnostics": "Technical diagnostics"
+    "diagnostics": "Technical diagnostics",
+    "demoFlow": "Start with an example trip. All flood-related road costs are synthetic; flood risk is unknown."
   },
   "Claims": {
     "title": "Claims",

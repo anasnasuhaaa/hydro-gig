@@ -19,7 +19,10 @@
     "shortcut": "Ganti sidebar (Ctrl/⌘ B)",
     "main": "Navigasi utama",
     "quick": "Navigasi cepat",
-    "status": "Status sistem"
+    "status": "Status sistem",
+    "step": "Langkah {step} dari 2",
+    "screenStep": "Periksa dan bandingkan",
+    "exploreStep": "Jelajahi perubahan simulasi"
   },
   "Demo": {
     "notice": "DATA SIMULASI — BUKAN PEMANTAUAN BANJIR LANGSUNG",
@@ -143,7 +146,7 @@
   },
   "Dashboard": {
     "title": "Kenali rute sebelum berangkat.",
-    "subtitle": "Jelajahi perjalanan sintetis sebelum berkendara.",
+    "subtitle": "Coba contoh perjalanan, bandingkan dua rute, lalu jelajahi perubahan jalan simulasi.",
     "screen": "Periksa rute",
     "prototype": "SIMULASI · purwarupa riset",
     "limits": "Pemantauan banjir langsung dan panduan keselamatan belum tersedia. Token bukti belum tersedia.",
@@ -156,7 +159,8 @@
     "claimsDesc": "Fitur bukti belum tersedia.",
     "guide": "Panduan",
     "guideDesc": "Mulai dengan tiga langkah.",
-    "diagnostics": "Diagnostik teknis"
+    "diagnostics": "Diagnostik teknis",
+    "demoFlow": "Mulai dari contoh perjalanan. Seluruh biaya jalan terkait banjir bersifat sintetis; risiko banjir belum diketahui."
   },
   "Claims": {
     "title": "Klaim",
