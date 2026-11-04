@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import {
   ArrowRight,
+  Play,
   CloudSun,
   FlaskConical,
   Navigation,
@@ -11,24 +12,27 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SimulationNotice } from "@/components/demo/shared";
 import { PageHeading } from "@/components/shared/page-heading";
 export { guideMetadata as generateMetadata } from "@/i18n/metadata";
 
 export default function Guide() {
   const t = useTranslations("Guide");
   const steps = [
-    { key: "screen", icon: Route, href: "/pre-order", action: "try" },
+    { key: "start", icon: Play, href: "/pre-order", action: "try" },
+    { key: "screen", icon: Route, href: null, action: null },
     { key: "explore", icon: Navigation, href: "/navigation", action: "open" },
     { key: "evidence", icon: ShieldCheck, href: null, action: null },
   ] as const;
   return (
     <>
       <PageHeading title={t("title")} description={t("subtitle")} />
-      <ol className="grid gap-4 lg:grid-cols-3" aria-label={t("flow")}>
+      <SimulationNotice />
+      <ol className="grid gap-4 lg:grid-cols-2" aria-label={t("flow")}>
         {steps.map(({ key, icon: Icon, href, action }, index) => (
           <li key={key} className="relative min-w-0">
             <Card className="h-full border-primary/15 shadow-sm">
-              <CardHeader className="space-y-4">
+              <CardHeader className="space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="flex size-11 items-center justify-center rounded-full bg-primary text-lg font-semibold text-primary-foreground">
                     {index + 1}
@@ -47,25 +51,51 @@ export default function Guide() {
                   {t(`${key}.diagram`)}
                 </p>
                 {href && action ? (
-                  <Button asChild className="min-h-11 w-full">
+                  <Button
+                    asChild
+                    variant={key === "start" ? "default" : "outline"}
+                    className="min-h-11 w-full"
+                  >
                     <Link href={href}>
                       {t(action)}
                       <ArrowRight />
                     </Link>
                   </Button>
-                ) : (
+                ) : key === "evidence" ? (
                   <Badge
                     variant="secondary"
                     className="h-auto px-3 py-2 text-sm"
                   >
                     {t("planned")}
                   </Badge>
-                )}
+                ) : null}
               </CardContent>
             </Card>
           </li>
         ))}
       </ol>
+      <section
+        className="rounded-2xl border bg-card p-5 sm:p-6"
+        aria-labelledby="glossary-title"
+      >
+        <h2 id="glossary-title" className="text-lg font-semibold">
+          {t("glossaryTitle")}
+        </h2>
+        <dl className="mt-4 grid gap-4 sm:grid-cols-2">
+          {(["frame", "shortest", "alternative", "unknown"] as const).map(
+            (key) => (
+              <div key={key}>
+                <dt className="text-sm font-semibold">
+                  {t(`glossary.${key}.term`)}
+                </dt>
+                <dd className="mt-1 text-sm text-muted-foreground">
+                  {t(`glossary.${key}.meaning`)}
+                </dd>
+              </div>
+            ),
+          )}
+        </dl>
+      </section>
       <section
         className="space-y-4 rounded-2xl border bg-card p-5 sm:p-6"
         aria-labelledby="guide-data-title"

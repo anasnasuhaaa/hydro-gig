@@ -184,7 +184,7 @@
     "claims": "Klaim",
     "claimsDesc": "Fitur bukti belum tersedia.",
     "guide": "Panduan",
-    "guideDesc": "Mulai dengan tiga langkah.",
+    "guideDesc": "Empat langkah singkat, termasuk status Klaim.",
     "diagnostics": "Diagnostik teknis",
     "demoFlow": "Mulai dari contoh perjalanan. Seluruh biaya jalan terkait banjir bersifat sintetis; risiko banjir belum diketahui."
   },
@@ -274,31 +274,55 @@
   },
   "Guide": {
     "title": "Mulai dalam satu menit.",
-    "subtitle": "Tiga langkah untuk menjelajahi HydroGig-Mesh.",
-    "flow": "Pemeriksaan, simulasi, bukti mendatang",
-    "try": "Coba pemeriksaan",
+    "subtitle": "Mulai dari contoh, bandingkan rute, lalu jelajahi perubahan simulasi. Klaim belum tersedia.",
+    "flow": "Mulai, periksa, jelajahi, status Klaim",
+    "try": "Mulai demo perjalanan",
     "open": "Buka navigasi",
     "planned": "Belum tersedia",
     "help": "Bantuan",
     "screen": {
-      "title": "Periksa rute",
-      "description": "Pilih awal, penjemputan, tujuan, dan skenario demo. Bandingkan acuan jarak dengan alternatif berbobot buatan.",
-      "diagram": "Awal → jemput → tujuan"
+      "title": "Periksa dan bandingkan rute",
+      "description": "Tekan Periksa rute dan tunggu perbandingan. Rute terpendek memakai jarak; Rute alternatif (simulasi) memakai biaya buatan. Lalu lanjut ke navigasi.",
+      "diagram": "Periksa → bandingkan → lanjut"
     },
     "explore": {
-      "title": "Jelajahi simulasi navigasi",
-      "description": "Pilih perjalanan dan majukan bingkai tetap. Amati perubahan skema rute serta peringatan simulasi.",
-      "diagram": "t0 → t1 → t2"
+      "title": "Jelajahi perubahan pada linimasa",
+      "description": "Gunakan Berikutnya atau Sebelumnya untuk membandingkan tiga snapshot tetap. Lihat perubahan biaya jalan dan rute. Atur ulang demo kembali ke contoh. Tanpa pelacakan GPS atau prakiraan cuaca.",
+      "diagram": "Awal → +5 menit → +10 menit"
     },
     "evidence": {
-      "title": "Bukti perjalanan",
-      "description": "Bukti perjalanan terverifikasi masih direncanakan. Pembuatan serta verifikasi klaim belum tersedia; pembatalan penalti platform tidak dijamin.",
+      "title": "Pahami status Klaim",
+      "description": "Klaim adalah pratinjau alur mendatang. Penyimpanan bukti, penerbitan token, dan verifikasi belum tersedia. Pembatalan penalti platform tidak dijamin.",
       "diagram": "Catat → tanda tangani → verifikasi (rencana)"
     },
     "dataTitle": "Dua sumber data berbeda",
     "weather": "Cuaca: kondisi terkini berbasis model Open-Meteo, dengan waktu model. Gunakan lokasi perangkat atas izin atau pilih Bogor manual di Dasbor.",
     "simulation": "Simulasi banjir: jalan sintetis dan biaya buatan. Terpisah dari cuaca, tanpa pengukuran banjir pada ruas jalan.",
-    "safety": "Rute tersedia bukan jaminan keselamatan. Jangan memasuki genangan untuk menguji purwarupa ini."
+    "safety": "Rute tersedia bukan jaminan keselamatan. Jangan memasuki genangan untuk menguji purwarupa ini.",
+    "start": {
+      "title": "Mulai demo perjalanan",
+      "description": "Dari Dasbor, pilih Periksa rute. Di Pra-pesanan, tekan Coba contoh perjalanan untuk mengisi tiga titik. Ubah lokasi bersifat opsional.",
+      "diagram": "Lokasi awal → jemput → tujuan"
+    },
+    "glossaryTitle": "Istilah singkat",
+    "glossary": {
+      "frame": {
+        "term": "Bingkai simulasi",
+        "meaning": "Satu snapshot fiktif tetap untuk biaya jalan."
+      },
+      "shortest": {
+        "term": "Rute terpendek",
+        "meaning": "Jalur dengan jarak sintetis buatan paling pendek."
+      },
+      "alternative": {
+        "term": "Rute alternatif (simulasi)",
+        "meaning": "Jalur dengan unit biaya demo paling kecil, tanpa risiko banjir tervalidasi."
+      },
+      "unknown": {
+        "term": "Risiko belum diketahui",
+        "meaning": "Pengukuran banjir belum tersedia. Biaya tetap tidak berarti jalan kering atau aman."
+      }
+    }
   },
   "Timeline": {
     "t0": "Kondisi awal",

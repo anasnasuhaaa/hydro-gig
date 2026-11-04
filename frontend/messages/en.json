@@ -184,7 +184,7 @@
     "claims": "Claims",
     "claimsDesc": "Evidence tools unavailable.",
     "guide": "Guide",
-    "guideDesc": "Get started in three steps.",
+    "guideDesc": "Four short steps, including Claims status.",
     "diagnostics": "Technical diagnostics",
     "demoFlow": "Start with an example trip. All flood-related road costs are synthetic; flood risk is unknown."
   },
@@ -274,31 +274,55 @@
   },
   "Guide": {
     "title": "A quick start.",
-    "subtitle": "Three steps to explore HydroGig-Mesh in a minute.",
-    "flow": "Screening, simulation, future evidence",
-    "try": "Try screening",
+    "subtitle": "Start an example, compare routes, then explore simulated changes. Claims remain unavailable.",
+    "flow": "Start, check, explore, Claims status",
+    "try": "Start a trip demo",
     "open": "Open navigation",
     "planned": "Coming soon",
     "help": "Help",
     "screen": {
-      "title": "Screen route",
-      "description": "Choose origin, pickup, destination and a demo scenario. Compare the distance baseline with authored weighted alternatives.",
-      "diagram": "Origin → pickup → destination"
+      "title": "Check and compare routes",
+      "description": "Press Check route and wait for the comparison. Shortest route uses distance; Alternative route (simulation) uses authored costs. Then continue to navigation.",
+      "diagram": "Check → compare → continue"
     },
     "explore": {
-      "title": "Explore navigation simulation",
-      "description": "Select your trip and advance the fixed frames. Watch the schematic route and simulated warnings change.",
-      "diagram": "t0 → t1 → t2"
+      "title": "Explore changes on the timeline",
+      "description": "Use Next or Previous to compare three fixed snapshots. See which road costs and routes change. Reset demo returns to the example. No GPS tracking or weather forecast is involved.",
+      "diagram": "Initial → +5 min → +10 min"
     },
     "evidence": {
-      "title": "Trip evidence",
-      "description": "Verifiable trip evidence is planned. Claim creation and verification are unavailable; platform penalty reversal is not guaranteed.",
+      "title": "Understand Claims status",
+      "description": "Claims is a preview of a future workflow. Evidence storage, token issuance and verification are unavailable. Platform penalty reversal is not guaranteed.",
       "diagram": "Record → sign → verify (planned)"
     },
     "dataTitle": "Two different data sources",
     "weather": "Weather: model-derived current conditions from Open-Meteo, with a model timestamp. Use device location by permission or select Bogor manually on Dashboard.",
     "simulation": "Flood simulation: synthetic roads and authored costs. It is separate from weather and contains no measured street flood conditions.",
-    "safety": "An available route is no safety guarantee. Do not enter floodwater to test this prototype."
+    "safety": "An available route is no safety guarantee. Do not enter floodwater to test this prototype.",
+    "start": {
+      "title": "Start a trip demo",
+      "description": "From Dashboard, choose Screen a Route. On Pre-order, press Try Example Trip to fill your three stops. Change locations is optional.",
+      "diagram": "Starting point → pickup → destination"
+    },
+    "glossaryTitle": "Small glossary",
+    "glossary": {
+      "frame": {
+        "term": "Simulation frame",
+        "meaning": "One fixed, fictional snapshot of road costs."
+      },
+      "shortest": {
+        "term": "Shortest route",
+        "meaning": "A path minimizing authored synthetic distance."
+      },
+      "alternative": {
+        "term": "Alternative route (simulation)",
+        "meaning": "A path minimizing arbitrary demo cost units, without validated flood risk."
+      },
+      "unknown": {
+        "term": "Unknown risk",
+        "meaning": "Flood measurements are unavailable. An unchanged cost does not mean a dry or safe road."
+      }
+    }
   },
   "Timeline": {
     "t0": "Initial condition",

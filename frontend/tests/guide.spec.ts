@@ -16,10 +16,14 @@ for (const locale of ["id", "en"] as const)
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       m.Guide.title,
     );
-    await expect(page.getByRole("heading", { level: 2 })).toHaveCount(4);
+    await expect(page.getByRole("heading", { level: 2 })).toHaveCount(6);
     await expect(
       page.getByRole("list", { name: m.Guide.flow }).getByRole("listitem"),
-    ).toHaveCount(3);
+    ).toHaveCount(4);
+    await expect(
+      page.getByText(m.Guide.glossary.unknown.meaning, { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText(m.Demo.notice, { exact: true })).toBeVisible();
     await expect(
       page.getByText(m.Guide.weather, { exact: true }),
     ).toBeVisible();
