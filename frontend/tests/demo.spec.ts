@@ -168,6 +168,7 @@ test("form validates selections and distinct nodes without requesting screening"
   await page.goto("/pre-order");
   await page.getByRole("button", { name: "Check route", exact: true }).click();
   await expect(page.locator('#origin[aria-invalid="true"]')).toBeVisible();
+  await expect(page.locator("#origin")).toBeFocused();
   await trip(page);
   await select(page, "Destination", /^C ·/);
   await page.getByRole("button", { name: "Check route", exact: true }).click();

@@ -2,7 +2,7 @@
 
 **Purwarupa penelitian mobilitas sepeda motor sadar banjir untuk pengemudi ojek online, dengan konteks awal Bogor, Indonesia.**
 
-> **Phase 1.6 — purwarupa, bukan layanan keselamatan operasional.** Pemeriksaan rute dan EWS menggunakan graf serta skenario **sintetis**, bukan pemantauan banjir langsung. Cuaca berasal dari model penyedia eksternal dan tidak membuktikan kondisi banjir atau keselamatan suatu jalan. Belum tersedia dataset banjir tervalidasi, model DeepONet terlatih, atau ambang risiko terkalibrasi.
+> **Phase 1.7 — purwarupa, bukan layanan keselamatan operasional.** Pemeriksaan rute dan EWS menggunakan graf serta skenario **sintetis**, bukan pemantauan banjir langsung. Cuaca berasal dari model penyedia eksternal dan tidak membuktikan kondisi banjir atau keselamatan suatu jalan. Belum tersedia dataset banjir tervalidasi, model DeepONet terlatih, atau ambang risiko terkalibrasi.
 
 Repositori: [github.com/anasnasuhaaa/hydro-gig](https://github.com/anasnasuhaaa/hydro-gig). Mulai dari `/dashboard` atau baca [panduan singkat](docs/USER-GUIDE.md).
 
@@ -31,20 +31,26 @@ Pengemudi ojek online dan kurir roda dua menghadapi paparan genangan perkotaan k
 
 | Fitur | Perilaku dan status saat ini |
 | --- | --- |
-| **Pre-order Flood Screening** — `/pre-order` | Form React Hook Form/Zod memilih awal, penjemputan, tujuan, skenario, dan bingkai; API membandingkan acuan jarak dengan biaya berbobot buatan pada graf sintetis |
-| **EWS Navigation** — `/navigation` | Perjalanan hasil pemeriksaan atau bawaan, bingkai manual `t0/t1/t2`, skema jaringan searah, dan peringatan simulasi; bukan navigasi geografis atau pelacakan GPS |
+| **Pre-order Flood Screening** — `/pre-order` | Coba contoh perjalanan → Periksa rute; lokasi dan pengaturan simulasi opsional; API membandingkan rute terpendek dan rute alternatif (simulasi) |
+| **EWS Navigation** — `/navigation` | Perjalanan hasil pemeriksaan atau contoh, linimasa berlabel ramah pengguna, perubahan biaya/rute dari snapshot API, serta Sebelumnya/Berikutnya/Atur ulang; bukan navigasi geografis atau pelacakan GPS |
 | **Digital Evidence & Anti-Penalty Claims** — `/claims` | Layar keterangan belum tersedia; pembuatan, penyimpanan, penandatanganan, serta verifikasi bukti masih direncanakan |
 | **Konteks cuaca** — `/dashboard` | Kondisi kini berbasis model Open-Meteo, sumber/satuan/waktu, lokasi perangkat atas tindakan eksplisit, atau Bogor pilihan manual; terpisah dari simulasi banjir |
-| **Bahasa dan panduan** — `/guide` | Bahasa Indonesia sebagai default, pilihan ID/EN tersimpan melalui cookie, panduan tiga langkah, tema terang/gelap, sidebar resmi shadcn dan navigasi bawah ponsel |
+| **Bahasa dan panduan** — `/guide` | Bahasa Indonesia sebagai default, pilihan ID/EN tersimpan melalui cookie, panduan empat langkah, tema terang/gelap, sidebar resmi shadcn dan navigasi bawah ponsel |
 | **Diagnostik teknis** | Status API/basis data sebenarnya dalam bagian yang dapat dibuka; konektivitas tidak menandakan keselamatan lingkungan |
 
 Tidak ada statistik operasional, profil pengemudi, sensor genangan, atau grafik hasil riset rekaan. Recharts dan MapLibre tersedia untuk integrasi bermakna di masa depan; peta geografis belum dipasang.
 
 ## Alur Penggunaan
 
-**Awal → penjemputan → tujuan → periksa rute → bandingkan alternatif → buka navigasi → pilih `t0 → t1 → t2` → bukti perjalanan (rencana).**
+**Dasbor → Pra-pesanan → perbandingan rute → simulasi navigasi → pratinjau Klaim (belum tersedia).**
 
-- Gunakan tombol **ID / EN** di header untuk mengganti bahasa tanpa mengubah URL. Pilihan form dan bingkai dipertahankan saat bahasa diganti; sesi perjalanan berada di memori dan hilang saat muat ulang penuh.
+1. Tekan **Periksa rute** di Dasbor. Di Pra-pesanan, tekan **Coba contoh perjalanan**, lalu **Periksa rute**. Contoh dari manifest adalah A (lokasi awal) → C (penjemputan) → F (tujuan). **Ubah lokasi** membuka pemilih titik; **Pengaturan simulasi** menyimpan kontrol lanjutan.
+2. Tunggu respons FastAPI. Bandingkan **Rute terpendek** (jarak sintetis) dengan **Rute alternatif (simulasi)** (biaya buatan dalam unit demo). Keduanya menampilkan dua bagian perjalanan. Jika tidak terjangkau, ubah lokasi; H adalah ujung satu arah.
+3. Tekan **Lanjut ke navigasi**. Gunakan **Kondisi awal** (`t0`), **5 menit kemudian** (`t1`), dan **10 menit kemudian** (`t2`), atau **Sebelumnya/Berikutnya**. Ringkasan membandingkan snapshot API sebelumnya: pada `t1`, BC/CD naik dan rute A→G→C serta C→E→F; pada `t2`, BC/CD kembali, DF naik dan rute A→B→C serta C→E→F. Ini waktu fiktif, bukan prakiraan atau pemantauan langsung.
+4. Buka **Bantuan/Panduan** untuk langkah dan istilah singkat. `/claims` hanya menjelaskan rencana bukti; belum ada token yang diterbitkan.
+
+Pilihan demo tervalidasi tersimpan per tab pada `sessionStorage` (`hydrogig-demo-v1`), bertahan saat muat ulang, dan kembali ke contoh awal melalui **Atur ulang demo**. Hanya ID titik/skenario/bingkai dan pilihan perjalanan yang disimpan; tanpa hasil API, GPS, identitas, atau telemetri. Data rusak/ID tidak tersedia diabaikan. Jika penyimpanan browser diblokir, sesi berjalan di memori. Bahasa ID/EN tetap memakai cookie dan URL stabil; waktu tampilan tetap Asia/Jakarta. **Rincian teknis** memuat ID, waktu snapshot fiktif dan versi mesin.
+
 - Di Dasbor, tekan **Gunakan lokasi saya** untuk meminta satu lokasi perangkat. Izin tidak diminta saat halaman dibuka. GPS memerlukan HTTPS atau localhost yang sesuai; penolakan, timeout, offline, atau perangkat tidak mendukung ditampilkan dengan jelas.
 - Tekan **Pilih Bogor manual** untuk memuat cuaca tanpa GPS. Konteks selalu menandainya sebagai pilihan manual, bukan lokasi pengguna yang terdeteksi.
 - Buka **Panduan** dari sidebar/navigasi bawah atau tautan **Bantuan** di pemeriksaan dan navigasi.
@@ -93,7 +99,7 @@ Controller tetap tipis, logika berada di layanan, dan repository ditambahkan saa
 
 ## Status Pengembangan
 
-Status Phase 1.6 berdasarkan kode dan pengujian lokal, bukan kesiapan operasional:
+Status Phase 1.7 berdasarkan kode dan pengujian lokal, bukan kesiapan operasional:
 
 | Komponen | Status |
 | --- | --- |
@@ -256,7 +262,7 @@ Koneksi runtime memakai NullPool. DB yang dapat dihubungi tidak membuktikan kesi
 
 1. **Selesai sebagai fondasi:** aplikasi responsif, API, kontrak data, model DB/migrasi manual, dan tes.
 2. **Selesai sebagai demonstrasi:** graf sintetis, Dijkstra, pemeriksaan dan EWS manual; bukan hasil validasi ilmiah.
-3. **Tersedia pada Phase 1.6:** UI biru mobile-first, ID/EN, Panduan, lokasi opsional dan cuaca model eksternal.
+3. **Tersedia pada Phase 1.6–1.7:** UI biru mobile-first, ID/EN, cuaca terpisah, contoh perjalanan terpandu, linimasa simulasi, pemulihan sesi demo dan Panduan ringkas.
 4. **Integrasi riset berikutnya:** jaringan jalan berlisensi, modul risiko/Modified Dijkstra, skenario dan dataset pembanding yang disepakati, satuan serta ketidakpastian tervalidasi.
 5. **Bukti digital berikutnya:** autentikasi/RBAC, persetujuan, penyimpanan, kanonisasi, penandatanganan/verifikasi, pengelolaan kunci dan penerimaan pihak platform.
 6. **Validasi ilmiah berikutnya:** penginderaan sukarela, kalibrasi, asimilasi, SWE, DeepONet dan evaluasi lapangan independen.
@@ -269,7 +275,7 @@ Lihat [ROADMAP.md](docs/ROADMAP.md). Belum ada jaminan jadwal atau hasil manfaat
 - [Lokalisasi](docs/LOCALIZATION.md) dan [arsitektur](docs/ARCHITECTURE.md).
 - [Kontrak data](docs/DATA-CONTRACTS.md), [demo sintetis](docs/DEMO-SIMULATION.md), dan [batas modul ilmiah](docs/SCIENTIFIC-MODULES.md).
 - [Database](docs/DATABASE.md), [roadmap](docs/ROADMAP.md), dan [hasil validasi](docs/VALIDATION.md).
-- [Implementasi Phase 1.5](docs/PHASE-1.5-IMPLEMENTATION.md), [penyempurnaan UI sebelumnya](docs/UI-REFINEMENT.md), dan [catatan Phase 1.6](docs/PHASE-1.6-IMPLEMENTATION.md).
+- [Penyempurnaan UI sebelumnya](docs/UI-REFINEMENT.md); alur terkini dijelaskan di Panduan dan demo sintetis.
 
 ## Keamanan, Privasi dan Batasan
 

@@ -133,7 +133,8 @@
     "affectedCount": "Ruas rute terpengaruh: {count}",
     "frame": "ID bingkai",
     "network": "ID jaringan",
-    "provenance": "Eksperimental · simulasi"
+    "provenance": "Eksperimental · simulasi",
+    "scientificLimits": "Heap Dijkstra memakai biaya sintetis nonnegatif buatan. Biaya ini tidak menerapkan model risiko banjir matematis tervalidasi. Kedalaman, kecepatan air dan risiko ilmiah belum tersedia; tanpa model prediksi terlatih atau posisi pengemudi langsung."
   },
   "Network": {
     "unavailable": "Posisi skema belum tersedia.",
@@ -146,7 +147,8 @@
     "caveat": "Hanya skema · bukan geografi Bogor atau informasi keselamatan.",
     "label": "Jaringan jalan searah sintetis pada {step}",
     "edge": "{id}: {source} → {target}; {cost} unit demo",
-    "affected": "; perubahan biaya simulasi"
+    "affected": "; perubahan biaya simulasi",
+    "stops": "Lokasi awal: {origin} · Penjemputan: {pickup} · Tujuan: {destination}"
   },
   "System": {
     "reachable": "Terjangkau",

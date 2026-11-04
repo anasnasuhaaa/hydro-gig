@@ -2,7 +2,7 @@
 
 `next-intl` membaca cookie `hydrogig_locale` melalui konfigurasi request di `frontend/src/i18n/request.ts`. Nilai selain `id`/`en` menjadi `id`. Tidak ada segmen locale, middleware/proxy atau penggantian URL. `NextIntlClientProvider` mewarisi pesan, locale dan zona waktu `Asia/Jakarta` yang sama dengan server. Metadata dan atribut `html.lang` ikut berubah.
 
-Tombol ID/EN memanggil Server Action tervalidasi; cookie berlaku satu tahun, `SameSite=Lax`, HttpOnly, Secure pada produksi. Pembaruan server mempertahankan komponen form, sesi perjalanan dan cache Query; muat ulang penuh tetap menghapus sesi demo yang hanya berada di memori.
+Tombol ID/EN memanggil Server Action tervalidasi; cookie berlaku satu tahun, `SameSite=Lax`, HttpOnly, Secure pada produksi. Pembaruan server mempertahankan komponen form, sesi perjalanan dan cache Query; pilihan demo tervalidasi dipulihkan dari sessionStorage per tab setelah muat ulang, tanpa menyimpan GPS atau hasil API. ID `t0/t1/t2` tetap dikirim ke backend; label linimasa, kontrol, glossary, error dan aria memakai kedua katalog.
 
 Edit `frontend/messages/id.json` dan `en.json` bersama-sama. Gunakan namespace komponen dan nama kunci bermakna; pertahankan placeholder ICU identik. Gunakan `useTranslations`/`getTranslations`, `useFormatter`, dan format tanggal dengan zona waktu konfigurasi. Jangan menerjemahkan ID graf, enum provenance, satuan kontrak, atau JSON API. Copy fixture diterjemahkan pada tampilan; kontrak demo tetap berbahasa sumber. Pesan kegagalan menggunakan copy lokal yang aman, bukan exception backend.
 

@@ -104,7 +104,15 @@ function ScreeningForm({
             className="space-y-5"
             onSubmit={form.handleSubmit(
               (request) => mutation.mutate(request),
-              () => setLocationsOpen(true),
+              (errors) => {
+                setLocationsOpen(true);
+                requestAnimationFrame(() => {
+                  const first = (
+                    ["origin", "pickup", "destination"] as const
+                  ).find((name) => errors[name]);
+                  if (first) form.setFocus(first);
+                });
+              },
             )}
           >
             <p className="text-sm text-muted-foreground">{t("startHint")}</p>

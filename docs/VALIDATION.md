@@ -1,3 +1,66 @@
+# Phase 1.7 validation record
+
+Validated locally on 2026-11-04 (Asia/Jakarta), Node.js 22.22.1, pnpm 12.16.1 and Python 3.14.4 in the existing venv. The deployment target Python 3.12 runtime was not exercised. All five stages were implemented and committed separately; no push, PR, deployment, migration or remote configuration change was performed.
+
+| Directory | Exact command | Result |
+| --- | --- | --- |
+| `backend/` | `.venv/bin/python -m pytest -q` | **70 passed**, existing Starlette/HTTPX deprecation warning |
+| `backend/` | `.venv/bin/ruff check .` | Passed |
+| `backend/` | `.venv/bin/ruff format --check .` | Passed; 37 files |
+| `frontend/` | `pnpm typecheck` | Passed |
+| `frontend/` | `pnpm lint` | Passed |
+| `frontend/` | `pnpm format:check` | Passed |
+| `frontend/` | `NEXT_DIST_DIR=.next-e2e NEXT_PUBLIC_API_BASE_URL=http://localhost:8100 pnpm build` | Passed; production Webpack build |
+| `frontend/` | `pnpm build:e2e` | Passed after the required build; same isolated output/API configuration |
+| `frontend/` | `pnpm test:e2e --workers=2` | **85 passed, 3 intentional viewport-specific skips** in desktop Chromium and Pixel 7 touch emulation |
+| Repository | `git diff --check` | Passed |
+| Repository | Local Markdown link scan | All relative links resolved |
+
+Stage-specific production browser checks also passed: Stage 1 entry/sidebar (4), Stage 2 screening (18 passed / 2 viewport skips), Stage 3 timeline/session/i18n (30 passed / 2 viewport skips), Stage 4 bilingual guide (4). The final complete suite above includes the new Stage 5 cases and all existing weather, layout, sidebar and i18n regressions. The three final skips are the mobile Sheet case on desktop and the desktop collapse/cookie cases on mobile; each runs in its applicable project. Color-environment warnings from Playwright are nonblocking.
+
+Coverage: Dashboard CTA and two-step progress; two-action example flow; a changed manifest default to prove the example is not hardcoded; exact POST requests and real API results; shortest/alternative cards and both legs; required/distinct validation and focus on the first invalid stop; H/unreachable explanation; loading, failure and retry; edits invalidating prior results and suppressing late success/trip transfer; custom-trip navigation and refresh continuity; exact friendly-label to t0/t1/t2 mapping; t1 A→G→C / C→E→F and t2 A→B→C / C→E→F; BC/CD increases and resets, DF increase; direct-jump previous-snapshot comparison, comparison failure/retry; Previous/Next/Reset; overlapping frame requests; corrupt/unknown stored selections; blocked-storage fallback; unknown flood risk without positive safety claims; guide/glossary/help; locale, metadata and SSR; sidebar keyboard/mobile focus and touch targets; light/dark and no overflow at 320/375/1280px. Existing weather tests mock external weather while demo routing uses the real local FastAPI service with no database.
+
+Desktop light screening and desktop/mobile dark navigation screenshots were visually reviewed; browser suites also capture guide, dashboard and Claims in both locales/themes. Artifacts remain ignored under `frontend/test-results/`. Browser tests start fresh frontend 3100/backend 8100, do not reuse servers or need database credentials, and use `.next-e2e`. No generated build, trace or screenshot is committed.
+
+Before: primary forms exposed graph IDs and raw t0/t1/t2 controls. After: Dashboard → example/check → two-leg route comparison → friendly simulation timeline → unavailable Claims preview, with optional settings, technical disclosures and a four-step guide. The two working driver screens have progress labels; Claims never appears as a completed operational step.
+
+Unchanged: all backend source/fixtures, API endpoints and request/response schemas, typed API client, Pydantic/Zod scientific contracts, SQLAlchemy/Alembic, deterministic eight-node directed graph, heap Dijkstra, authored cost units, t0/t1/t2 IDs, null physical risk data, stable application URLs, Asia/Jakarta formatting, official Sidebar/transparent header trigger, weather/geolocation boundaries and unavailable Claims. New `sessionStorage` holds only validated non-sensitive demo selection IDs per tab, with explicit reset and memory fallback; no GPS, route responses or evidence records are stored.
+
+Remaining: real driver usability review; licensed geographic roads/tiles; research datasets, calibrated risk parameters, scientifically validated Python providers/Modified Dijkstra and predictions; source quality/uncertainty checks; authenticated evidence storage/signing/verification; live Neon/PostGIS and deployment runtime validation. Physical phones, Safari and Firefox were not tested. No new weather integration, telemetry, authentication, token issuer or production importer was introduced. Dataset-independent priorities are documented in ROADMAP.
+
+Changed files (new components: `frame-changes.tsx` and Radix-backed `ui/collapsible.tsx`; new regression suite: `journey.spec.ts`):
+
+- [README.md](<../README.md>)
+- [docs/ARCHITECTURE.md](<ARCHITECTURE.md>)
+- [docs/DEMO-SIMULATION.md](<DEMO-SIMULATION.md>)
+- [docs/LOCALIZATION.md](<LOCALIZATION.md>)
+- [docs/ROADMAP.md](<ROADMAP.md>)
+- [docs/USER-GUIDE.md](<USER-GUIDE.md>)
+- [docs/VALIDATION.md](<VALIDATION.md>)
+- [frontend/messages/en.json](<../frontend/messages/en.json>)
+- [frontend/messages/id.json](<../frontend/messages/id.json>)
+- [frontend/src/app/(dashboard)/dashboard/page.tsx](<../frontend/src/app/(dashboard)/dashboard/page.tsx>)
+- [frontend/src/app/(dashboard)/guide/page.tsx](<../frontend/src/app/(dashboard)/guide/page.tsx>)
+- [frontend/src/components/demo/demo-session.tsx](<../frontend/src/components/demo/demo-session.tsx>)
+- [frontend/src/components/demo/frame-changes.tsx](<../frontend/src/components/demo/frame-changes.tsx>)
+- [frontend/src/components/demo/navigation-workspace.tsx](<../frontend/src/components/demo/navigation-workspace.tsx>)
+- [frontend/src/components/demo/pre-order-workspace.tsx](<../frontend/src/components/demo/pre-order-workspace.tsx>)
+- [frontend/src/components/demo/route-results.tsx](<../frontend/src/components/demo/route-results.tsx>)
+- [frontend/src/components/demo/schematic-network.tsx](<../frontend/src/components/demo/schematic-network.tsx>)
+- [frontend/src/components/layout/app-shell.tsx](<../frontend/src/components/layout/app-shell.tsx>)
+- [frontend/src/components/ui/collapsible.tsx](<../frontend/src/components/ui/collapsible.tsx>)
+- [frontend/tests/demo.spec.ts](<../frontend/tests/demo.spec.ts>)
+- [frontend/tests/guide.spec.ts](<../frontend/tests/guide.spec.ts>)
+- [frontend/tests/i18n.spec.ts](<../frontend/tests/i18n.spec.ts>)
+- [frontend/tests/journey.spec.ts](<../frontend/tests/journey.spec.ts>)
+- [frontend/tests/workspace.spec.ts](<../frontend/tests/workspace.spec.ts>)
+
+Git scope: `HydroGig_Codex_Phase_1_7_Driver_First_UX.md` remains untracked and excluded. `PROMPT.md` was not staged. Pre-existing deletions of `docs/HydroGig_UI_Refinement_Codex_Prompt.md`, `docs/PHASE-1.5-IMPLEMENTATION.md`, and `docs/PHASE-1.6-IMPLEMENTATION.md` remain unstaged. README/ROADMAP links now reference available current documentation, without restoring or committing those deleted files.
+
+Historical records follow; their test counts and feature status describe the earlier phases.
+
+---
+
 # Phase 1.6 validation record
 
 Validated locally on 2026-11-04 (Asia/Jakarta), Node.js 22.22.1, pnpm 12.16.1, Python 3.14.4 in the existing backend venv. Vercel's requested Python 3.12 runtime is not verified by this run.

@@ -176,6 +176,7 @@ export function SchematicNetwork({
           </li>
           <li>{t("change")}</li>
         </ul>
+        <p>{t("stops", result.request)}</p>
         <p>{t("caveat")}</p>
       </figcaption>
     </figure>

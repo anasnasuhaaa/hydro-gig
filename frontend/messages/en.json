@@ -133,7 +133,8 @@
     "affectedCount": "Affected route segments: {count}",
     "frame": "Frame ID",
     "network": "Network ID",
-    "provenance": "Experimental · simulated"
+    "provenance": "Experimental · simulated",
+    "scientificLimits": "Heap Dijkstra uses authored nonnegative synthetic costs. These do not implement a validated mathematical flood-risk model. Depth, water velocity and scientific risk are unavailable; there is no trained prediction model or live driver position."
   },
   "Network": {
     "unavailable": "Schematic positions are unavailable.",
@@ -146,7 +147,8 @@
     "caveat": "Schematic only · no Bogor geography or safety meaning.",
     "label": "Synthetic directed road network at {step}",
     "edge": "{id}: {source} → {target}; {cost} demo units",
-    "affected": "; simulated cost change"
+    "affected": "; simulated cost change",
+    "stops": "My starting point: {origin} · Pickup: {pickup} · Destination: {destination}"
   },
   "System": {
     "reachable": "Reachable",

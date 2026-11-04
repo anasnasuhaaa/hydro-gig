@@ -1,4 +1,4 @@
-# Phase 1.5 deterministic demonstration
+# Deterministic demonstration — Phase 1.7 driver flow
 
 **SIMULATED DATA — NOT REAL-TIME FLOOD MONITORING**
 
@@ -6,9 +6,19 @@ This demonstrates application interaction only. It contains no real Bogor road m
 
 ## Run
 
-Follow README setup. Start FastAPI from `backend/` with `.venv/bin/uvicorn app.main:app --reload --port 8000`; start Next.js from `frontend/` with `pnpm dev`. PostgreSQL credentials can remain empty. Open `/pre-order`, choose A (origin), C (pickup), F (destination), a scenario/frame, and click **Screen Route**. After a successful API response, open its EWS simulation link. `/navigation` also offers the manifest's default trip without screening first. Use t0/t1/t2 or **Advance simulation**; there are no timers, position tracking or background streams. `/claims` deliberately keeps issuance disabled.
+Ikuti setup pada README; FastAPI dan frontend dapat berjalan tanpa PostgreSQL. Dari `/dashboard`, tekan **Periksa rute** → **Coba contoh perjalanan** → **Periksa rute**. Contoh manifest mengisi A (lokasi awal), C (penjemputan), F (tujuan), skenario pertama dan snapshot awal yang valid. **Ubah lokasi** membuka pemilih tiga titik tervalidasi; **Pengaturan simulasi** membuka skenario/bingkai. Setelah API merespons, bandingkan dua bagian perjalanan dan **Rute terpendek / Rute alternatif (simulasi)**, lalu **Lanjut ke navigasi**.
 
-Trip and frame selection live in the shared dashboard layout's memory, survive client navigation between the two workspaces, and reset on a full browser reload. No trip or evidence is persisted. Form edits hide previous results until resubmission. Navigation requests are keyed by the entire trip/scenario/frame; old routes are hidden during loading or failure.
+| API step (tetap) | Label Indonesia | English label |
+| --- | --- | --- |
+| `t0` | Kondisi awal | Initial condition |
+| `t1` | 5 menit kemudian | 5 minutes later |
+| `t2` | 10 menit kemudian | 10 minutes later |
+
+`/navigation` menampilkan skema sintetis, linimasa, **Sebelumnya**, **Berikutnya**, dan **Atur ulang demo**. Ringkasan perubahan menghitung selisih biaya serta jalur dari respons API snapshot sebelumnya, bukan hanya daftar ruas terpengaruh saat ini. Karena itu `t2` menjelaskan BC/CD yang menurun kembali serta DF yang meningkat. Melompat langsung ke `t2` tetap membandingkan dengan `t1`. Jika pembanding gagal, ringkasan menyatakan belum tersedia dan menawarkan coba lagi; rute saat ini tetap dapat diperiksa. Tidak ada timer, marker pengemudi bergerak, GPS, prediksi cuaca atau aliran data langsung. Kontrol perjalanan/skenario berada di **Mode simulasi / riset**. `/claims` tetap belum menerbitkan bukti.
+
+Pilihan demo saja disimpan di `sessionStorage` per tab (`hydrogig-demo-v1`), divalidasi Zod dan dicocokkan dengan titik/skenario/bingkai dari API sebelum dipakai. Tidak ada hasil API, koordinat, identitas atau bukti yang dipersistenkan. Data rusak dan ID yang tidak tersedia diabaikan; penyimpanan diblokir memakai fallback memori. Muat ulang memulihkan pilihan, tetapi menghitung ulang rute melalui API. **Atur ulang demo** menghapus pilihan pemeriksaan terakhir dan kembali ke contoh manifest pada snapshot awal. Sesi browser dapat berakhir saat tab ditutup.
+
+Mengubah form menghapus hasil sebelumnya. Respons pemeriksaan yang datang setelah pilihan berubah tidak boleh mengumumkan keberhasilan atau mengganti perjalanan navigasi. Query navigasi menggunakan seluruh trip/skenario/step sebagai key dan AbortSignal; hasil lama tidak ditampilkan saat memuat/gagal. **Rincian teknis** mempertahankan ID, provenance eksperimental/simulasi, timestamp fiktif (tampilan Asia/Jakarta), engine serta weighting version. Seluruh endpoint, payload, fixture dan algoritme backend tetap sama.
 
 ## Fixture manifest and graph
 

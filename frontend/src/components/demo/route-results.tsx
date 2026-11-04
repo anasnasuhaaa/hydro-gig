@@ -88,21 +88,6 @@ export function RouteResults({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Badge
-                variant="secondary"
-                className="h-auto min-h-7 whitespace-normal text-sm"
-              >
-                {t("affectedCount", {
-                  count: new Set(
-                    [
-                      ...result.origin_to_pickup[mode].edge_ids,
-                      ...result.pickup_to_destination[mode].edge_ids,
-                    ].filter((id) =>
-                      result.frame.affected_edge_ids.includes(id),
-                    ),
-                  ).size,
-                })}
-              </Badge>
               <Leg title={t("first")} route={result.origin_to_pickup[mode]} />
               <Leg
                 title={t("second")}
@@ -189,6 +174,7 @@ export function RouteResults({
             ))}
           </dl>
           <p className="text-muted-foreground">{t("limits")}</p>
+          <p className="text-muted-foreground">{t("scientificLimits")}</p>
         </div>
       </details>
     </section>

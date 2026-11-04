@@ -1,12 +1,17 @@
 # Panduan singkat HydroGig-Mesh
 
-Buka `/guide` untuk versi visual tiga langkah dalam Bahasa Indonesia atau English. Tombol ID/EN dan tema ada di header. URL tidak berubah saat bahasa diganti.
+Buka `/guide` untuk versi visual empat langkah dalam Bahasa Indonesia atau English. Tombol ID/EN dan tema ada di header; URL tetap sama.
 
-1. **Periksa rute:** buka `/pre-order`, pilih tiga titik berbeda serta skenario/bingkai, lalu tekan Periksa rute. Acuan jarak dan alternatif berbobot demo menampilkan jarak sintetis, biaya buatan serta ruas terpengaruh. Jaringan satu arah dapat membuat perjalanan dari H tidak terjangkau.
-2. **Jelajahi simulasi:** tekan Buka navigasi atau buka `/navigation`. Pilih perjalanan bawaan atau terakhir diperiksa, lalu gunakan `t0`, `t1`, `t2` atau Bingkai berikutnya. Perubahan adalah snapshot fiktif; bukan prediksi waktu tiba. Skema bukan peta Bogor. Rincian perhitungan dapat dibuka dengan keyboard.
-3. **Bukti perjalanan:** `/claims` menjelaskan fitur yang masih direncanakan. Belum tersedia pembuatan, penyimpanan, penandatanganan atau verifikasi klaim. Bukti mendatang juga tidak menjamin pembatalan penalti platform.
+1. **Mulai demo:** dari Dasbor, tekan **Periksa rute**, lalu **Coba contoh perjalanan**. Manifest mengisi A (lokasi awal) → C (penjemputan) → F (tujuan). Tidak perlu memahami graf; **Ubah lokasi** dan **Pengaturan simulasi** bersifat opsional.
+2. **Periksa dan bandingkan:** tekan **Periksa rute** dan tunggu API. Bandingkan **Rute terpendek** (jarak sintetis) dengan **Rute alternatif (simulasi)** (biaya buatan). Keduanya memuat awal→penjemputan serta penjemputan→tujuan. Jika tidak terjangkau, ubah lokasi; H adalah ujung satu arah. Lalu tekan **Lanjut ke navigasi**.
+3. **Jelajahi linimasa:** **Kondisi awal**=`t0`, **5 menit kemudian**=`t1`, **10 menit kemudian**=`t2`. Gunakan **Sebelumnya/Berikutnya**, atau pilih snapshot langsung. Pada `t1`, BC/CD naik dan contoh berubah menjadi A→G→C serta C→E→F. Pada `t2`, BC/CD kembali, DF naik dan rute menjadi A→B→C serta C→E→F. Ringkasan menunjukkan perubahan biaya/rute, bukan pengukuran banjir. **Atur ulang demo** kembali ke contoh awal. **Rincian teknis** dapat dibuka dengan keyboard untuk ID/versi/waktu fiktif. Skema bukan peta Bogor.
+4. **Pahami status Klaim:** `/claims` menjelaskan fitur mendatang. Belum ada pembuatan, penyimpanan, penandatanganan atau verifikasi bukti, maupun penerbitan token. Penerimaan platform dan pembatalan penalti tidak dijamin.
 
-Di Dasbor, **Gunakan lokasi saya** meminta satu lokasi setelah ditekan. Browser meminta izin pada HTTPS/localhost yang mendukungnya. Bila ditolak, timeout, offline atau tidak didukung, pilih **Pilih Bogor manual**. Nama lokasi perangkat hanya menyebut koordinat perkiraan; pilihan manual tidak disebut hasil deteksi. Koordinat dibulatkan untuk permintaan cuaca dan tidak disimpan sebagai riwayat. Muat ulang menghapus pilihan lokasi dan sesi perjalanan di memori.
+Istilah: **bingkai simulasi** adalah snapshot fiktif biaya jalan; **rute terpendek** meminimalkan jarak sintetis; **rute alternatif** meminimalkan biaya demo; **risiko belum diketahui** berarti tidak ada bukti untuk menyimpulkan keselamatan. Seluruh penalti terkait banjir sintetis, bukan pemantauan langsung. Tidak ada gerakan/pelacakan pengemudi pada skema.
+
+Pilihan demo tervalidasi tersimpan per tab dan bertahan saat muat ulang; **Atur ulang demo** menghapus perjalanan pemeriksaan terakhir. Hanya ID titik/skenario/bingkai tersimpan, tanpa koordinat atau hasil rute. Data rusak diabaikan; bila penyimpanan browser diblokir, pilihan hanya bertahan dalam memori.
+
+Di Dasbor, **Gunakan lokasi saya** meminta satu lokasi setelah ditekan. Browser meminta izin pada HTTPS/localhost yang mendukungnya. Bila ditolak, timeout, offline atau tidak didukung, pilih **Pilih Bogor manual**. Nama lokasi perangkat hanya menyebut koordinat perkiraan; pilihan manual tidak disebut hasil deteksi. Koordinat dibulatkan untuk permintaan cuaca dan tidak disimpan sebagai riwayat. Muat ulang menghapus pilihan lokasi cuaca; pilihan demo tidak memuat GPS.
 
 Cuaca Open-Meteo adalah kondisi berbasis model, dilengkapi sumber, satuan, waktu model, waktu pengambilan dan interval presipitasi. Penyegaran sekitar sepuluh menit; tombol dibatasi untuk mengurangi volume permintaan. Data hilang ditandai tidak tersedia; respons lama dapat diberi label kedaluwarsa. Cuaca tidak digunakan untuk menghitung bobot demo atau menyimpulkan jalan bebas banjir.
 
@@ -14,4 +19,4 @@ Di ponsel, gunakan navigasi bawah; menu samping tetap tersedia untuk seluruh mod
 
 **Jangan memasuki genangan untuk menguji purwarupa ini. Rute yang tersedia bukan jaminan keselamatan.** Lihat [DEMO-SIMULATION.md](DEMO-SIMULATION.md) dan [WEATHER.md](WEATHER.md) untuk batas data.
 
-English interface quick start: choose **EN**, screen three distinct stops, open Navigation and select fixed frames. Choose **Use my location** or **Select Bogor manually** on Dashboard for weather context. Guide explains all three workflows; evidence claims remain unavailable. Model weather and synthetic flood scenarios remain separate.
+English interface quick start: choose **EN**, press **Try Example Trip**, **Check route**, then **Continue to navigation**. Explore **Initial condition / 5 minutes later / 10 minutes later** with **Previous / Next / Reset demo**. Choose **Use my location** or **Select Bogor manually** on Dashboard for weather context. Guide explains the four steps; evidence claims remain unavailable. Model weather and synthetic flood scenarios remain separate.
