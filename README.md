@@ -4,11 +4,11 @@ A research-oriented foundation for flood-aware motorcycle ride-hailing navigatio
 
 **Current phase: Phase 1.5 — UI Refinement & Dataset-Independent MVP Preparation.** The application provides official shadcn sidebar navigation, real infrastructure status, validated data contracts, a deterministic synthetic routing API, interactive demo screening and user-driven EWS snapshots. Live monitoring, hydrological prediction, scientific risk calculation, telemetry ingestion and evidence-token generation are not operational. There is no validated flood dataset or trained DeepONet checkpoint.
 
-**SIMULATED DATA — NOT REAL-TIME FLOOD MONITORING.** [Demo instructions and API examples](docs/DEMO-SIMULATION.md) · [Data contracts](docs/DATA-CONTRACTS.md). The entire demo works without PostgreSQL credentials. [Phase 1.5 implementation report and file inventory](docs/PHASE-1.5-IMPLEMENTATION.md).
+**SIMULATED DATA — NOT REAL-TIME FLOOD MONITORING.** [Demo instructions and API examples](docs/DEMO-SIMULATION.md) · [Data contracts](docs/DATA-CONTRACTS.md). The entire demo works without PostgreSQL credentials. [Phase 1.5 implementation report and file inventory](docs/PHASE-1.5-IMPLEMENTATION.md). [UI refinement report](docs/UI-REFINEMENT.md).
 
 ## What is available
 
-- `/dashboard`: project overview, three workflow cards, and API/database connectivity from real backend responses.
+- `/dashboard`: action-focused launch surface, compact workflow links, and API/database connectivity from real backend responses.
 - `/pre-order`: validated origin/pickup/destination/frame selectors, real API screening and baseline versus demonstration-weighted results.
 - `/navigation`: shared screened trip or default fixture trip, t0/t1/t2 controls, simulated warnings and a responsive directed-network schematic.
 - `/claims`: future incident/evidence workflow, with token creation disabled.

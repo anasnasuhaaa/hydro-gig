@@ -1,3 +1,30 @@
+# UI refinement validation record
+
+Validated locally on 2026-11-04 (Asia/Jakarta), using the existing Node.js 22.22.1, pnpm 12.16.1 and Python 3.14.4 installations. The existing uncommitted Phase 1.5 foundation was preserved in a separate checkpoint commit before the frontend refinement stages. No backend logic was changed by the refinement.
+
+| Check | Result |
+| --- | --- |
+| Backend `.venv/bin/python -m pytest -q` | **47 passed** |
+| Backend `.venv/bin/ruff check .` | Passed |
+| Backend `.venv/bin/ruff format --check .` | Passed; 33 files |
+| Frontend `pnpm typecheck` | Passed |
+| Frontend `pnpm lint` | Passed |
+| Frontend `pnpm format:check` | Passed |
+| Frontend `pnpm build` | Passed; production Webpack build |
+| Frontend `pnpm test:e2e` | **26 passed, 2 intentionally skipped**, after production build |
+| Visual review | Desktop and phone screenshots in light/dark themes; readable controls and schematic, no visible clipping |
+| `git diff --check` | Passed |
+
+Browser coverage includes the official sidebar header trigger, brand/trigger bounds, 64px collapsed rail and icon bounds, active links, tooltips, Enter and Ctrl+B, automatic content resizing, one mobile dialog, close/Escape/route-selection focus restoration, all direct routes, and theme persistence. Workflow tests exercise real local FastAPI screening, validation without invalid requests, shared trip/frame state, warning and schematic changes, unavailable routes, malformed responses, API failure/retry, stale-result removal, keyboard disclosure, and explicit loading. Both projects also check all four routes at 320px in light/dark themes with reduced motion. The two skips apply only to the other viewport's sidebar interaction.
+
+Screenshots are local ignored artifacts under `frontend/test-results/`, including Dashboard light/dark, screening, Navigation light/dark, collapsed sidebar, mobile drawer and Claims. The official Radix Nova source was fetched from [the shadcn registry](https://ui.shadcn.com/r/styles/radix-nova/sidebar.json) and compared with the existing generated component; its provider, Sheet, gap/container, menus and tooltip composition match. The CLI's read-only `shadcn view sidebar` request timed out, but direct registry retrieval succeeded; reinstalling the existing component was unnecessary.
+
+Remaining limits: no live PostgreSQL/PostGIS, licensed geographic map tiles, scientific data/model integration, physical-device/Safari/Firefox testing, or deployment was performed. The backend test client emits its existing HTTPX deprecation warning; Playwright emits its terminal color warning. Neither blocks validation. Work is committed locally by stage; no push or deployment was performed. `PROMPT.md` remains untouched and untracked.
+
+The records below are historical and describe earlier runs.
+
+---
+
 # Phase 1.5 validation record
 
 Validated locally on 2026-11-04 (Asia/Jakarta) with Node.js 22.22.1, pnpm 12.16.1 and Python 3.14.4. Commands ran in the existing backend virtual environment and frontend installation. The Python 3.12 Vercel runtime remains unverified here.
