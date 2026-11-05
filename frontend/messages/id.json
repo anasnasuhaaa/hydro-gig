@@ -372,6 +372,10 @@
     "weight": "Bobot tersimpan",
     "delta": "Perubahan bobot",
     "unknown": "Tidak tersedia",
-    "timezone": "(Asia/Jakarta)"
+    "timezone": "(Asia/Jakarta)",
+    "sessionInvalid": "Perjalanan tersimpan tidak valid atau berbeda versi fixture. Pilih contoh baru.",
+    "resetTrip": "Atur ulang perjalanan eksperimental",
+    "continueClaims": "Lanjut ke pratinjau bukti",
+    "continueNavigation": "Lanjut ke navigasi"
   }
 }

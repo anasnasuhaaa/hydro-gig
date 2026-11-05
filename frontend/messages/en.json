@@ -372,6 +372,10 @@
     "weight": "Stored weight",
     "delta": "Weight change",
     "unknown": "Unavailable",
-    "timezone": "(Asia/Jakarta)"
+    "timezone": "(Asia/Jakarta)",
+    "sessionInvalid": "Saved trip is invalid or from another fixture version. Choose a new sample.",
+    "resetTrip": "Reset experimental trip",
+    "continueClaims": "Continue to evidence preview",
+    "continueNavigation": "Continue to navigation"
   }
 }

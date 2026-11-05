@@ -1,5 +1,8 @@
 "use client";
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useExperimentalSession } from "./session";
 import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,16 +16,9 @@ import {
   type FixtureRequest,
 } from "@/lib/api/experimental";
 
-const initial: FixtureRequest = {
-  origin: "N01",
-  pickup: "N03",
-  destination: "N12",
-  scenario_id: "small-inundation-v1",
-  step: "t0",
-};
 export function DatasetMode({ children }: { children: ReactNode }) {
   const t = useTranslations("Experimental");
-  const [enabled, setEnabled] = useState(false);
+  const { enabled, setEnabled, ready, invalid } = useExperimentalSession();
   return (
     <div className="space-y-4">
       <Button
@@ -32,17 +28,20 @@ export function DatasetMode({ children }: { children: ReactNode }) {
       >
         {t(enabled ? "synthetic" : "enable")}
       </Button>
-      {enabled ? <Workspace /> : children}
+      {invalid && <p role="status">{t("sessionInvalid")}</p>}
+      {ready && enabled ? <Workspace /> : children}
     </div>
   );
 }
 function Workspace() {
   const t = useTranslations("Experimental");
   const locale = useLocale();
-  const [request, setRequest] = useState(initial);
+  const session = useExperimentalSession();
+  const { request, setRequest } = session;
+  const pathname = usePathname();
   const form = useForm<FixtureRequest>({
     resolver: zodResolver(requestSchema),
-    defaultValues: initial,
+    values: request,
   });
   const network = useQuery({
     queryKey: ["experimental", "network"],
@@ -95,6 +94,9 @@ function Workspace() {
       <h1 className="text-xl font-semibold">{t("title")}</h1>
       <p className="font-semibold">{t("label")}</p>
       <p>{t("limitations")}</p>
+      <Button variant="outline" onClick={session.reset}>
+        {t("resetTrip")}
+      </Button>
       {graph && (
         <form
           className="grid gap-4 sm:grid-cols-3"
@@ -158,6 +160,15 @@ function Workspace() {
         <p role="status">{t("loading")}</p>
       ) : (
         <>
+          <Button asChild onClick={() => session.remember([...weighted])}>
+            <Link href={pathname === "/navigation" ? "/claims" : "/navigation"}>
+              {t(
+                pathname === "/navigation"
+                  ? "continueClaims"
+                  : "continueNavigation",
+              )}
+            </Link>
+          </Button>
           <p>
             {t("time")}:{" "}
             {new Intl.DateTimeFormat(locale, {
