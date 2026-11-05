@@ -380,7 +380,21 @@
     "sessionInvalid": "Saved trip is invalid or from another fixture version. Choose a new sample.",
     "resetTrip": "Reset experimental trip",
     "continueClaims": "Continue to evidence preview",
-    "continueNavigation": "Continue to navigation"
+    "continueNavigation": "Continue to navigation",
+    "mode": "Demonstration mode",
+    "screenTitle": "Plan a sample trip.",
+    "screenHelp": "Choose stops, calculate routes, then compare distance and experimental cost. All trips are simulated with unverified source data.",
+    "navigationTitle": "See the scenario change.",
+    "navigationHelp": "Replay five historical frames. Segment values can change while the selected path stays the same. No live monitoring or prediction.",
+    "compare": "Compare routes",
+    "compareHelp": "Select an alternative to highlight its path on the schematic.",
+    "tripDistance": "Trip distance",
+    "metres": "m",
+    "costHelp": "Distance and weight objectives use different units; lower cost does not guarantee safety.",
+    "networkTitle": "Trip network",
+    "schematic": "Directed network schematic · No verified road map",
+    "backScreen": "Edit trip",
+    "backDashboard": "Back to dashboard"
   },
   "Evidence": {
     "title": "Experimental Evidence Preview",

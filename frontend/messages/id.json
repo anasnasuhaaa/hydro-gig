@@ -380,7 +380,21 @@
     "sessionInvalid": "Perjalanan tersimpan tidak valid atau berbeda versi fixture. Pilih contoh baru.",
     "resetTrip": "Atur ulang perjalanan eksperimental",
     "continueClaims": "Lanjut ke pratinjau bukti",
-    "continueNavigation": "Lanjut ke navigasi"
+    "continueNavigation": "Lanjut ke navigasi",
+    "mode": "Mode demonstrasi",
+    "screenTitle": "Rencanakan perjalanan contoh.",
+    "screenHelp": "Pilih titik, hitung rute, lalu bandingkan jarak dan biaya eksperimental. Seluruh perjalanan adalah simulasi dengan sumber belum terverifikasi.",
+    "navigationTitle": "Lihat perubahan sepanjang skenario.",
+    "navigationHelp": "Putar ulang lima bingkai historis. Nilai ruas dapat berubah meskipun rute yang dipilih tetap sama. Bukan pemantauan langsung atau prediksi.",
+    "compare": "Bandingkan rute",
+    "compareHelp": "Pilih alternatif untuk menyorot jalurnya pada skema.",
+    "tripDistance": "Jarak perjalanan",
+    "metres": "m",
+    "costHelp": "Objektif jarak dan bobot memakai satuan berbeda; biaya lebih kecil bukan jaminan aman.",
+    "networkTitle": "Jaringan perjalanan",
+    "schematic": "Skema jaringan berarah · Bukan peta jalan terverifikasi",
+    "backScreen": "Ubah perjalanan",
+    "backDashboard": "Kembali ke dasbor"
   },
   "Evidence": {
     "title": "Pratinjau Bukti Eksperimental",
