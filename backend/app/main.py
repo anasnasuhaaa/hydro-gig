@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.api.v1.endpoints.demo import router as demo_router
+from app.api.v1.endpoints.experimental import router as experimental_router
 from app.api.v1.endpoints.system import router
 from app.api.v1.endpoints.weather import router as weather_router
 from app.core.config import get_settings
@@ -32,6 +33,7 @@ def create_app() -> FastAPI:
     )
     application.include_router(router, prefix="/api/v1")
     application.include_router(demo_router, prefix="/api/v1")
+    application.include_router(experimental_router, prefix="/api/v1")
 
     application.include_router(weather_router, prefix="/api/v1")
 

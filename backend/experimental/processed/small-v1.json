@@ -1,0 +1,1017 @@
+{
+  "dataset_id": "small-fixture",
+  "dataset_version": "1",
+  "network_id": "small-directed-v1",
+  "network_version": "1",
+  "scenario_id": "small-inundation-v1",
+  "network_source": "unknown",
+  "scenario_source": "unknown",
+  "replay_status": "simulated_unverified",
+  "route_provenance": "experimental_computation",
+  "algorithm_version": "heap-dijkstra-v1",
+  "weighting_version": "stored-W-v1",
+  "missing_data": [
+    "verified_crs",
+    "source_license",
+    "calibration",
+    "velocity_axes"
+  ],
+  "limitations": [
+    "Fixture preview only; no verified road coverage.",
+    "Stored costs are arbitrary experimental objectives, not safety thresholds.",
+    "Fixed historical frames; no live observations or forecasts."
+  ],
+  "field_provenance": {
+    "x/y": "unknown source; degree-like display coordinates only",
+    "length_m": "unverified source metre values",
+    "h_m": "unverified source depth, assumed metres",
+    "u_ms/v_ms": "unverified signed components, assumed m/s; axes unknown",
+    "weight": "unverified stored dijkstra_weight_W; no formula evaluated"
+  },
+  "source_hashes": {
+    "02_road_network_nodes.csv": "cd8b97897304414a03063091c9041cacbb9076c5f55df0fd9b67890e0ac5b701",
+    "02_road_network_edges.csv": "9d3e8425858df191cfd1bd5d30f770d811cc8bba0109d116e0ef2d6cceefb32f",
+    "04_inundation_scenarios_t0_t1_t2.json": "bee22c68b038bb9c54a75b92ea90f61344694273ca31b5d6bbd160a1919c3b77"
+  },
+  "nodes": [
+    {
+      "node_id": "N01",
+      "x": 106.7952,
+      "y": -6.5905
+    },
+    {
+      "node_id": "N02",
+      "x": 106.7975,
+      "y": -6.5842
+    },
+    {
+      "node_id": "N03",
+      "x": 106.7988,
+      "y": -6.5778
+    },
+    {
+      "node_id": "N04",
+      "x": 106.7996,
+      "y": -6.5721
+    },
+    {
+      "node_id": "N05",
+      "x": 106.801,
+      "y": -6.5675
+    },
+    {
+      "node_id": "N06",
+      "x": 106.8035,
+      "y": -6.582
+    },
+    {
+      "node_id": "N07",
+      "x": 106.8058,
+      "y": -6.5745
+    },
+    {
+      "node_id": "N08",
+      "x": 106.7928,
+      "y": -6.581
+    },
+    {
+      "node_id": "N09",
+      "x": 106.7935,
+      "y": -6.5718
+    },
+    {
+      "node_id": "N10",
+      "x": 106.7972,
+      "y": -6.565
+    },
+    {
+      "node_id": "N11",
+      "x": 106.8052,
+      "y": -6.5868
+    },
+    {
+      "node_id": "N12",
+      "x": 106.8055,
+      "y": -6.5632
+    }
+  ],
+  "edges": [
+    {
+      "edge_id": "E_01_02",
+      "source_node": "N01",
+      "target_node": "N02",
+      "length_m": 745.18,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_02_01",
+      "source_node": "N02",
+      "target_node": "N01",
+      "length_m": 745.18,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_02_03",
+      "source_node": "N02",
+      "target_node": "N03",
+      "length_m": 725.99,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_03_04",
+      "source_node": "N03",
+      "target_node": "N04",
+      "length_m": 639.94,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_04_03",
+      "source_node": "N04",
+      "target_node": "N03",
+      "length_m": 639.94,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_04_05",
+      "source_node": "N04",
+      "target_node": "N05",
+      "length_m": 534.36,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_05_10",
+      "source_node": "N05",
+      "target_node": "N10",
+      "length_m": 503.47,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_05_12",
+      "source_node": "N05",
+      "target_node": "N12",
+      "length_m": 689.72,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_01_11",
+      "source_node": "N01",
+      "target_node": "N11",
+      "length_m": 1178.74,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_11_06",
+      "source_node": "N11",
+      "target_node": "N06",
+      "length_m": 565.81,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_02_06",
+      "source_node": "N02",
+      "target_node": "N06",
+      "length_m": 706.48,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_06_07",
+      "source_node": "N06",
+      "target_node": "N07",
+      "length_m": 871.8,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_07_05",
+      "source_node": "N07",
+      "target_node": "N05",
+      "length_m": 941.8,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_07_12",
+      "source_node": "N07",
+      "target_node": "N12",
+      "length_m": 1256.94,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_02_08",
+      "source_node": "N02",
+      "target_node": "N08",
+      "length_m": 629.4,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_08_09",
+      "source_node": "N08",
+      "target_node": "N09",
+      "length_m": 1025.91,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_09_10",
+      "source_node": "N09",
+      "target_node": "N10",
+      "length_m": 859.52,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_03_06",
+      "source_node": "N03",
+      "target_node": "N06",
+      "length_m": 698.32,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_03_08",
+      "source_node": "N03",
+      "target_node": "N08",
+      "length_m": 752.25,
+      "oneway": true
+    },
+    {
+      "edge_id": "E_04_09",
+      "source_node": "N04",
+      "target_node": "N09",
+      "length_m": 674.66,
+      "oneway": true
+    }
+  ],
+  "frames": [
+    {
+      "dataset_id": "small-fixture",
+      "dataset_version": "1",
+      "network_id": "small-directed-v1",
+      "network_version": "1",
+      "scenario_id": "small-inundation-v1",
+      "network_source": "unknown",
+      "scenario_source": "unknown",
+      "replay_status": "simulated_unverified",
+      "route_provenance": "experimental_computation",
+      "algorithm_version": "heap-dijkstra-v1",
+      "weighting_version": "stored-W-v1",
+      "missing_data": [
+        "verified_crs",
+        "source_license",
+        "calibration",
+        "velocity_axes"
+      ],
+      "limitations": [
+        "Fixture preview only; no verified road coverage.",
+        "Stored costs are arbitrary experimental objectives, not safety thresholds.",
+        "Fixed historical frames; no live observations or forecasts."
+      ],
+      "field_provenance": {
+        "x/y": "unknown source; degree-like display coordinates only",
+        "length_m": "unverified source metre values",
+        "h_m": "unverified source depth, assumed metres",
+        "u_ms/v_ms": "unverified signed components, assumed m/s; axes unknown",
+        "weight": "unverified stored dijkstra_weight_W; no formula evaluated"
+      },
+      "step": "t0",
+      "timestamp": "2026-11-05T17:00:00+07:00",
+      "samples": {
+        "E_01_02": {
+          "weight": 3520.408,
+          "h_m": 0.0173,
+          "u_ms": 0.0768,
+          "v_ms": 0.0384
+        },
+        "E_02_01": {
+          "weight": 3544.798,
+          "h_m": 0.018,
+          "u_ms": 0.08,
+          "v_ms": 0.04
+        },
+        "E_02_03": {
+          "weight": 3942.81,
+          "h_m": 0.0312,
+          "u_ms": 0.156,
+          "v_ms": 0.0832
+        },
+        "E_03_04": {
+          "weight": 3742.512,
+          "h_m": 0.0384,
+          "u_ms": 0.1152,
+          "v_ms": 0.048
+        },
+        "E_04_03": {
+          "weight": 3805.188,
+          "h_m": 0.04,
+          "u_ms": 0.12,
+          "v_ms": 0.05
+        },
+        "E_04_05": {
+          "weight": 2753.072,
+          "h_m": 0.026,
+          "u_ms": 0.104,
+          "v_ms": 0.0624
+        },
+        "E_05_10": {
+          "weight": 2107.279,
+          "h_m": 0.0048,
+          "u_ms": 0.0288,
+          "v_ms": 0.0192
+        },
+        "E_05_12": {
+          "weight": 2892.329,
+          "h_m": 0.005,
+          "u_ms": 0.03,
+          "v_ms": 0.02
+        },
+        "E_01_11": {
+          "weight": 4809.015,
+          "h_m": 0.0021,
+          "u_ms": 0.0208,
+          "v_ms": 0.0104
+        },
+        "E_11_06": {
+          "weight": 2304.037,
+          "h_m": 0.0019,
+          "u_ms": 0.0192,
+          "v_ms": 0.0096
+        },
+        "E_02_06": {
+          "weight": 3108.12,
+          "h_m": 0.01,
+          "u_ms": 0.06,
+          "v_ms": 0.03
+        },
+        "E_06_07": {
+          "weight": 3556.763,
+          "h_m": 0.0021,
+          "u_ms": 0.0208,
+          "v_ms": 0.0104
+        },
+        "E_07_05": {
+          "weight": 3835.106,
+          "h_m": 0.0019,
+          "u_ms": 0.0192,
+          "v_ms": 0.0096
+        },
+        "E_07_12": {
+          "weight": 5123.219,
+          "h_m": 0.002,
+          "u_ms": 0.02,
+          "v_ms": 0.01
+        },
+        "E_02_08": {
+          "weight": 2779.736,
+          "h_m": 0.0104,
+          "u_ms": 0.0624,
+          "v_ms": 0.0312
+        },
+        "E_08_09": {
+          "weight": 4177.611,
+          "h_m": 0.0019,
+          "u_ms": 0.0192,
+          "v_ms": 0.0096
+        },
+        "E_09_10": {
+          "weight": 3503.357,
+          "h_m": 0.002,
+          "u_ms": 0.02,
+          "v_ms": 0.01
+        },
+        "E_03_06": {
+          "weight": 3084.12,
+          "h_m": 0.0104,
+          "u_ms": 0.0624,
+          "v_ms": 0.0312
+        },
+        "E_03_08": {
+          "weight": 3296.729,
+          "h_m": 0.0096,
+          "u_ms": 0.0576,
+          "v_ms": 0.0288
+        },
+        "E_04_09": {
+          "weight": 2968.13,
+          "h_m": 0.01,
+          "u_ms": 0.06,
+          "v_ms": 0.03
+        }
+      }
+    },
+    {
+      "dataset_id": "small-fixture",
+      "dataset_version": "1",
+      "network_id": "small-directed-v1",
+      "network_version": "1",
+      "scenario_id": "small-inundation-v1",
+      "network_source": "unknown",
+      "scenario_source": "unknown",
+      "replay_status": "simulated_unverified",
+      "route_provenance": "experimental_computation",
+      "algorithm_version": "heap-dijkstra-v1",
+      "weighting_version": "stored-W-v1",
+      "missing_data": [
+        "verified_crs",
+        "source_license",
+        "calibration",
+        "velocity_axes"
+      ],
+      "limitations": [
+        "Fixture preview only; no verified road coverage.",
+        "Stored costs are arbitrary experimental objectives, not safety thresholds.",
+        "Fixed historical frames; no live observations or forecasts."
+      ],
+      "field_provenance": {
+        "x/y": "unknown source; degree-like display coordinates only",
+        "length_m": "unverified source metre values",
+        "h_m": "unverified source depth, assumed metres",
+        "u_ms/v_ms": "unverified signed components, assumed m/s; axes unknown",
+        "weight": "unverified stored dijkstra_weight_W; no formula evaluated"
+      },
+      "step": "t1",
+      "timestamp": "2026-11-05T17:05:00+07:00",
+      "samples": {
+        "E_01_02": {
+          "weight": 4273.186,
+          "h_m": 0.0365,
+          "u_ms": 0.1536,
+          "v_ms": 0.0864
+        },
+        "E_02_01": {
+          "weight": 4339.96,
+          "h_m": 0.038,
+          "u_ms": 0.16,
+          "v_ms": 0.09
+        },
+        "E_02_03": {
+          "weight": 11786.634,
+          "h_m": 0.13,
+          "u_ms": 0.4992,
+          "v_ms": 0.2704
+        },
+        "E_03_04": {
+          "weight": 14544.703,
+          "h_m": 0.1584,
+          "u_ms": 0.4992,
+          "v_ms": 0.2976
+        },
+        "E_04_03": {
+          "weight": 16022.454,
+          "h_m": 0.165,
+          "u_ms": 0.52,
+          "v_ms": 0.31
+        },
+        "E_04_05": {
+          "weight": 7233.149,
+          "h_m": 0.1144,
+          "u_ms": 0.4368,
+          "v_ms": 0.2288
+        },
+        "E_05_10": {
+          "weight": 2289.296,
+          "h_m": 0.0134,
+          "u_ms": 0.0768,
+          "v_ms": 0.0384
+        },
+        "E_05_12": {
+          "weight": 3154.599,
+          "h_m": 0.014,
+          "u_ms": 0.08,
+          "v_ms": 0.04
+        },
+        "E_01_11": {
+          "weight": 5101.55,
+          "h_m": 0.0083,
+          "u_ms": 0.052,
+          "v_ms": 0.0312
+        },
+        "E_11_06": {
+          "weight": 2434.739,
+          "h_m": 0.0077,
+          "u_ms": 0.048,
+          "v_ms": 0.0288
+        },
+        "E_02_06": {
+          "weight": 3603.411,
+          "h_m": 0.025,
+          "u_ms": 0.14,
+          "v_ms": 0.07
+        },
+        "E_06_07": {
+          "weight": 3773.124,
+          "h_m": 0.0083,
+          "u_ms": 0.052,
+          "v_ms": 0.0312
+        },
+        "E_07_05": {
+          "weight": 4052.662,
+          "h_m": 0.0077,
+          "u_ms": 0.048,
+          "v_ms": 0.0288
+        },
+        "E_07_12": {
+          "weight": 5424.341,
+          "h_m": 0.008,
+          "u_ms": 0.05,
+          "v_ms": 0.03
+        },
+        "E_02_08": {
+          "weight": 3242.727,
+          "h_m": 0.026,
+          "u_ms": 0.1456,
+          "v_ms": 0.0728
+        },
+        "E_08_09": {
+          "weight": 4414.596,
+          "h_m": 0.0077,
+          "u_ms": 0.048,
+          "v_ms": 0.0288
+        },
+        "E_09_10": {
+          "weight": 3709.27,
+          "h_m": 0.008,
+          "u_ms": 0.05,
+          "v_ms": 0.03
+        },
+        "E_03_06": {
+          "weight": 3597.809,
+          "h_m": 0.026,
+          "u_ms": 0.1456,
+          "v_ms": 0.0728
+        },
+        "E_03_08": {
+          "weight": 3798.544,
+          "h_m": 0.024,
+          "u_ms": 0.1344,
+          "v_ms": 0.0672
+        },
+        "E_04_09": {
+          "weight": 3441.113,
+          "h_m": 0.025,
+          "u_ms": 0.14,
+          "v_ms": 0.07
+        }
+      }
+    },
+    {
+      "dataset_id": "small-fixture",
+      "dataset_version": "1",
+      "network_id": "small-directed-v1",
+      "network_version": "1",
+      "scenario_id": "small-inundation-v1",
+      "network_source": "unknown",
+      "scenario_source": "unknown",
+      "replay_status": "simulated_unverified",
+      "route_provenance": "experimental_computation",
+      "algorithm_version": "heap-dijkstra-v1",
+      "weighting_version": "stored-W-v1",
+      "missing_data": [
+        "verified_crs",
+        "source_license",
+        "calibration",
+        "velocity_axes"
+      ],
+      "limitations": [
+        "Fixture preview only; no verified road coverage.",
+        "Stored costs are arbitrary experimental objectives, not safety thresholds.",
+        "Fixed historical frames; no live observations or forecasts."
+      ],
+      "field_provenance": {
+        "x/y": "unknown source; degree-like display coordinates only",
+        "length_m": "unverified source metre values",
+        "h_m": "unverified source depth, assumed metres",
+        "u_ms/v_ms": "unverified signed components, assumed m/s; axes unknown",
+        "weight": "unverified stored dijkstra_weight_W; no formula evaluated"
+      },
+      "step": "t2",
+      "timestamp": "2026-11-05T17:10:00+07:00",
+      "samples": {
+        "E_01_02": {
+          "weight": 4916.501,
+          "h_m": 0.0499,
+          "u_ms": 0.2112,
+          "v_ms": 0.1152
+        },
+        "E_02_01": {
+          "weight": 5027.448,
+          "h_m": 0.052,
+          "u_ms": 0.22,
+          "v_ms": 0.12
+        },
+        "E_02_03": {
+          "weight": 133931.517,
+          "h_m": 0.2236,
+          "u_ms": 0.7488,
+          "v_ms": 0.468
+        },
+        "E_03_04": {
+          "weight": 643213.584,
+          "h_m": 0.2784,
+          "u_ms": 0.8064,
+          "v_ms": 0.5952
+        },
+        "E_04_03": {
+          "weight": 1054253.933,
+          "h_m": 0.29,
+          "u_ms": 0.84,
+          "v_ms": 0.62
+        },
+        "E_04_05": {
+          "weight": 36217.445,
+          "h_m": 0.1924,
+          "u_ms": 0.6656,
+          "v_ms": 0.3952
+        },
+        "E_05_10": {
+          "weight": 2469.726,
+          "h_m": 0.0211,
+          "u_ms": 0.1152,
+          "v_ms": 0.0576
+        },
+        "E_05_12": {
+          "weight": 3413.833,
+          "h_m": 0.022,
+          "u_ms": 0.12,
+          "v_ms": 0.06
+        },
+        "E_01_11": {
+          "weight": 5476.347,
+          "h_m": 0.0156,
+          "u_ms": 0.0936,
+          "v_ms": 0.0416
+        },
+        "E_11_06": {
+          "weight": 2598.003,
+          "h_m": 0.0144,
+          "u_ms": 0.0864,
+          "v_ms": 0.0384
+        },
+        "E_02_06": {
+          "weight": 4030.424,
+          "h_m": 0.036,
+          "u_ms": 0.19,
+          "v_ms": 0.1
+        },
+        "E_06_07": {
+          "weight": 4050.324,
+          "h_m": 0.0156,
+          "u_ms": 0.0936,
+          "v_ms": 0.0416
+        },
+        "E_07_05": {
+          "weight": 4324.418,
+          "h_m": 0.0144,
+          "u_ms": 0.0864,
+          "v_ms": 0.0384
+        },
+        "E_07_12": {
+          "weight": 5805.417,
+          "h_m": 0.015,
+          "u_ms": 0.09,
+          "v_ms": 0.04
+        },
+        "E_02_08": {
+          "weight": 3642.966,
+          "h_m": 0.0374,
+          "u_ms": 0.1976,
+          "v_ms": 0.104
+        },
+        "E_08_09": {
+          "weight": 4710.622,
+          "h_m": 0.0144,
+          "u_ms": 0.0864,
+          "v_ms": 0.0384
+        },
+        "E_09_10": {
+          "weight": 3969.857,
+          "h_m": 0.015,
+          "u_ms": 0.09,
+          "v_ms": 0.04
+        },
+        "E_03_06": {
+          "weight": 4041.874,
+          "h_m": 0.0374,
+          "u_ms": 0.1976,
+          "v_ms": 0.104
+        },
+        "E_03_08": {
+          "weight": 4230.14,
+          "h_m": 0.0346,
+          "u_ms": 0.1824,
+          "v_ms": 0.096
+        },
+        "E_04_09": {
+          "weight": 3848.892,
+          "h_m": 0.036,
+          "u_ms": 0.19,
+          "v_ms": 0.1
+        }
+      }
+    },
+    {
+      "dataset_id": "small-fixture",
+      "dataset_version": "1",
+      "network_id": "small-directed-v1",
+      "network_version": "1",
+      "scenario_id": "small-inundation-v1",
+      "network_source": "unknown",
+      "scenario_source": "unknown",
+      "replay_status": "simulated_unverified",
+      "route_provenance": "experimental_computation",
+      "algorithm_version": "heap-dijkstra-v1",
+      "weighting_version": "stored-W-v1",
+      "missing_data": [
+        "verified_crs",
+        "source_license",
+        "calibration",
+        "velocity_axes"
+      ],
+      "limitations": [
+        "Fixture preview only; no verified road coverage.",
+        "Stored costs are arbitrary experimental objectives, not safety thresholds.",
+        "Fixed historical frames; no live observations or forecasts."
+      ],
+      "field_provenance": {
+        "x/y": "unknown source; degree-like display coordinates only",
+        "length_m": "unverified source metre values",
+        "h_m": "unverified source depth, assumed metres",
+        "u_ms/v_ms": "unverified signed components, assumed m/s; axes unknown",
+        "weight": "unverified stored dijkstra_weight_W; no formula evaluated"
+      },
+      "step": "t3",
+      "timestamp": "2026-11-05T17:15:00+07:00",
+      "samples": {
+        "E_01_02": {
+          "weight": 4357.979,
+          "h_m": 0.0384,
+          "u_ms": 0.1728,
+          "v_ms": 0.0768
+        },
+        "E_02_01": {
+          "weight": 4430.962,
+          "h_m": 0.04,
+          "u_ms": 0.18,
+          "v_ms": 0.08
+        },
+        "E_02_03": {
+          "weight": 27505.666,
+          "h_m": 0.182,
+          "u_ms": 0.572,
+          "v_ms": 0.3328
+        },
+        "E_03_04": {
+          "weight": 80118.034,
+          "h_m": 0.2304,
+          "u_ms": 0.624,
+          "v_ms": 0.4608
+        },
+        "E_04_03": {
+          "weight": 109736.289,
+          "h_m": 0.24,
+          "u_ms": 0.65,
+          "v_ms": 0.48
+        },
+        "E_04_05": {
+          "weight": 12558.626,
+          "h_m": 0.1612,
+          "u_ms": 0.4992,
+          "v_ms": 0.3016
+        },
+        "E_05_10": {
+          "weight": 2334.505,
+          "h_m": 0.0154,
+          "u_ms": 0.0864,
+          "v_ms": 0.0384
+        },
+        "E_05_12": {
+          "weight": 3216.998,
+          "h_m": 0.016,
+          "u_ms": 0.09,
+          "v_ms": 0.04
+        },
+        "E_01_11": {
+          "weight": 5205.888,
+          "h_m": 0.0104,
+          "u_ms": 0.0624,
+          "v_ms": 0.0312
+        },
+        "E_11_06": {
+          "weight": 2479.657,
+          "h_m": 0.0096,
+          "u_ms": 0.0576,
+          "v_ms": 0.0288
+        },
+        "E_02_06": {
+          "weight": 3714.109,
+          "h_m": 0.028,
+          "u_ms": 0.14,
+          "v_ms": 0.06
+        },
+        "E_06_07": {
+          "weight": 3850.292,
+          "h_m": 0.0104,
+          "u_ms": 0.0624,
+          "v_ms": 0.0312
+        },
+        "E_07_05": {
+          "weight": 4127.43,
+          "h_m": 0.0096,
+          "u_ms": 0.0576,
+          "v_ms": 0.0288
+        },
+        "E_07_12": {
+          "weight": 5529.839,
+          "h_m": 0.01,
+          "u_ms": 0.06,
+          "v_ms": 0.03
+        },
+        "E_02_08": {
+          "weight": 3345.981,
+          "h_m": 0.0291,
+          "u_ms": 0.1456,
+          "v_ms": 0.0624
+        },
+        "E_08_09": {
+          "weight": 4496.041,
+          "h_m": 0.0096,
+          "u_ms": 0.0576,
+          "v_ms": 0.0288
+        },
+        "E_09_10": {
+          "weight": 3781.411,
+          "h_m": 0.01,
+          "u_ms": 0.06,
+          "v_ms": 0.03
+        },
+        "E_03_06": {
+          "weight": 3712.369,
+          "h_m": 0.0291,
+          "u_ms": 0.1456,
+          "v_ms": 0.0624
+        },
+        "E_03_08": {
+          "weight": 3910.998,
+          "h_m": 0.0269,
+          "u_ms": 0.1344,
+          "v_ms": 0.0576
+        },
+        "E_04_09": {
+          "weight": 3546.824,
+          "h_m": 0.028,
+          "u_ms": 0.14,
+          "v_ms": 0.06
+        }
+      }
+    },
+    {
+      "dataset_id": "small-fixture",
+      "dataset_version": "1",
+      "network_id": "small-directed-v1",
+      "network_version": "1",
+      "scenario_id": "small-inundation-v1",
+      "network_source": "unknown",
+      "scenario_source": "unknown",
+      "replay_status": "simulated_unverified",
+      "route_provenance": "experimental_computation",
+      "algorithm_version": "heap-dijkstra-v1",
+      "weighting_version": "stored-W-v1",
+      "missing_data": [
+        "verified_crs",
+        "source_license",
+        "calibration",
+        "velocity_axes"
+      ],
+      "limitations": [
+        "Fixture preview only; no verified road coverage.",
+        "Stored costs are arbitrary experimental objectives, not safety thresholds.",
+        "Fixed historical frames; no live observations or forecasts."
+      ],
+      "field_provenance": {
+        "x/y": "unknown source; degree-like display coordinates only",
+        "length_m": "unverified source metre values",
+        "h_m": "unverified source depth, assumed metres",
+        "u_ms/v_ms": "unverified signed components, assumed m/s; axes unknown",
+        "weight": "unverified stored dijkstra_weight_W; no formula evaluated"
+      },
+      "step": "t4",
+      "timestamp": "2026-11-05T17:20:00+07:00",
+      "samples": {
+        "E_01_02": {
+          "weight": 3587.108,
+          "h_m": 0.0192,
+          "u_ms": 0.096,
+          "v_ms": 0.0384
+        },
+        "E_02_01": {
+          "weight": 3615.67,
+          "h_m": 0.02,
+          "u_ms": 0.1,
+          "v_ms": 0.04
+        },
+        "E_02_03": {
+          "weight": 8214.675,
+          "h_m": 0.0988,
+          "u_ms": 0.2912,
+          "v_ms": 0.156
+        },
+        "E_03_04": {
+          "weight": 9776.02,
+          "h_m": 0.1248,
+          "u_ms": 0.336,
+          "v_ms": 0.2112
+        },
+        "E_04_03": {
+          "weight": 10389.59,
+          "h_m": 0.13,
+          "u_ms": 0.35,
+          "v_ms": 0.22
+        },
+        "E_04_05": {
+          "weight": 5374.418,
+          "h_m": 0.0884,
+          "u_ms": 0.26,
+          "v_ms": 0.1456
+        },
+        "E_05_10": {
+          "weight": 2145.825,
+          "h_m": 0.0067,
+          "u_ms": 0.0384,
+          "v_ms": 0.0192
+        },
+        "E_05_12": {
+          "weight": 2948.089,
+          "h_m": 0.007,
+          "u_ms": 0.04,
+          "v_ms": 0.02
+        },
+        "E_01_11": {
+          "weight": 4905.571,
+          "h_m": 0.0042,
+          "u_ms": 0.0312,
+          "v_ms": 0.0104
+        },
+        "E_11_06": {
+          "weight": 2345.814,
+          "h_m": 0.0038,
+          "u_ms": 0.0288,
+          "v_ms": 0.0096
+        },
+        "E_02_06": {
+          "weight": 3168.918,
+          "h_m": 0.012,
+          "u_ms": 0.07,
+          "v_ms": 0.03
+        },
+        "E_06_07": {
+          "weight": 3628.177,
+          "h_m": 0.0042,
+          "u_ms": 0.0312,
+          "v_ms": 0.0104
+        },
+        "E_07_05": {
+          "weight": 3904.645,
+          "h_m": 0.0038,
+          "u_ms": 0.0288,
+          "v_ms": 0.0096
+        },
+        "E_07_12": {
+          "weight": 5221.094,
+          "h_m": 0.004,
+          "u_ms": 0.03,
+          "v_ms": 0.01
+        },
+        "E_02_08": {
+          "weight": 2836.929,
+          "h_m": 0.0125,
+          "u_ms": 0.0728,
+          "v_ms": 0.0312
+        },
+        "E_08_09": {
+          "weight": 4253.36,
+          "h_m": 0.0038,
+          "u_ms": 0.0288,
+          "v_ms": 0.0096
+        },
+        "E_09_10": {
+          "weight": 3570.286,
+          "h_m": 0.004,
+          "u_ms": 0.03,
+          "v_ms": 0.01
+        },
+        "E_03_06": {
+          "weight": 3147.576,
+          "h_m": 0.0125,
+          "u_ms": 0.0728,
+          "v_ms": 0.0312
+        },
+        "E_03_08": {
+          "weight": 3357.883,
+          "h_m": 0.0115,
+          "u_ms": 0.0672,
+          "v_ms": 0.0288
+        },
+        "E_04_09": {
+          "weight": 3026.189,
+          "h_m": 0.012,
+          "u_ms": 0.07,
+          "v_ms": 0.03
+        }
+      }
+    }
+  ]
+}
