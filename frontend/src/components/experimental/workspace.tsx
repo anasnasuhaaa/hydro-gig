@@ -230,10 +230,9 @@ function Workspace() {
                     graph={graph}
                     weighted={weighted}
                     baseline={baseline}
+                    result={result}
+                    selected={selected}
                   />
-                  <p className="mt-3 text-xs text-muted-foreground">
-                    {t("legend")}
-                  </p>
                 </div>
               </section>
               <div

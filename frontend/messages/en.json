@@ -394,7 +394,13 @@
     "networkTitle": "Trip network",
     "schematic": "Directed network schematic · No verified road map",
     "backScreen": "Edit trip",
-    "backDashboard": "Back to dashboard"
+    "backDashboard": "Back to dashboard",
+    "networkLegend": "Network legend",
+    "changedLegend": "Values changed · dotted",
+    "inspectedLegend": "Inspected edge · thick outline",
+    "inspect": "Inspect segment",
+    "inspectNamed": "Inspect segment {edge}",
+    "inspectHelp": "Tap a line or select a segment above. Arrows follow network direction; source values are unverified."
   },
   "Evidence": {
     "title": "Experimental Evidence Preview",

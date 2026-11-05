@@ -241,3 +241,18 @@ body {
   background: var(--hero-action);
   opacity: 0.92;
 }
+
+/* Route layers identify objectives and changes, never calibrated flood risk. */
+:root {
+  --edge-change: #a85c09;
+  --edge-unrelated: #8697ad;
+}
+.dark {
+  --edge-change: #f5bc65;
+  --edge-unrelated: #7186a5;
+}
+.network-surface {
+  background-color: var(--background);
+  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-size: 20px 20px;
+}

@@ -394,7 +394,13 @@
     "networkTitle": "Jaringan perjalanan",
     "schematic": "Skema jaringan berarah · Bukan peta jalan terverifikasi",
     "backScreen": "Ubah perjalanan",
-    "backDashboard": "Kembali ke dasbor"
+    "backDashboard": "Kembali ke dasbor",
+    "networkLegend": "Legenda jaringan",
+    "changedLegend": "Nilai berubah · titik-titik",
+    "inspectedLegend": "Ruas diperiksa · garis tebal",
+    "inspect": "Periksa ruas",
+    "inspectNamed": "Periksa ruas {edge}",
+    "inspectHelp": "Sentuh garis atau pilih ruas di atas. Arah panah mengikuti jaringan; nilai sumber belum terverifikasi."
   },
   "Evidence": {
     "title": "Pratinjau Bukti Eksperimental",
