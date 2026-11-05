@@ -18,12 +18,16 @@ export function ScenarioTimeline({
   result,
   busy,
   error,
+  compact = false,
+  locked = false,
 }: {
   request: FixtureRequest;
   onChange: (step: FixtureRequest["step"]) => void;
   result: FixtureResult | undefined;
   busy: boolean;
   error: boolean;
+  compact?: boolean;
+  locked?: boolean;
 }) {
   const t = useTranslations("Experimental");
   const locale = useLocale();
@@ -34,7 +38,7 @@ export function ScenarioTimeline({
   });
   const steps = requestSchema.shape.step.options;
   const index = steps.indexOf(request.step);
-  const active = playing && index < steps.length - 1 && !error;
+  const active = playing && index < steps.length - 1 && !error && !locked;
   useEffect(() => {
     if (!active || busy || result?.frame.step !== request.step) return;
     const timer = setTimeout(() => {
@@ -63,11 +67,13 @@ export function ScenarioTimeline({
         <div>
           <h2 className="flex items-center gap-2 font-semibold">
             <History className="size-4 text-primary" />
-            {t("timelineTitle")}
+            {t(compact ? "frames" : "timelineTitle")}
           </h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t("historical")}
-          </p>
+          {!compact && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("historical")}
+            </p>
+          )}
         </div>
         <span className="rounded-full bg-secondary px-3 py-1 text-sm font-semibold text-primary">
           {t("currentFrame", { step: request.step })}
@@ -84,10 +90,11 @@ export function ScenarioTimeline({
             <Button
               key={step}
               aria-label={step}
+              disabled={locked}
               aria-pressed={step === request.step}
               variant={step === request.step ? "default" : "outline"}
               onClick={() => choose(step)}
-              className="h-auto min-h-16 min-w-0 flex-col gap-1 rounded-xl px-1 py-2 text-base font-semibold"
+              className={`h-auto ${compact ? "min-h-11" : "min-h-16"} min-w-0 flex-col gap-1 rounded-xl px-1 py-2 text-base font-semibold`}
             >
               <span>{step}</span>
               <span className="text-[10px] font-normal tabular-nums sm:text-xs">
@@ -104,44 +111,51 @@ export function ScenarioTimeline({
           );
         })}
       </div>
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            aria-label={t("previousFrame")}
-            className="min-h-11 min-w-11 px-3"
-            disabled={index === 0}
-            onClick={() => choose(steps[index - 1])}
-          >
-            <ArrowLeft className="size-4" />
-          </Button>
-          <Button
-            variant="outline"
-            aria-label={t("nextFrame")}
-            className="min-h-11 min-w-11 px-3"
-            disabled={index === steps.length - 1}
-            onClick={() => choose(steps[index + 1])}
-          >
-            <ArrowRight className="size-4" />
-          </Button>
-          <Button
-            variant="secondary"
-            className="min-h-11"
-            disabled={busy || error || index === steps.length - 1}
-            aria-pressed={active}
-            onClick={() => setPlaying(!active)}
-          >
-            {active ? (
-              <Pause className="size-4" />
-            ) : (
-              <Play className="size-4" />
-            )}
-            {t(active ? "pause" : "play")}
-          </Button>
+      {!compact && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              aria-label={t("previousFrame")}
+              className="min-h-11 min-w-11 px-3"
+              disabled={locked || index === 0}
+              onClick={() => choose(steps[index - 1])}
+            >
+              <ArrowLeft className="size-4" />
+            </Button>
+            <Button
+              variant="outline"
+              aria-label={t("nextFrame")}
+              className="min-h-11 min-w-11 px-3"
+              disabled={locked || index === steps.length - 1}
+              onClick={() => choose(steps[index + 1])}
+            >
+              <ArrowRight className="size-4" />
+            </Button>
+            <Button
+              variant="secondary"
+              className="min-h-11"
+              disabled={
+                locked ||
+                (busy && !active) ||
+                error ||
+                index === steps.length - 1
+              }
+              aria-pressed={active}
+              onClick={() => setPlaying(!active)}
+            >
+              {active ? (
+                <Pause className="size-4" />
+              ) : (
+                <Play className="size-4" />
+              )}
+              {t(active ? "pause" : "play")}
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">{t("playSpeed")}</p>
         </div>
-        <p className="text-xs text-muted-foreground">{t("playSpeed")}</p>
-      </div>
-      {result && result.frame.step === request.step && !error && (
+      )}
+      {result && result.frame.step === request.step && !error && !locked && (
         <p data-testid="scenario-time" className="mt-4 border-t pt-3 text-sm">
           <span className="text-muted-foreground">{t("time")}: </span>
           {new Intl.DateTimeFormat(locale, {

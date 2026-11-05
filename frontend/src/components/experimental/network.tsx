@@ -244,7 +244,7 @@ export function ExperimentalNetwork({
                     ? null
                     : result.frame.weight_deltas[edgeId],
                 ],
-                ["tripDistance", edge.length_m],
+                ["segmentDistance", edge.length_m],
               ].map(([label, value]) => (
                 <div key={label}>
                   <dt className="text-xs text-muted-foreground">

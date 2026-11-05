@@ -224,3 +224,82 @@ test("dashboard discovers the dataset and the three-stage journey includes evide
     page.getByText("Asal N01 → penjemputan N03 → tujuan N12", { exact: true }),
   ).toBeVisible();
 });
+
+test("unapplied stop changes cannot carry stale routes into the journey", async ({
+  page,
+}) => {
+  await page.goto("/pre-order");
+  await page
+    .getByRole("button", { name: "Gunakan dataset eksperimental", exact: true })
+    .click();
+  await expect(
+    page.getByRole("img", { name: /Pratinjau koordinat/ }),
+  ).toBeVisible();
+  await page.getByLabel("Penjemputan", { exact: true }).click();
+  await page.getByRole("option", { name: "N04", exact: true }).click();
+  await expect(page.getByText(/Titik perjalanan telah diubah/)).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: "Lanjut ke navigasi", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("img", { name: /Pratinjau koordinat/ }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "t1", exact: true }),
+  ).toBeDisabled();
+  await page
+    .getByRole("button", { name: "Bandingkan rute", exact: true })
+    .click();
+  await page
+    .getByRole("link", { name: "Lanjut ke navigasi", exact: true })
+    .click();
+  await expect(page.getByLabel("Penjemputan", { exact: true })).toContainText(
+    "N04",
+  );
+  await page
+    .getByRole("button", {
+      name: "Atur ulang perjalanan eksperimental",
+      exact: true,
+    })
+    .click();
+  await expect(page.getByLabel("Penjemputan", { exact: true })).toContainText(
+    "N03",
+  );
+});
+
+test("previous frame failure never implies an unchanged path or a zero cost change", async ({
+  page,
+}) => {
+  await page.goto("/navigation");
+  await page
+    .getByRole("button", { name: "Gunakan dataset eksperimental", exact: true })
+    .click();
+  await page.getByRole("button", { name: "t1", exact: true }).click();
+  await expect(
+    page.getByRole("img", { name: /Pratinjau koordinat/ }),
+  ).toHaveAttribute("data-frame", "t1");
+  await page.route("**/api/v1/experimental/routes/screen", (route) =>
+    route.request().postDataJSON().step === "t0"
+      ? route.fulfill({ status: 503, body: "{}" })
+      : route.continue(),
+  );
+  await page.reload();
+  await expect(
+    page.getByText("Perbandingan bingkai sebelumnya tidak tersedia.", {
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(page.getByTestId("cost-delta")).toHaveText("Tidak tersedia");
+  await expect(
+    page.getByRole("img", { name: /Pratinjau koordinat/ }),
+  ).toHaveAttribute("data-frame", "t1");
+  await page.unroute("**/api/v1/experimental/routes/screen");
+  await page
+    .getByRole("button", { name: "Coba lagi perbandingan", exact: true })
+    .click();
+  await expect(
+    page.getByText("Rute berbobot berubah dari bingkai sebelumnya.", {
+      exact: true,
+    }),
+  ).toBeVisible();
+});

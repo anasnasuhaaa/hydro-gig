@@ -344,11 +344,11 @@
     "origin": "Origin",
     "pickup": "Pickup",
     "destination": "Destination",
-    "screen": "Calculate fixture routes",
+    "screen": "Compare routes",
     "frames": "Scenario frames",
     "error": "Fixture data is unavailable or invalid. Check your connection and retry.",
     "retry": "Retry",
-    "loading": "Loading fixture…",
+    "loading": "Loading simulation…",
     "time": "Scenario valid time (not live)",
     "source": "Unknown source",
     "preview": "Experimental coordinate preview — schematic, unverified CRS",
@@ -414,7 +414,9 @@
     "changedCount": "Segments with changed values",
     "costDelta": "Weighted route cost change",
     "retryComparison": "Retry comparison",
-    "deltaHelp": "Compared with {step}. The same path can have a different cost."
+    "deltaHelp": "Compared with {step}. The same path can have a different cost.",
+    "pendingEdits": "Trip stops have changed. Press Compare routes to update routes before continuing.",
+    "segmentDistance": "Segment length (m)"
   },
   "Evidence": {
     "title": "Experimental Evidence Preview",

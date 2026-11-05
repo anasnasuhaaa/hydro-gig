@@ -73,7 +73,7 @@ test("fixture validates responses and explains directed unreachable trips", asyn
   ).toBeVisible();
   await page.getByLabel("Asal", { exact: true }).click();
   await page.getByRole("option", { name: "N12", exact: true }).click();
-  await page.getByRole("button", { name: "Hitung rute fixture" }).click();
+  await page.getByRole("button", { name: "Bandingkan rute" }).click();
   await expect(
     page
       .getByText(

@@ -3,7 +3,7 @@ import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowLeft, ArrowRight, FlaskConical, RotateCcw } from "lucide-react";
-import { useExperimentalSession } from "./session";
+import { initial, useExperimentalSession } from "./session";
 import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -67,11 +67,13 @@ function Workspace() {
   const session = useExperimentalSession();
   const { request, setRequest } = session;
   const navigation = usePathname() === "/navigation";
+  const [replayVersion, setReplayVersion] = useState(0);
   const [selected, setSelected] = useState<RouteMode>("weighted");
   const form = useForm<FixtureRequest>({
     resolver: zodResolver(requestSchema),
     values: request,
   });
+  const pendingEdits = form.formState.isDirty;
   const network = useQuery({
     queryKey: ["experimental", "network"],
     queryFn: ({ signal }) => experimentalApi.network(signal),
@@ -122,7 +124,16 @@ function Workspace() {
             {t(navigation ? "navigationHelp" : "screenHelp")}
           </p>
         </div>
-        <Button variant="ghost" className="min-h-11" onClick={session.reset}>
+        <Button
+          variant="ghost"
+          className="min-h-11"
+          onClick={() => {
+            session.reset();
+            form.reset(initial);
+            setSelected("weighted");
+            setReplayVersion((v) => v + 1);
+          }}
+        >
           <RotateCcw className="size-4" />
           {t("resetTrip")}
         </Button>
@@ -144,7 +155,10 @@ function Workspace() {
                   id={`experimental-${name}`}
                   label={t(name)}
                   value={field.value}
-                  onChange={field.onChange}
+                  onChange={(value) => {
+                    field.onChange(value);
+                    setReplayVersion((v) => v + 1);
+                  }}
                   onBlur={field.onBlur}
                   inputRef={field.ref}
                   options={graph.nodes.map((n) => ({
@@ -165,13 +179,23 @@ function Workspace() {
         </form>
       )}
       <ScenarioTimeline
+        key={replayVersion}
+        compact={!navigation}
+        locked={pendingEdits}
         request={request}
         onChange={(step) => setRequest({ ...request, step })}
         result={result}
         busy={query.isFetching}
         error={query.isError}
       />
-      {network.isError || query.isError ? (
+      {pendingEdits ? (
+        <p
+          role="status"
+          className="rounded-2xl border border-primary/30 bg-secondary p-5 text-sm"
+        >
+          {t("pendingEdits")}
+        </p>
+      ) : network.isError || query.isError ? (
         <div role="alert" className="rounded-2xl border p-5">
           <p>{t("error")}</p>
           <Button
@@ -202,6 +226,7 @@ function Workspace() {
                 </div>
                 <div className="p-3 sm:p-5">
                   <ExperimentalNetwork
+                    key={replayVersion}
                     graph={graph}
                     weighted={weighted}
                     baseline={baseline}

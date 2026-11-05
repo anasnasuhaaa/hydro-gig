@@ -344,11 +344,11 @@
     "origin": "Asal",
     "pickup": "Penjemputan",
     "destination": "Tujuan",
-    "screen": "Hitung rute fixture",
+    "screen": "Bandingkan rute",
     "frames": "Bingkai skenario",
     "error": "Data fixture tidak tersedia atau tidak valid. Periksa koneksi dan coba lagi.",
     "retry": "Coba lagi",
-    "loading": "Memuat fixture…",
+    "loading": "Memuat simulasi…",
     "time": "Waktu berlaku skenario (bukan langsung)",
     "source": "Sumber tidak diketahui",
     "preview": "Pratinjau koordinat eksperimental — skematis, CRS belum terverifikasi",
@@ -414,7 +414,9 @@
     "changedCount": "Ruas dengan nilai berubah",
     "costDelta": "Perubahan biaya rute berbobot",
     "retryComparison": "Coba lagi perbandingan",
-    "deltaHelp": "Dibandingkan dengan {step}. Jalur yang sama dapat memiliki biaya berbeda."
+    "deltaHelp": "Dibandingkan dengan {step}. Jalur yang sama dapat memiliki biaya berbeda.",
+    "pendingEdits": "Titik perjalanan telah diubah. Tekan Bandingkan rute untuk memperbarui rute sebelum melanjutkan.",
+    "segmentDistance": "Panjang ruas (m)"
   },
   "Evidence": {
     "title": "Pratinjau Bukti Eksperimental",
