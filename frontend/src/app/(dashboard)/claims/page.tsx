@@ -1,3 +1,4 @@
+import { EvidencePreviewWorkspace } from "@/components/experimental/evidence-preview";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { ArrowRight, ShieldCheck } from "lucide-react";
@@ -10,7 +11,7 @@ export default function Claims() {
   const t = useTranslations("Claims");
 
   return (
-    <>
+    <EvidencePreviewWorkspace>
       <PageHeading title={t("title")} />
       <section
         className="flex flex-col items-center rounded-2xl border border-primary/20 bg-card shadow-sm px-6 py-12 text-center sm:py-16"
@@ -40,6 +41,6 @@ export default function Claims() {
           </Link>
         </Button>
       </section>
-    </>
+    </EvidencePreviewWorkspace>
   );
 }

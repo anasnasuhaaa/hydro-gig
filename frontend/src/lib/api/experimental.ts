@@ -120,3 +120,61 @@ export const experimentalApi = {
       "/api/v1/experimental",
     ),
 };
+
+const sampleSchema = frameSchema.shape.samples;
+const evidenceContentSchema = z.strictObject({
+  schema_version: z.literal("experimental-evidence-v1"),
+  scenario_version: z.literal("1"),
+  submission_status: z.literal("not_submitted"),
+  token: z.null(),
+  signature: z.null(),
+  source_hashes: z.record(z.string(), z.string().regex(/^[a-f0-9]{64}$/)),
+  calculation: resultSchema,
+  route_samples: sampleSchema,
+  affected_route_edge_ids: z.array(z.string()),
+  limitations: z.array(z.string()),
+});
+export const evidenceSchema = z.strictObject({
+  created_at: z.iso.datetime({ offset: true }),
+  canonicalization: z.literal("python-json-sorted-utf8-v1"),
+  digest_scope: z.literal("content_only_excludes_created_at"),
+  content: evidenceContentSchema,
+  canonical_content: z.string(),
+  sha256: z.string().regex(/^[a-f0-9]{64}$/),
+});
+export type EvidencePreview = z.infer<typeof evidenceSchema>;
+export async function getEvidencePreview(
+  body: FixtureRequest,
+): Promise<EvidencePreview> {
+  const result = await apiRequest(
+    "/evidence/preview",
+    evidenceSchema,
+    { body },
+    "/api/v1/experimental",
+  );
+  const canonical = evidenceContentSchema.parse(
+    JSON.parse(result.canonical_content),
+  );
+  const stable = (value: unknown): string =>
+    JSON.stringify(value, (_, v) =>
+      v && typeof v === "object" && !Array.isArray(v)
+        ? Object.fromEntries(
+            Object.entries(v).sort(([a], [b]) => a.localeCompare(b)),
+          )
+        : v,
+    );
+  const hash = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(result.canonical_content),
+  );
+  const digest = Array.from(new Uint8Array(hash), (b) =>
+    b.toString(16).padStart(2, "0"),
+  ).join("");
+  if (
+    digest !== result.sha256 ||
+    stable(canonical) !== stable(result.content) ||
+    stable(canonical.calculation.request) !== stable(body)
+  )
+    throw new Error("Invalid evidence preview");
+  return result;
+}

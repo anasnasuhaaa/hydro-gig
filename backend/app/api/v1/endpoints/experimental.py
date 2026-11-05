@@ -3,6 +3,7 @@ from pydantic import ValidationError
 
 from app.schemas.experimental import Network, ReplayFrame, Scenarios, ScreenRequest, ScreenResponse
 from app.services import experimental as service
+from app.services.evidence import EvidencePreview, preview
 
 router = APIRouter(prefix="/experimental", tags=["experimental-unverified-fixture"])
 
@@ -36,3 +37,8 @@ def frame(scenario_id: str, step: str):
 @router.post("/routes/screen", response_model=ScreenResponse)
 def screen(request: ScreenRequest):
     return invoke(service.screen, request)
+
+
+@router.post("/evidence/preview", response_model=EvidencePreview)
+def evidence_preview(request: ScreenRequest):
+    return invoke(preview, request)
