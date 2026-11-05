@@ -2,14 +2,16 @@
 
 This is a software research fixture, not a production flood warning or verified Bogor road layer. Source provenance remains **unknown**. Application replay is **simulated/unverified** and routes are **experimental computations**. These three facts are carried separately in every response. Global RoadNetwork and demo provenance contracts are unchanged.
 
+Current interface and screenshots: [INTERACTIVE-DEMO-UX.md](INTERACTIVE-DEMO-UX.md). Start with **Explore Flood Scenario Simulation** on Dashboard; direct screen visits retain the existing saved-mode behavior.
+
 ## Inputs and immutable identity
 
 Canonical inputs under `data/raw/` (read only):
 
-| File | SHA-256 |
-| --- | --- |
-| `02_road_network_nodes.csv` | `cd8b97897304414a03063091c9041cacbb9076c5f55df0fd9b67890e0ac5b701` |
-| `02_road_network_edges.csv` | `9d3e8425858df191cfd1bd5d30f770d811cc8bba0109d116e0ef2d6cceefb32f` |
+| File                                    | SHA-256                                                            |
+| --------------------------------------- | ------------------------------------------------------------------ |
+| `02_road_network_nodes.csv`             | `cd8b97897304414a03063091c9041cacbb9076c5f55df0fd9b67890e0ac5b701` |
+| `02_road_network_edges.csv`             | `9d3e8425858df191cfd1bd5d30f770d811cc8bba0109d116e0ef2d6cceefb32f` |
 | `04_inundation_scenarios_t0_t1_t2.json` | `bee22c68b038bb9c54a75b92ea90f61344694273ca31b5d6bbd160a1919c3b77` |
 
 The audited CSV/GeoJSON duplicates are not additional independent observations and are not required at runtime. Dataset 06 stored paths are not routing inputs. Datasets 07/08 and the large family are not consumed or promoted. The audit and integration plan existed as local untracked inputs; they were read but are not included in these commits.
@@ -64,7 +66,7 @@ The baseline for this leg has the same path and distance, with objective `1471.1
 
 The existing deterministic heap Dijkstra core was extracted and shared with the unchanged demo adapter. Sorted edge IDs and heap node order retain deterministic tie handling. Every request builds adjacency from the processed graph and resolves the selected frame's complete costs. Baseline minimizes stored metre lengths; weighted mode minimizes stored `dijkstra_weight_W` values as arbitrary experimental units. Reported distance sums selected lengths separately. Overflow is rejected. No exponential risk expression is evaluated and finite costs never close edges.
 
-All five t0–t4 frames are retained. Comparisons use the immediately preceding source frame, even when a user skips a step. Changed edges mean any stored sample value changed; weight deltas show exact numeric changes. Fixed-frame routes do not predict conditions at arrival times. No timer, forecast or live stream advances replay.
+All five t0–t4 frames are retained. Comparisons use the immediately preceding source frame, even when a user skips a step. Changed edges mean any stored sample value changed; weight deltas show exact numeric changes. Fixed-frame routes do not predict conditions at arrival times. The backend evaluates only the requested historical frame. Optional client playback advances selection every two seconds after each response; this is a presentation speed, not a live stream, forecast or simulated driver speed.
 
 Both `/pre-order` and `/navigation` offer an explicit dataset button; synthetic mode remains default. React Hook Form/Zod validate selections, shadcn/Radix provide selectors, TanStack Query and the existing typed fetch client handle cancellable requests and Zod response validation. Query keys include nodes/scenario/frame. Errors suppress stale results. Node IDs, paths and numeric source fields remain stable; all explanatory UI text is bilingual and valid times display in Asia/Jakarta. Route-change text compares backend weighted edge sequences for identical trip selections across adjacent frames. The table provides raw values and changes; route cards explain unreachable directed trips. Experimental selections now persist across pre-order, navigation and claims using the isolated validated session described below.
 
@@ -142,7 +144,7 @@ No live database, real sensors, geographic source verification, physical model v
 
 ## Complete three-stage journey
 
-1. Open `/pre-order`, choose **Use experimental dataset**, select the sample stops and press **Calculate fixture routes**. The default trip is N01 → N03 → N12. Review distance and stored-weight alternatives.
+1. Open `/pre-order`, choose **Use experimental dataset**, select the sample stops and press **Compare routes**. The default trip is N01 → N03 → N12. Review distance and stored-weight alternatives.
 2. Press **Continue to navigation**. The selected trip and frame are retained. Choose t0 through t4 and review actual backend path/cost changes. Press **Continue to evidence preview**.
 3. On `/claims`, review the selected trip, historical valid time, weighted route segments, raw source values and changes from the preceding frame. Press **Generate evidence preview**, then **Export preview JSON**. The package is downloaded locally and is not submitted to any platform.
 4. Reload any screen to recover selections. **Reset demonstration** restores the default experimental trip at t0 and clears saved route references and the displayed evidence preview. **Return to synthetic demo** selects the independent existing synthetic experience.
