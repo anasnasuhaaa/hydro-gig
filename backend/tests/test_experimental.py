@@ -130,3 +130,78 @@ def test_replay_changes_and_recalculation():
         )
         results.append(result.origin_to_pickup.weighted.objective_cost)
     assert len(set(results)) > 1
+
+
+def test_runtime_errors_and_cache_isolation(monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+    from app.services import experimental as service
+
+    request = dict(
+        origin="N01", pickup="N03", destination="N12", scenario_id="small-inundation-v1", step="t0"
+    )
+    with TestClient(app) as client:
+        assert client.post("/api/v1/experimental/routes/screen", json=request).status_code == 200
+        assert (
+            client.post(
+                "/api/v1/experimental/routes/screen", json={**request, "origin": "missing"}
+            ).status_code
+            == 422
+        )
+        assert (
+            client.post(
+                "/api/v1/experimental/routes/screen", json={**request, "step": "t5"}
+            ).status_code
+            == 404
+        )
+        assert client.post("/api/v1/experimental/routes/screen", json={}).status_code == 422
+        mutated = service.load()
+        mutated.frames[0].samples.clear()
+        assert len(service.load().frames[0].samples) == 20
+
+        def unavailable():
+            raise OSError("private path must not leak")
+
+        monkeypatch.setattr(service, "load", unavailable)
+        response = client.get("/api/v1/experimental/network")
+        assert response.status_code == 503
+        assert "private" not in response.text
+
+
+def test_paths_are_recalculated_from_changed_graph(monkeypatch):
+    from app.schemas.experimental import ScreenRequest
+    from app.services import experimental as service
+
+    data = fixture()
+    request = ScreenRequest(
+        origin="N01", pickup="N03", destination="N12", scenario_id=data.scenario_id, step="t0"
+    )
+    original = service.screen(request).origin_to_pickup.weighted
+    changed = data.model_copy(
+        update={"edges": [e for e in data.edges if e.edge_id not in original.edge_ids]}
+    )
+    # Keep the graph/frame envelope valid after removing the selected arcs.
+    for frame in changed.frames:
+        for edge in original.edge_ids:
+            del frame.samples[edge]
+    changed = Fixture.model_validate(changed.model_dump())
+    monkeypatch.setattr(service, "load", lambda: changed.model_copy(deep=True))
+    recalculated = service.screen(request).origin_to_pickup.weighted
+    assert recalculated.edge_ids != original.edge_ids
+
+
+@pytest.mark.parametrize("weight", [float("inf"), float("nan"), -0.1])
+def test_nonfinite_or_negative_weights(weight):
+    data = fixture().model_dump()
+    data["frames"][0]["samples"]["E_01_02"]["weight"] = weight
+    with pytest.raises(ValidationError):
+        Fixture.model_validate(data)
+
+
+def test_reproduction_when_raw_available():
+    from experimental.normalize import RAW, normalize
+
+    if not RAW.exists():
+        pytest.skip("Optional raw inputs absent; packaged fixture tests still run")
+    assert normalize().model_dump_json(indent=2) + "\n" == PATH.read_text()
