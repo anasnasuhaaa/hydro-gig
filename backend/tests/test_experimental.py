@@ -35,3 +35,21 @@ def test_reject_invalid_fixture(mutation):
         data["frames"][1]["timestamp"] = data["frames"][0]["timestamp"]
     with pytest.raises(ValidationError):
         Fixture.model_validate(data)
+
+
+def test_api():
+    from fastapi.testclient import TestClient
+
+    from app.main import app
+
+    with TestClient(app) as client:
+        assert len(client.get("/api/v1/experimental/network").json()["edges"]) == 20
+        assert len(client.get("/api/v1/experimental/scenarios").json()["frames"]) == 5
+        assert (
+            client.get("/api/v1/experimental/scenarios/small-inundation-v1/frames/t4").status_code
+            == 200
+        )
+        assert (
+            client.get("/api/v1/experimental/scenarios/small-inundation-v1/frames/t5").status_code
+            == 404
+        )

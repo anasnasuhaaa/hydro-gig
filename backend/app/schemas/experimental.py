@@ -84,3 +84,13 @@ class Fixture(Metadata):
         if any(set(f.samples) != edges for f in self.frames):
             raise ValueError("Every edge/frame join must resolve exactly")
         return self
+
+
+class Network(Metadata):
+    source_hashes: dict[str, str]
+    nodes: list[Node]
+    edges: list[Edge]
+
+
+class Scenarios(Metadata):
+    frames: list[dict[str, str]]
