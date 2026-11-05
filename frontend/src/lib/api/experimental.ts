@@ -109,7 +109,31 @@ export const resultSchema = z
       r.frame.scenario_id === r.request.scenario_id,
   );
 export type FixtureResult = z.infer<typeof resultSchema>;
+const scenariosSchema = z
+  .strictObject({
+    ...metadata,
+    frames: z
+      .array(
+        z.strictObject({
+          step: requestSchema.shape.step,
+          timestamp: z.iso.datetime({ offset: true }),
+        }),
+      )
+      .length(5),
+  })
+  .refine((value) =>
+    value.frames.every(
+      (frame, index) => frame.step === requestSchema.shape.step.options[index],
+    ),
+  );
 export const experimentalApi = {
+  scenarios: (signal?: AbortSignal) =>
+    apiRequest(
+      "/scenarios",
+      scenariosSchema,
+      { signal },
+      "/api/v1/experimental",
+    ),
   network: (signal?: AbortSignal) =>
     apiRequest("/network", networkSchema, { signal }, "/api/v1/experimental"),
   screen: (body: FixtureRequest, signal?: AbortSignal) =>

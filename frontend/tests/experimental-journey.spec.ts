@@ -88,7 +88,7 @@ test("complete experimental journey exports matching unsigned evidence", async (
     .click();
   await page.getByLabel("Penjemputan", { exact: true }).click();
   await page.getByRole("option", { name: "N04", exact: true }).click();
-  await page.getByRole("button", { name: "Hitung rute fixture" }).click();
+  await page.getByRole("button", { name: "Bandingkan rute" }).click();
   await page
     .getByRole("link", { name: "Lanjut ke navigasi", exact: true })
     .click();

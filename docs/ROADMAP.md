@@ -1,5 +1,9 @@
 # Development roadmap
 
+## Current interactive research demo (2026-11-06)
+
+Implemented: explicit experimental dashboard entry, three-stage journey, selectable route layers, segment inspection, five historical frames with optional display playback, API-derived change/cost summaries, persisted trip selections, and unsigned evidence review/export. See [INTERACTIVE-DEMO-UX.md](INTERACTIVE-DEMO-UX.md). Earlier phase records below describe historical milestones. Scientific calibration, authenticated evidence/signing, platform acceptance, licensed geography, database integration and deployment remain future work.
+
 ## Phase 1 — Foundation and UI Design System
 
 Independently deployable Next.js and FastAPI apps, accessible library-based UI, honest connectivity, preliminary PostGIS models/migrations, tests, and documentation. Scientific workflows remain unavailable. Live migration verification requires a configured development database.
@@ -20,24 +24,24 @@ Implemented: Dashboard entry point, two-step driver progress, manifest-backed ex
 
 ### Dataset-independent priorities
 
-| Priority | Work | Status / dependency |
-| --- | --- | --- |
-| P0 | Guided example and clear driver flow | Implemented in 1.7; driver usability review still needed |
-| P0 | Synthetic timeline and transparent limitations | Implemented; fixed fictional snapshots, unknown flood risk |
-| P0 | Robust errors and automated end-to-end checks | Implemented; retain regressions and test new providers |
-| P0 | Driver instructions and explicit demo limits | Bilingual Guide and docs available; live hydrology/Claims unavailable |
-| P1 | Bilingual UI and persistent preferences | Existing ID/EN cookie, theme and sidebar preferences retained |
-| P1 | Explicit single-fix device location and manual fallback | Existing weather-only integration; never route schematic nodes from GPS without an adapter |
-| P1 | Real weather context via FastAPI | Existing Open-Meteo model context with timestamps, timeout/client cache and fallback; shared caching/quota hardening remains; independent of flood risk |
-| P1 | Schematic annotations, comparisons and accessibility | Existing route styles, labels, keyboard controls; continue driver review |
-| P1 | Data import readiness | Plan source-specific GraphML/GeoJSON normalization, CRS/edge-ID/units checks and fixture integration tests; no production importer yet |
-| P1 | Consent-free synthetic evidence envelope and server verification prototype | Separate future phase; no personal data, real tokens or platform acceptance claims |
-| P2 | Real road import and licensed geographic map | Requires licensed geometry, source manifest and tile attribution |
-| P2 | Scientifically parameterized risk and Modified Dijkstra | Requires research-team Python modules, parameter provenance and validated reference cases |
-| P2 | Observation quality, provenance and uncertainty checks | Requires traceable observations, freshness/validity policy and independent validation |
-| P2 | Neon/PostGIS migration and deployment validation | Requires supplied disposable infrastructure and explicit deployment authorization |
-| P2 | Authentication/RBAC for drivers, Claims, admins/researchers | Requires identity/privacy/product requirements before real records |
-| P2 | Real GNSS crowdsensing and validated hydrodynamic predictions | Requires consent, calibration, real datasets and scientific validation |
+| Priority | Work                                                                       | Status / dependency                                                                                                                                     |
+| -------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P0       | Guided example and clear driver flow                                       | Implemented in 1.7; driver usability review still needed                                                                                                |
+| P0       | Synthetic timeline and transparent limitations                             | Implemented; fixed fictional snapshots, unknown flood risk                                                                                              |
+| P0       | Robust errors and automated end-to-end checks                              | Implemented; retain regressions and test new providers                                                                                                  |
+| P0       | Driver instructions and explicit demo limits                               | Bilingual Guide and docs available; live hydrology/Claims unavailable                                                                                   |
+| P1       | Bilingual UI and persistent preferences                                    | Existing ID/EN cookie, theme and sidebar preferences retained                                                                                           |
+| P1       | Explicit single-fix device location and manual fallback                    | Existing weather-only integration; never route schematic nodes from GPS without an adapter                                                              |
+| P1       | Real weather context via FastAPI                                           | Existing Open-Meteo model context with timestamps, timeout/client cache and fallback; shared caching/quota hardening remains; independent of flood risk |
+| P1       | Schematic annotations, comparisons and accessibility                       | Existing route styles, labels, keyboard controls; continue driver review                                                                                |
+| P1       | Data import readiness                                                      | Plan source-specific GraphML/GeoJSON normalization, CRS/edge-ID/units checks and fixture integration tests; no production importer yet                  |
+| P1       | Consent-free synthetic evidence envelope and server verification prototype | Separate future phase; no personal data, real tokens or platform acceptance claims                                                                      |
+| P2       | Real road import and licensed geographic map                               | Requires licensed geometry, source manifest and tile attribution                                                                                        |
+| P2       | Scientifically parameterized risk and Modified Dijkstra                    | Requires research-team Python modules, parameter provenance and validated reference cases                                                               |
+| P2       | Observation quality, provenance and uncertainty checks                     | Requires traceable observations, freshness/validity policy and independent validation                                                                   |
+| P2       | Neon/PostGIS migration and deployment validation                           | Requires supplied disposable infrastructure and explicit deployment authorization                                                                       |
+| P2       | Authentication/RBAC for drivers, Claims, admins/researchers                | Requires identity/privacy/product requirements before real records                                                                                      |
+| P2       | Real GNSS crowdsensing and validated hydrodynamic predictions              | Requires consent, calibration, real datasets and scientific validation                                                                                  |
 
 Future datasets join through `NetworkAdapter` / `ScenarioProvider`; the team's Python risk and Modified Dijkstra modules plug into `WeightingProvider` / `RoutingEngine`. Normalize CRS, units and stable edge IDs, retain source/parameter versions, handle missing values explicitly and test against research reference cases. Keep observed/model-predicted providers and endpoints distinct from synthetic `/demo`; do not infer safety from route cost or weather. See [DEMO-SIMULATION.md](DEMO-SIMULATION.md) and [SCIENTIFIC-MODULES.md](SCIENTIFIC-MODULES.md).
 

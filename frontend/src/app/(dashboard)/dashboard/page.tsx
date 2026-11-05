@@ -1,14 +1,14 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
-  ArrowRight,
   ArrowUpRight,
   BookOpen,
   Droplets,
   Navigation,
   Route,
+  FileText,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { DemoEntry } from "@/components/experimental/demo-entry";
 import { Badge } from "@/components/ui/badge";
 import { WeatherCard } from "@/components/weather/weather-card";
 import { SystemStatus } from "@/components/dashboard/system-status";
@@ -30,10 +30,10 @@ export default function Dashboard() {
       href: "/navigation",
     },
     {
-      icon: BookOpen,
-      title: t("guide"),
-      description: t("guideDesc"),
-      href: "/guide",
+      icon: FileText,
+      title: t("claims"),
+      description: t("claimsDesc"),
+      href: "/claims",
     },
   ];
   return (
@@ -57,12 +57,7 @@ export default function Dashboard() {
             {t("title")}
           </h1>
           <p className="max-w-lg text-base opacity-95">{t("subtitle")}</p>
-          <Button asChild className="hero-action min-h-12 px-5 text-base">
-            <Link href="/pre-order">
-              {t("screen")}
-              <ArrowRight />
-            </Link>
-          </Button>
+          <DemoEntry />
           <p
             className="max-w-lg text-sm leading-relaxed opacity-95"
             role="note"
@@ -76,10 +71,52 @@ export default function Dashboard() {
           aria-hidden="true"
         />
       </section>
+      <section
+        aria-label={t("workflows")}
+        className="grid gap-0 overflow-hidden rounded-2xl border bg-card md:grid-cols-3"
+      >
+        {workflows.map(({ icon: Icon, title, description, href }, index) => (
+          <Link
+            key={href}
+            href={href}
+            className="group flex min-w-0 gap-4 border-b p-5 last:border-0 hover:bg-accent/30 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring md:border-r md:border-b-0"
+          >
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary font-mono text-sm text-primary">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div className="min-w-0">
+              <Icon className="mb-3 size-5 text-primary" />
+              <h2 className="font-semibold">{title}</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {description}
+              </p>
+            </div>
+          </Link>
+        ))}
+      </section>
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <WeatherCard />
         <section className="space-y-3" aria-label={t("workflows")}>
-          {workflows.map(({ icon: Icon, title, description, href }) => (
+          <div className="rounded-2xl border bg-card p-5 sm:p-6">
+            <p className="mb-2 text-xs font-semibold tracking-widest text-primary">
+              {t("research")}
+            </p>
+            <h2 className="text-xl font-semibold">{t("contextTitle")}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+              {t("limits")}
+            </p>
+            <div className="mt-5">
+              <DemoEntry experimental={false} />
+            </div>
+          </div>
+          {[
+            {
+              icon: BookOpen,
+              title: t("guide"),
+              description: t("guideDesc"),
+              href: "/guide",
+            },
+          ].map(({ icon: Icon, title, description, href }) => (
             <Link
               key={href}
               href={href}
@@ -97,12 +134,6 @@ export default function Dashboard() {
               <ArrowUpRight className="size-5 shrink-0 text-muted-foreground group-hover:text-primary" />
             </Link>
           ))}
-          <p
-            role="note"
-            className="px-1 pt-2 text-sm leading-relaxed text-muted-foreground"
-          >
-            {t("limits")}
-          </p>
         </section>
       </div>
       <details

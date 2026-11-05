@@ -1,5 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
+import { DriverJourney } from "@/components/experimental/journey";
 
 import { LanguageSwitcher } from "./language-switcher";
 import Link from "next/link";
@@ -134,15 +135,7 @@ function Workspace({ children }: { children: React.ReactNode }) {
           tabIndex={-1}
           className="mx-auto w-full max-w-[1440px] flex-1 space-y-6 px-4 py-6 outline-none sm:px-8 sm:py-8"
         >
-          {(pathname === "/pre-order" || pathname === "/navigation") && (
-            <p className="text-sm font-medium text-muted-foreground">
-              {t("step", { step: pathname === "/pre-order" ? 1 : 2 })}
-              <span className="mx-2" aria-hidden="true">
-                ·
-              </span>
-              {pathname === "/pre-order" ? t("screenStep") : t("exploreStep")}
-            </p>
-          )}
+          <DriverJourney />
           {children}
         </div>
         <footer className="mx-auto flex w-full max-w-[1440px] justify-end px-4 pb-5 text-sm text-muted-foreground sm:px-8">
@@ -158,21 +151,19 @@ function Workspace({ children }: { children: React.ReactNode }) {
         aria-label={t("quick")}
         hidden={openMobile}
         style={openMobile ? { display: "none" } : undefined}
-        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t bg-card/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t bg-card/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
       >
-        {links
-          .filter(({ href }) => href !== "/claims")
-          .map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              aria-current={pathname === href ? "page" : undefined}
-              className={`flex min-h-16 min-w-0 flex-col items-center justify-center gap-1 rounded-lg text-xs font-medium focus-visible:ring-2 focus-visible:ring-ring ${pathname === href ? "text-primary" : "text-muted-foreground"}`}
-            >
-              <Icon className="size-5" />
-              <span>{label}</span>
-            </Link>
-          ))}
+        {links.map(({ href, label, icon: Icon }) => (
+          <Link
+            key={href}
+            href={href}
+            aria-current={pathname === href ? "page" : undefined}
+            className={`flex min-h-16 min-w-0 flex-col items-center justify-center gap-1 rounded-lg text-xs font-medium focus-visible:ring-2 focus-visible:ring-ring ${pathname === href ? "text-primary" : "text-muted-foreground"}`}
+          >
+            <Icon className="size-5" />
+            <span>{label}</span>
+          </Link>
+        ))}
       </nav>
     </>
   );
