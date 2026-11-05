@@ -78,3 +78,93 @@ test("blocked session storage retains trip in memory across pages", async ({
     page.getByRole("button", { name: "t4", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
 });
+
+test("complete experimental journey exports matching unsigned evidence", async ({
+  page,
+}) => {
+  await page.goto("/pre-order");
+  await page
+    .getByRole("button", { name: "Gunakan dataset eksperimental" })
+    .click();
+  await page.getByLabel("Penjemputan", { exact: true }).click();
+  await page.getByRole("option", { name: "N04", exact: true }).click();
+  await page.getByRole("button", { name: "Hitung rute fixture" }).click();
+  await page
+    .getByRole("link", { name: "Lanjut ke navigasi", exact: true })
+    .click();
+  for (const step of ["t0", "t1", "t2", "t3", "t4"]) {
+    await page.getByRole("button", { name: step, exact: true }).click();
+    await expect(
+      page.getByRole("link", { name: "Lanjut ke pratinjau bukti" }),
+    ).toBeVisible();
+  }
+  await page.getByRole("link", { name: "Lanjut ke pratinjau bukti" }).click();
+  await expect(page).toHaveURL(/claims/);
+  await expect(
+    page.getByText("Asal N01 → penjemputan N04 → tujuan N12"),
+  ).toBeVisible();
+  await expect(
+    page.getByText("Tidak Dikirim ke Platform Mana Pun", { exact: true }),
+  ).toBeVisible();
+  await page.reload();
+  await page.getByRole("button", { name: "Buat pratinjau bukti" }).click();
+  await expect(
+    page.getByText("Pratinjau siap ditinjau", { exact: true }),
+  ).toBeVisible();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Ekspor pratinjau JSON" }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toBe(
+    "hydrogig-experimental-evidence.json",
+  );
+  const stream = await download.createReadStream();
+  const chunks = [];
+  for await (const chunk of stream!) chunks.push(chunk);
+  const data = JSON.parse(Buffer.concat(chunks).toString());
+  expect(data.content.calculation.request.pickup).toBe("N04");
+  expect(data.content.calculation.frame.step).toBe("t4");
+  expect(data.content.token).toBeNull();
+  expect(data.content.signature).toBeNull();
+  expect(data.content.submission_status).toBe("not_submitted");
+  const { createHash } = await import("node:crypto");
+  expect(
+    createHash("sha256").update(data.canonical_content).digest("hex"),
+  ).toBe(data.sha256);
+  expect(JSON.parse(data.canonical_content)).toEqual(data.content);
+  await page
+    .getByRole("button", { name: "Atur ulang demonstrasi", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Ekspor pratinjau JSON" }),
+  ).toHaveCount(0);
+  await page.getByRole("link", { name: "Kembali ke navigasi" }).click();
+  await expect(
+    page.getByRole("button", { name: "t0", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+});
+
+test("invalid evidence digest cannot be exported", async ({ page }) => {
+  await page.goto("/pre-order");
+  await page
+    .getByRole("button", { name: "Gunakan dataset eksperimental" })
+    .click();
+  await page
+    .getByRole("link", { name: "Lanjut ke navigasi", exact: true })
+    .click();
+  await page.getByRole("link", { name: "Lanjut ke pratinjau bukti" }).click();
+  await page.route("**/api/v1/experimental/evidence/preview", async (route) => {
+    const response = await route.fetch();
+    const data = await response.json();
+    data.sha256 = "0".repeat(64);
+    await route.fulfill({ response, json: data });
+  });
+  await page.getByRole("button", { name: "Buat pratinjau bukti" }).click();
+  await expect(
+    page.getByText(
+      "Data bukti tidak tersedia atau tidak valid. Kembali ke navigasi dan coba lagi.",
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Ekspor pratinjau JSON" }),
+  ).toHaveCount(0);
+});
