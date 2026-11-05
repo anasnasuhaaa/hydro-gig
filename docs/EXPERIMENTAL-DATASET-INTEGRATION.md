@@ -66,7 +66,7 @@ The existing deterministic heap Dijkstra core was extracted and shared with the 
 
 All five t0–t4 frames are retained. Comparisons use the immediately preceding source frame, even when a user skips a step. Changed edges mean any stored sample value changed; weight deltas show exact numeric changes. Fixed-frame routes do not predict conditions at arrival times. No timer, forecast or live stream advances replay.
 
-Both `/pre-order` and `/navigation` offer an explicit dataset button; synthetic mode remains default. React Hook Form/Zod validate selections, shadcn/Radix provide selectors, TanStack Query and the existing typed fetch client handle cancellable requests and Zod response validation. Query keys include nodes/scenario/frame. Errors suppress stale results. Node IDs, paths and numeric source fields remain stable; all explanatory UI text is bilingual and valid times display in Asia/Jakarta. Route-change text compares backend weighted edge sequences for identical trip selections across adjacent frames. The table provides raw values and changes; route cards explain unreachable directed trips. Experimental selections are local to each workspace and reset on remount; cross-page session persistence is not implemented for this mode.
+Both `/pre-order` and `/navigation` offer an explicit dataset button; synthetic mode remains default. React Hook Form/Zod validate selections, shadcn/Radix provide selectors, TanStack Query and the existing typed fetch client handle cancellable requests and Zod response validation. Query keys include nodes/scenario/frame. Errors suppress stale results. Node IDs, paths and numeric source fields remain stable; all explanatory UI text is bilingual and valid times display in Asia/Jakarta. Route-change text compares backend weighted edge sequences for identical trip selections across adjacent frames. The table provides raw values and changes; route cards explain unreachable directed trips. Experimental selections now persist across pre-order, navigation and claims using the isolated validated session described below.
 
 ## Reproduction and validation
 
@@ -98,7 +98,7 @@ Actual final command results are recorded below after execution.
 
 **NOT IMPLEMENTED:** trained DeepONet inference or training, validated SWE generation, live telemetry, realtime flood monitoring, operational flood-safe routing, actual ojol integration, authenticated penalty-exemption tokens, database persistence, large-family regression, verified OSM replacement, deployment.
 
-Recommended next step: obtain the source/license/CRS and generation manifests, then independently validate road topology and physical units before considering geographic or scientific promotion. For software UX, a separately tested experimental trip session could preserve selections across screens without mixing demo IDs.
+Recommended next step: obtain the source/license/CRS and generation manifests, then independently validate road topology and physical units before considering geographic or scientific promotion. The experimental trip session now preserves selections across screens without mixing demo IDs.
 
 ## Changed-file inventory
 
@@ -139,3 +139,58 @@ Raw files, PROMPT.md, dependency manifests and database configuration were not m
 - `git diff --check`: passed. Canonical input hashes and byte-identical artifact reproduction passed. Raw inputs were not staged.
 
 No live database, real sensors, geographic source verification, physical model validation or deployment was tested.
+
+## Complete three-stage journey
+
+1. Open `/pre-order`, choose **Use experimental dataset**, select the sample stops and press **Calculate fixture routes**. The default trip is N01 → N03 → N12. Review distance and stored-weight alternatives.
+2. Press **Continue to navigation**. The selected trip and frame are retained. Choose t0 through t4 and review actual backend path/cost changes. Press **Continue to evidence preview**.
+3. On `/claims`, review the selected trip, historical valid time, weighted route segments, raw source values and changes from the preceding frame. Press **Generate evidence preview**, then **Export preview JSON**. The package is downloaded locally and is not submitted to any platform.
+4. Reload any screen to recover selections. **Reset demonstration** restores the default experimental trip at t0 and clears saved route references and the displayed evidence preview. **Return to synthetic demo** selects the independent existing synthetic experience.
+
+### Session contract
+
+`frontend/src/components/experimental/session.ts` stores only schema/dataset/network versions, mode, selected request (origin/pickup/destination/scenario/frame) and route edge references under `hydrogig-experimental-v1`. The synthetic `hydrogig-demo-v1` entry is independent. Strict Zod validation checks version literals, fixture node IDs and frame IDs. Malformed/obsolete selections fall back with an explicit message. State uses `useSyncExternalStore` for cross-page updates and hydration. Blocked storage retains state in browser memory during client navigation; a full reload with blocked storage necessarily starts fresh. No GPS histories, identities, secrets, telemetry, API results or generated packages are stored.
+
+Saved route references are hints only, not trusted evidence inputs. Changing the trip/frame clears them. Continuing records the current weighted edge IDs. Both navigation and claims fetch routes for the selected request again; evidence generation recomputes everything server-side. Reset clears references. A new fixture identity requires a new session version/schema.
+
+### Evidence API and canonicalization
+
+`POST /api/v1/experimental/evidence/preview` accepts the existing strict experimental ScreenRequest. The service recalculates both objectives and legs and selects their union of edge references and source samples. `affected_route_edge_ids` is the intersection with the preceding-frame changes, not an incident/safety classification. The full calculation retains status, ordered paths, dataset/network versions, scenario/frame/time, algorithm and weighting metadata, provenance and limitations. A dedicated `scenario_version: "1"` and schema `experimental-evidence-v1` identify this package format.
+
+The response contains `created_at` (server UTC package creation), `content`, `canonical_content`, `sha256`, `canonicalization` and `digest_scope`. Scenario valid time stays in `content.calculation.frame.timestamp`; it is never replaced with creation time.
+
+Canonicalization `python-json-sorted-utf8-v1` is explicitly Python's JSON serialization of normalized Pydantic JSON data with sorted object keys, compact separators, Unicode retained and nonfinite values forbidden. Array order is preserved. This is a versioned application encoding, not a claim of RFC 8785 compliance. SHA-256 hashes the exact UTF-8 `canonical_content` bytes. The digest excludes `created_at`; repeated previews of identical content have identical hashes with separate creation timestamps. Verify exported integrity by hashing that exact included string. The browser validates the schema, verifies the digest, checks canonical/content equivalence and matches the requested trip before enabling export. Web Crypto availability is required; failure produces an unavailable state.
+
+`token` and `signature` are always null, `submission_status` is always `not_submitted`. Client-provided tokens, arbitrary observations, route arrays and author/time claims are rejected as extra request fields. No package is signed, persisted server-side or sent to an ojol platform. A digest does not authenticate the author, prove an incident, establish legal validity, confer penalty exemption or guarantee safety. T_EXO issuance and platform acceptance remain unimplemented future work.
+
+### New implementation files
+
+- `frontend/src/components/experimental/session.ts`: validated isolated selection storage and memory fallback.
+- `frontend/src/components/experimental/evidence-preview.tsx`: selected-trip review, generation and local export.
+- `backend/app/services/evidence.py`: evidence contracts, recomputation and canonical digest.
+- `backend/tests/test_evidence.py` and `frontend/tests/experimental-journey.spec.ts`: canonicalization/reference and journey checks.
+
+Updated the experimental workspace/API client, experimental controller, claims page and both translation catalogs. Existing synthetic claims presentation remains the fallback when experimental mode is not selected.
+
+### MIT Solve demonstration walkthrough (about two minutes)
+
+- **0:00–0:20:** Explain the problem being explored: helping motorcycle delivery drivers review route disruption and document the context. State that this is an experimental software MVP using simulated/unverified data.
+- **0:20–0:45:** On pre-order, enable the dataset and calculate the default N01 → N03 → N12 trip. Explain that FastAPI calculates both alternatives dynamically; distance and experimental objective are separate.
+- **0:45–1:15:** Continue to navigation. Select t1: the weighted second leg changes from N03→N04→N05→N12 to N03→N06→N07→N12. Select t2–t4: the same path can persist while costs change. This is manual historical replay, not forecasting.
+- **1:15–1:45:** Continue to claims. Review the selected frame, raw route values and provenance. Generate and export the preview. Point out historical valid time versus package creation time and explain that SHA-256 identifies content integrity only.
+- **1:45–2:00:** Show “Not Submitted to Any Platform.” State the next research gates: traceable licensed roads, validated physical generation/calibration, consented telemetry and a real platform agreement. Do not present unmeasured safety benefits, model accuracy, compensation or platform approval.
+
+Reproduce with the existing backend/frontend startup commands and the production testing commands above. No database or external weather provider is required for this journey.
+
+### Three-stage journey validation results (2026-11-05)
+
+- Backend `pytest -q`: **87 passed**; one existing Starlette/httpx deprecation warning. Ruff check passed and Ruff formatting check reported 44 files formatted.
+- Frontend typecheck, lint and Prettier checks passed. Production `pnpm build` with isolated `.next-e2e` output and API port 8100 passed; `pnpm build:e2e` passed before browser tests.
+- Initial session/fixture browser validation: **12 passed** on desktop/mobile.
+- Full production Playwright suite after evidence integration: **99 passed, 3 existing device-specific skips**, including synthetic regression and the complete export journey on desktop/mobile.
+- Backend tests verify stable canonicalization across object-key ordering, deterministic content hashes despite different creation times, selected request/frame references, exact route sample joins, provenance, null tokens/signatures, and rejection of forged extra fields/unknown IDs/frames.
+- Journey tests verify custom pickup transfer across all three screens, t0–t4 selections, reload recovery, memory fallback, invalid/stale selections, reset, local download parsing and independent SHA-256 verification.
+
+No database, platform submission, signing system, scientific calibration, physical device or deployment was exercised. Evidence generation requires the backend; digest verification requires browser Web Crypto. Packages are downloaded by explicit user action and never auto-submitted.
+
+After adding the digest-corruption rejection case, `pnpm typecheck` and `pnpm lint` passed again; the focused final `pnpm test:e2e tests/experimental-journey.spec.ts` run passed **all 10 desktop/mobile cases**, using the same production build (only test code changed). Corrupt digest responses cannot enable JSON export. `git diff --check` passed before the final commits.
