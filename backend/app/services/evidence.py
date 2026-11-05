@@ -2,7 +2,7 @@
 
 import hashlib
 import json
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Literal
 
 from pydantic import AwareDatetime
@@ -66,7 +66,7 @@ def preview(request: ScreenRequest) -> EvidencePreview:
     )
     canonical = canonicalize(content)
     return EvidencePreview(
-        created_at=datetime.now(UTC),
+        created_at=datetime.now(timezone.utc),
         content=content,
         canonical_content=canonical,
         sha256=hashlib.sha256(canonical.encode("utf-8")).hexdigest(),

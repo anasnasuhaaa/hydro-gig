@@ -1,6 +1,6 @@
 import json
 import logging
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 
 class JsonFormatter(logging.Formatter):
@@ -8,7 +8,7 @@ class JsonFormatter(logging.Formatter):
         # Never serialize exception strings or arbitrary request/connection data.
         return json.dumps(
             {
-                "timestamp": datetime.now(UTC).isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
                 "level": record.levelname,
                 "logger": record.name,
                 "event": record.getMessage(),

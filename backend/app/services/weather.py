@@ -1,5 +1,5 @@
 import asyncio
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from typing import Annotated, Literal
 
 import httpx
@@ -82,8 +82,8 @@ class OpenMeteoProvider:
             ):
                 raise WeatherUnavailable()
             return CurrentWeather(
-                model_time=datetime.fromtimestamp(current.time, UTC),
-                fetched_at=datetime.now(UTC),
+                model_time=datetime.fromtimestamp(current.time, timezone.utc),
+                fetched_at=datetime.now(timezone.utc),
                 interval_seconds=current.interval,
                 temperature=current.temperature_2m,
                 humidity=current.relative_humidity_2m,

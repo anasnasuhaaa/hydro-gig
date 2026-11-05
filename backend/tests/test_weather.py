@@ -1,6 +1,6 @@
 import copy
 import logging
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 import httpx
 import pytest
@@ -61,7 +61,9 @@ def test_current_weather_normalizes_time_units_provenance_without_database(paylo
     assert data["precipitation"] == 1.2
     assert data["is_day"] is True
     assert data["provenance"] == "model_predicted"
-    assert datetime.fromisoformat(data["model_time"]) == datetime.fromtimestamp(1793761200, UTC)
+    assert datetime.fromisoformat(data["model_time"]) == datetime.fromtimestamp(
+        1793761200, timezone.utc
+    )
     assert datetime.fromisoformat(data["fetched_at"]).tzinfo is not None
     assert data["interval_seconds"] == 900
     assert data["units"]["wind_speed"] == "km/h"

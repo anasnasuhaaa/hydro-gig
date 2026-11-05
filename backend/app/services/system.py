@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -39,6 +39,6 @@ async def get_system_status(settings: Settings) -> SystemStatus:
     reachable = await probe_database(raw_url) if raw_url else False
     state = "reachable" if reachable else "unreachable" if raw_url else "not_configured"
     return SystemStatus(
-        checked_at=datetime.now(UTC),
+        checked_at=datetime.now(timezone.utc),
         database=DatabaseStatus(configured=bool(raw_url), reachable=reachable, state=state),
     )
