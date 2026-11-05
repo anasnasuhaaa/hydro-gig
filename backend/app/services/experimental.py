@@ -1,7 +1,7 @@
 from functools import lru_cache
 from pathlib import Path
 
-from app.schemas.experimental import Fixture, Frame, Network, Scenarios
+from app.schemas.experimental import Fixture, Frame, Network, ReplayFrame, Scenarios
 
 DATA = Path(__file__).resolve().parents[2] / "experimental/processed/small-v1.json"
 
@@ -30,9 +30,24 @@ def scenarios() -> Scenarios:
 def frame(scenario_id: str, step: str) -> Frame:
     data = load()
     if scenario_id == data.scenario_id:
-        for item in data.frames:
+        for index, item in enumerate(data.frames):
             if item.step == step:
-                return item
+                previous = data.frames[index - 1] if index else None
+                changed = [
+                    e
+                    for e, sample in item.samples.items()
+                    if previous and sample != previous.samples[e]
+                ]
+                return ReplayFrame(
+                    **item.model_dump(),
+                    previous_step=previous.step if previous else None,
+                    changed_edge_ids=changed,
+                    weight_deltas={
+                        e: item.samples[e].weight - previous.samples[e].weight for e in changed
+                    }
+                    if previous
+                    else {},
+                )
     raise LookupError("Unknown experimental scenario or frame")
 
 

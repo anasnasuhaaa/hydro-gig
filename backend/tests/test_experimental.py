@@ -104,3 +104,29 @@ def test_routes_all_pairs_against_independent_relaxation():
                             assert (edges[edge].source_node, edges[edge].target_node) == tuple(
                                 path.node_ids[index : index + 2]
                             )
+
+
+def test_replay_changes_and_recalculation():
+    from app.schemas.experimental import ScreenRequest
+    from app.services.experimental import frame, screen
+
+    results = []
+    for index in range(5):
+        current = frame("small-inundation-v1", f"t{index}")
+        assert current.previous_step == (f"t{index - 1}" if index else None)
+        if index:
+            previous = frame("small-inundation-v1", f"t{index - 1}")
+            assert current.weight_deltas
+            for edge, delta in current.weight_deltas.items():
+                assert delta == current.samples[edge].weight - previous.samples[edge].weight
+        result = screen(
+            ScreenRequest(
+                origin="N01",
+                pickup="N03",
+                destination="N12",
+                scenario_id="small-inundation-v1",
+                step=current.step,
+            )
+        )
+        results.append(result.origin_to_pickup.weighted.objective_cost)
+    assert len(set(results)) > 1

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import ValidationError
 
-from app.schemas.experimental import Frame, Network, Scenarios, ScreenRequest, ScreenResponse
+from app.schemas.experimental import Network, ReplayFrame, Scenarios, ScreenRequest, ScreenResponse
 from app.services import experimental as service
 
 router = APIRouter(prefix="/experimental", tags=["experimental-unverified-fixture"])
@@ -28,7 +28,7 @@ def scenarios():
     return invoke(service.scenarios)
 
 
-@router.get("/scenarios/{scenario_id}/frames/{step}", response_model=Frame)
+@router.get("/scenarios/{scenario_id}/frames/{step}", response_model=ReplayFrame)
 def frame(scenario_id: str, step: str):
     return invoke(service.frame, scenario_id, step)
 

@@ -61,6 +61,12 @@ class Frame(Metadata):
     samples: dict[str, Sample]
 
 
+class ReplayFrame(Frame):
+    previous_step: str | None
+    changed_edge_ids: list[str]
+    weight_deltas: dict[str, Finite]
+
+
 class Fixture(Metadata):
     source_hashes: dict[str, str]
     nodes: list[Node]
@@ -120,6 +126,6 @@ class Alternatives(Contract):
 
 class ScreenResponse(Metadata):
     request: ScreenRequest
-    frame: Frame
+    frame: ReplayFrame
     origin_to_pickup: Alternatives
     pickup_to_destination: Alternatives
