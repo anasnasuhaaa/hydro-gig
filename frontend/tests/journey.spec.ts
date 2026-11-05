@@ -10,10 +10,14 @@ test.beforeEach(async ({ context, baseURL }) => {
 test("dashboard leads to the first driver step", async ({ page }) => {
   await page.goto("/dashboard");
   await page
-    .getByRole("link", { name: en.Dashboard.screen, exact: true })
+    .getByRole("link", { name: en.Dashboard.legacy, exact: true })
     .click();
   await expect(page).toHaveURL(/\/pre-order$/);
-  await expect(page.getByText("Step 1 of 2", { exact: false })).toBeVisible();
+  await expect(
+    page
+      .getByRole("navigation", { name: en.Journey.label })
+      .getByRole("link", { name: "Step 1 of 3: Screen route" }),
+  ).toHaveAttribute("aria-current", "step");
   await expect(
     page.getByRole("link", { name: en.Guide.help, exact: true }),
   ).toBeVisible();

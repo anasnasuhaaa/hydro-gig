@@ -20,7 +20,7 @@
     "main": "Navigasi utama",
     "quick": "Navigasi cepat",
     "status": "Status sistem",
-    "step": "Langkah {step} dari 2",
+    "step": "Langkah {step} dari 3",
     "screenStep": "Periksa dan bandingkan",
     "exploreStep": "Jelajahi perubahan simulasi"
   },
@@ -280,34 +280,34 @@
   },
   "Guide": {
     "title": "Mulai dalam satu menit.",
-    "subtitle": "Mulai dari contoh, bandingkan rute, lalu jelajahi perubahan simulasi. Klaim belum tersedia.",
+    "subtitle": "Bandingkan rute, jelajahi perubahan simulasi, lalu tinjau bukti eksperimental.",
     "flow": "Mulai, periksa, jelajahi, status Klaim",
     "try": "Mulai demo perjalanan",
     "open": "Buka navigasi",
-    "planned": "Belum tersedia",
+    "planned": "Pratinjau eksperimental · tanpa tanda tangan",
     "help": "Bantuan",
     "screen": {
       "title": "Periksa dan bandingkan rute",
-      "description": "Tekan Periksa rute dan tunggu perbandingan. Rute terpendek memakai jarak; Rute alternatif (simulasi) memakai biaya buatan. Lalu lanjut ke navigasi.",
+      "description": "Pilih asal, penjemputan, dan tujuan. Hitung rute, lalu bandingkan jarak dengan biaya berbobot eksperimental. Pilih alternatif untuk menyorot jalur.",
       "diagram": "Periksa → bandingkan → lanjut"
     },
     "explore": {
       "title": "Jelajahi perubahan pada linimasa",
-      "description": "Gunakan Berikutnya atau Sebelumnya untuk membandingkan tiga snapshot tetap. Lihat perubahan biaya jalan dan rute. Atur ulang demo kembali ke contoh. Tanpa pelacakan GPS atau prakiraan cuaca.",
-      "diagram": "Awal → +5 menit → +10 menit"
+      "description": "Mode dataset memiliki lima bingkai historis t0–t4. Gunakan tombol bingkai, sebelumnya/berikutnya, atau Putar simulasi. Jalur dapat tetap sama meskipun nilai ruas dan biaya berubah. Demo sintetis lama memiliki tiga bingkai.",
+      "diagram": "t0 → t1 → t2 → t3 → t4"
     },
     "evidence": {
-      "title": "Pahami status Klaim",
-      "description": "Klaim adalah pratinjau alur mendatang. Penyimpanan bukti, penerbitan token, dan verifikasi belum tersedia. Pembatalan penalti platform tidak dijamin.",
-      "diagram": "Catat → tanda tangani → verifikasi (rencana)"
+      "title": "Tinjau bukti eksperimental",
+      "description": "Lanjutkan perjalanan dataset ke pratinjau bukti. Tinjau sumber, buat paket tanpa tanda tangan, lalu ekspor JSON secara lokal. Tidak dikirim ke platform; tidak menjamin pembebasan penalti.",
+      "diagram": "Tinjau → buat pratinjau → ekspor JSON"
     },
     "dataTitle": "Dua sumber data berbeda",
     "weather": "Cuaca: kondisi terkini berbasis model Open-Meteo, dengan waktu model. Gunakan lokasi perangkat atas izin atau pilih Bogor manual di Dasbor.",
-    "simulation": "Simulasi banjir: jalan sintetis dan biaya buatan. Terpisah dari cuaca, tanpa pengukuran banjir pada ruas jalan.",
+    "simulation": "Simulasi banjir: dataset dengan sumber belum terverifikasi atau fixture sintetis terpisah. Tidak ada pengukuran banjir ruas yang tervalidasi.",
     "safety": "Rute tersedia bukan jaminan keselamatan. Jangan memasuki genangan untuk menguji purwarupa ini.",
     "start": {
       "title": "Mulai demo perjalanan",
-      "description": "Dari Dasbor, pilih Periksa rute. Di Pra-pesanan, tekan Coba contoh perjalanan untuk mengisi tiga titik. Ubah lokasi bersifat opsional.",
+      "description": "Dari Dasbor, pilih Jelajahi Simulasi Skenario Banjir untuk dataset eksperimental. Demo sintetis lama tetap tersedia sebagai mode terpisah.",
       "diagram": "Lokasi awal → jemput → tujuan"
     },
     "glossaryTitle": "Istilah singkat",
@@ -449,6 +449,29 @@
     "ready": "Pratinjau siap ditinjau",
     "createdTime": "Waktu pembuatan paket (Asia/Jakarta)",
     "digestHelp": "SHA-256 mencakup konten kanonis, tanpa waktu pembuatan. Hanya mengidentifikasi integritas konten; tidak mengautentikasi pembuat atau insiden. Tidak menerbitkan tanda tangan atau token.",
-    "export": "Ekspor pratinjau JSON"
+    "export": "Ekspor pratinjau JSON",
+    "reviewHelp": "Tinjau perjalanan dan sumber sebelum membuat paket JSON untuk ditinjau secara lokal.",
+    "statusTitle": "Status bukti",
+    "unsigned": "Bukti tanpa tanda tangan",
+    "unverified": "Data Sumber Belum Terverifikasi",
+    "digestTitle": "Rincian integritas konten",
+    "sourceDetails": "Referensi teknis sumber",
+    "noEdges": "Tidak ada ruas rute",
+    "retry": "Coba lagi",
+    "sourceLabels": {
+      "dataset": "Dataset",
+      "dataset_version": "Versi dataset",
+      "network": "Jaringan",
+      "scenario": "Skenario",
+      "algorithm": "Algoritme",
+      "weighting": "Pembobotan"
+    }
+  },
+  "Journey": {
+    "label": "Tiga tahap perjalanan",
+    "step": "Langkah {step} dari 3: {title}",
+    "screen": "Periksa rute",
+    "replay": "Jelajahi skenario",
+    "evidence": "Tinjau bukti"
   }
 }

@@ -164,3 +164,63 @@ test("explicit simulation playback stops at the last frame", async ({
     page.getByRole("button", { name: "Putar simulasi", exact: true }),
   ).toBeDisabled();
 });
+
+test("dashboard discovers the dataset and the three-stage journey includes evidence", async ({
+  page,
+  isMobile,
+}) => {
+  await page.goto("/dashboard");
+  await page
+    .getByRole("link", {
+      name: "Jelajahi Simulasi Skenario Banjir",
+      exact: true,
+    })
+    .click();
+  await expect(page).toHaveURL(/pre-order$/);
+  await expect(
+    page.getByRole("button", {
+      name: "Gunakan dataset eksperimental",
+      exact: true,
+    }),
+  ).toHaveAttribute("aria-pressed", "true");
+  const journey = page.getByRole("navigation", {
+    name: "Tiga tahap perjalanan",
+    exact: true,
+  });
+  await expect(
+    journey.getByRole("link", { name: "Langkah 1 dari 3: Periksa rute" }),
+  ).toHaveAttribute("aria-current", "step");
+  await page
+    .getByRole("link", { name: "Lanjut ke navigasi", exact: true })
+    .click();
+  await expect(
+    journey.getByRole("link", { name: "Langkah 2 dari 3: Jelajahi skenario" }),
+  ).toHaveAttribute("aria-current", "step");
+  if (isMobile) {
+    await page
+      .getByRole("navigation", { name: "Navigasi cepat", exact: true })
+      .getByRole("link", { name: "Klaim", exact: true })
+      .click();
+  } else {
+    await page
+      .getByRole("link", { name: "Lanjut ke pratinjau bukti", exact: true })
+      .click();
+  }
+  await expect(page).toHaveURL(/claims$/);
+  await expect(
+    journey.getByRole("link", { name: "Langkah 3 dari 3: Tinjau bukti" }),
+  ).toHaveAttribute("aria-current", "step");
+  await expect(
+    page.getByText("Data Sumber Belum Terverifikasi", { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Bukti tanpa tanda tangan",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByText("Asal N01 → penjemputan N03 → tujuan N12", { exact: true }),
+  ).toBeVisible();
+});
