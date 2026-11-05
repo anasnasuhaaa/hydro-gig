@@ -50,41 +50,15 @@ class DijkstraEngine:
                 )
         if origin not in adjacency or destination not in adjacency:
             raise ValueError("Unknown node ID in demo network")
-        distances = {origin: 0.0}
-        previous: dict[str, tuple[str, str]] = {}
-        queue = [(0.0, origin)]
-        while queue:
-            distance, node = heapq.heappop(queue)
-            if distance != distances[node]:
-                continue
-            if node == destination:
-                break
-            for target, edge_id, cost in adjacency[node]:
-                candidate = distance + cost
-                if not math.isfinite(candidate):
-                    raise ValueError("Route cost overflow")
-                if candidate < distances.get(target, math.inf):
-                    distances[target] = candidate
-                    previous[target] = (node, edge_id)
-                    heapq.heappush(queue, (candidate, target))
-        found = destination in distances
-        node_ids, edge_ids = [], []
-        if found:
-            node = destination
-            node_ids.append(node)
-            while node != origin:
-                node, edge_id = previous[node]
-                node_ids.append(node)
-                edge_ids.append(edge_id)
-            node_ids.reverse()
-            edge_ids.reverse()
+        node_ids, edge_ids, cost = shortest_path(adjacency, origin, destination)
+        found = cost is not None
         return RouteResult(
             status="found" if found else "unreachable",
             mode=mode,
             node_ids=node_ids,
             edge_ids=edge_ids,
             total_length_m=sum(lengths[edge_id] for edge_id in edge_ids) if found else None,
-            total_weighted_cost=distances[destination] if found else None,
+            total_weighted_cost=cost,
             network_id=network.network_id,
             scenario_id=request.scenario_id,
             step=request.step,
@@ -100,3 +74,36 @@ class DijkstraEngine:
                 ],
             ),
         )
+
+
+def shortest_path(adjacency, origin: str, destination: str):
+    """Deterministic heap core shared by demo and quarantined fixture routing."""
+    distances = {origin: 0.0}
+    previous: dict[str, tuple[str, str]] = {}
+    queue = [(0.0, origin)]
+    while queue:
+        distance, node = heapq.heappop(queue)
+        if distance != distances[node]:
+            continue
+        if node == destination:
+            break
+        for target, edge_id, cost in adjacency[node]:
+            candidate = distance + cost
+            if not math.isfinite(candidate):
+                raise ValueError("Route cost overflow")
+            if candidate < distances.get(target, math.inf):
+                distances[target] = candidate
+                previous[target] = (node, edge_id)
+                heapq.heappush(queue, (candidate, target))
+    found = destination in distances
+    node_ids, edge_ids = [], []
+    if found:
+        node = destination
+        node_ids.append(node)
+        while node != origin:
+            node, edge_id = previous[node]
+            node_ids.append(node)
+            edge_ids.append(edge_id)
+        node_ids.reverse()
+        edge_ids.reverse()
+    return node_ids, edge_ids, distances.get(destination)

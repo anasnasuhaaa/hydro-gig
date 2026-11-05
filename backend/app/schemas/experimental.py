@@ -94,3 +94,32 @@ class Network(Metadata):
 
 class Scenarios(Metadata):
     frames: list[dict[str, str]]
+
+
+class ScreenRequest(Contract):
+    origin: Identifier
+    pickup: Identifier
+    destination: Identifier
+    scenario_id: Identifier
+    step: Identifier
+
+
+class PathResult(Contract):
+    status: Literal["found", "unreachable"]
+    node_ids: list[str]
+    edge_ids: list[str]
+    distance_m: Nonnegative | None
+    objective_cost: Nonnegative | None
+    cost_unit: Literal["m", "experimental_units"]
+
+
+class Alternatives(Contract):
+    baseline: PathResult
+    weighted: PathResult
+
+
+class ScreenResponse(Metadata):
+    request: ScreenRequest
+    frame: Frame
+    origin_to_pickup: Alternatives
+    pickup_to_destination: Alternatives
