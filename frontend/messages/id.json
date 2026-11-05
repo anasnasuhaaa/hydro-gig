@@ -400,7 +400,21 @@
     "inspectedLegend": "Ruas diperiksa · garis tebal",
     "inspect": "Periksa ruas",
     "inspectNamed": "Periksa ruas {edge}",
-    "inspectHelp": "Sentuh garis atau pilih ruas di atas. Arah panah mengikuti jaringan; nilai sumber belum terverifikasi."
+    "inspectHelp": "Sentuh garis atau pilih ruas di atas. Arah panah mengikuti jaringan; nilai sumber belum terverifikasi.",
+    "timelineTitle": "Linimasa skenario",
+    "historical": "Pemutaran historis · Bukan pemantauan langsung",
+    "currentFrame": "Bingkai {step}",
+    "timePending": "—",
+    "previousFrame": "Bingkai sebelumnya",
+    "nextFrame": "Bingkai berikutnya",
+    "play": "Putar simulasi",
+    "pause": "Jeda simulasi",
+    "playSpeed": "Kecepatan simulasi: 2 detik per bingkai",
+    "changeSummary": "Perubahan dari bingkai sebelumnya",
+    "changedCount": "Ruas dengan nilai berubah",
+    "costDelta": "Perubahan biaya rute berbobot",
+    "retryComparison": "Coba lagi perbandingan",
+    "deltaHelp": "Dibandingkan dengan {step}. Jalur yang sama dapat memiliki biaya berbeda."
   },
   "Evidence": {
     "title": "Pratinjau Bukti Eksperimental",

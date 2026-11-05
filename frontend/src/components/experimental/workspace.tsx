@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DemoSelect } from "@/components/demo/shared";
 import { ExperimentalNetwork } from "./network";
+import { ScenarioTimeline, FrameSummary } from "./timeline";
 import { RouteComparison, type RouteMode } from "./route-comparison";
 import {
   experimentalApi,
@@ -91,16 +92,6 @@ function Workspace() {
   });
   const result = query.data,
     graph = network.data;
-  const signature = (r: NonNullable<typeof result>) =>
-    JSON.stringify(
-      [r.origin_to_pickup.weighted, r.pickup_to_destination.weighted].map(
-        (p) => [p.status, p.edge_ids],
-      ),
-    );
-  const changed =
-    result && previous.data
-      ? signature(result) !== signature(previous.data)
-      : false;
   const weighted = new Set(
     result
       ? [
@@ -173,29 +164,13 @@ function Workspace() {
           </Button>
         </form>
       )}
-      <section
-        aria-label={t("frames")}
-        className="rounded-2xl border bg-card p-4 sm:p-5"
-      >
-        <h2 className="mb-3 font-semibold">{t("frames")}</h2>
-        <div
-          className="grid grid-cols-5 gap-2"
-          role="group"
-          aria-label={t("frames")}
-        >
-          {requestSchema.shape.step.options.map((step) => (
-            <Button
-              key={step}
-              className="min-h-11"
-              variant={step === request.step ? "default" : "outline"}
-              aria-pressed={step === request.step}
-              onClick={() => setRequest({ ...request, step })}
-            >
-              {step}
-            </Button>
-          ))}
-        </div>
-      </section>
+      <ScenarioTimeline
+        request={request}
+        onChange={(step) => setRequest({ ...request, step })}
+        result={result}
+        busy={query.isFetching}
+        error={query.isError}
+      />
       {network.isError || query.isError ? (
         <div role="alert" className="rounded-2xl border p-5">
           <p>{t("error")}</p>
@@ -235,24 +210,14 @@ function Workspace() {
                   />
                 </div>
               </section>
-              <div
-                aria-live="polite"
-                className="rounded-2xl border bg-card p-4"
-              >
-                <p className="font-medium">
-                  {index === 0
-                    ? t("initial")
-                    : previous.isError
-                      ? t("comparisonUnavailable")
-                      : previous.data
-                        ? t(changed ? "changed" : "unchanged")
-                        : t("loading")}
-                </p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {t("affected")}:{" "}
-                  {result.frame.changed_edge_ids.join(", ") || t("none")}
-                </p>
-              </div>
+              <FrameSummary
+                result={result}
+                previous={previous.data}
+                failed={previous.isError}
+                onRetry={() => {
+                  void previous.refetch();
+                }}
+              />
             </div>
             <RouteComparison
               result={result}

@@ -400,7 +400,21 @@
     "inspectedLegend": "Inspected edge · thick outline",
     "inspect": "Inspect segment",
     "inspectNamed": "Inspect segment {edge}",
-    "inspectHelp": "Tap a line or select a segment above. Arrows follow network direction; source values are unverified."
+    "inspectHelp": "Tap a line or select a segment above. Arrows follow network direction; source values are unverified.",
+    "timelineTitle": "Scenario timeline",
+    "historical": "Historical replay · No live monitoring",
+    "currentFrame": "Frame {step}",
+    "timePending": "—",
+    "previousFrame": "Previous frame",
+    "nextFrame": "Next frame",
+    "play": "Play simulation",
+    "pause": "Pause simulation",
+    "playSpeed": "Simulation speed: 2 seconds per frame",
+    "changeSummary": "Changes from the preceding frame",
+    "changedCount": "Segments with changed values",
+    "costDelta": "Weighted route cost change",
+    "retryComparison": "Retry comparison",
+    "deltaHelp": "Compared with {step}. The same path can have a different cost."
   },
   "Evidence": {
     "title": "Experimental Evidence Preview",
