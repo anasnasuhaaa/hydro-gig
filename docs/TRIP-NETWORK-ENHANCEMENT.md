@@ -18,3 +18,9 @@ Baseline `pnpm build:e2e` passed. Existing production capture test passed in bot
 4. Focused regressions, reviewed desktop/mobile captures and final validation record.
 
 The rendering remains a directed schematic, with unverified experimental values, no live flood monitoring, no inferred safety, geography, travel time or driver tracking.
+
+## Stage 2 — route canvas and selection
+
+Added ordered, connectivity-checked leg traversal and deterministic quadratic edge geometry. Shared edges draw once; reciprocal/parallel links separate and coincident geometry uses inspectable loops. A padded viewBox derives from geometry. Start/pickup/destination have localized icons, labels and a semantic stop list; other nodes are quiet waypoints. Solid selected and dashed alternative strokes use the existing objective colors. Compact comparison cards retain independent distance/objective units and workspace-owned route state.
+
+Validation: TypeScript, ESLint and `pnpm build:e2e` passed. Existing journey/interaction suites: **22 passed** on desktop/mobile after adapting pointer tests to click actual points along curved SVG paths (bounding-box centers can miss a curve). The initial run exposed that obsolete straight-line test assumption; no assertion was removed. API calculations, timeline and session contracts are unchanged.

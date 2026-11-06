@@ -1,6 +1,8 @@
 "use client";
 import { useId, useState, useMemo, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { Flag, Navigation2, UserRound } from "lucide-react";
+import { networkGeometry, orderedJourney } from "./network-geometry";
 import { type z } from "zod";
 import { type networkSchema, type FixtureResult } from "@/lib/api/experimental";
 import { Button } from "@/components/ui/button";
@@ -9,14 +11,10 @@ import { type RouteMode } from "./route-comparison";
 
 export function ExperimentalNetwork({
   graph,
-  baseline,
-  weighted,
   result,
   selected,
 }: {
   graph: z.infer<typeof networkSchema>;
-  baseline: Set<string>;
-  weighted: Set<string>;
   result: FixtureResult;
   selected: RouteMode;
 }) {
@@ -38,43 +36,33 @@ export function ExperimentalNetwork({
   );
   const edge = edges.get(edgeId);
   const sample = result.frame.samples[edgeId];
-  const { points, lines } = useMemo(() => {
-    const xs = graph.nodes.map((n) => n.x),
-      ys = graph.nodes.map((n) => n.y);
-    const minX = Math.min(...xs),
-      minY = Math.min(...ys);
-    const dx = Math.max(...xs) - minX || 1,
-      dy = Math.max(...ys) - minY || 1;
-    const points = Object.fromEntries(
-      graph.nodes.map((n) => [
-        n.node_id,
-        {
-          x: 38 + (400 * (n.x - minX)) / dx,
-          y: 400 - (350 * (n.y - minY)) / dy,
-        },
-      ]),
-    );
-    const pairs = new Set(
-      graph.edges.map((e) => `${e.source_node}:${e.target_node}`),
-    );
-    const lines = new Map(
-      graph.edges.map((e) => {
-        const a = points[e.source_node],
-          b = points[e.target_node];
-        const length = Math.hypot(b.x - a.x, b.y - a.y) || 1;
-        const offset = pairs.has(`${e.target_node}:${e.source_node}`) ? 10 : 0;
-        const ox = (-(b.y - a.y) / length) * offset,
-          oy = ((b.x - a.x) / length) * offset;
-        return [
-          e.edge_id,
-          { x1: a.x + ox, y1: a.y + oy, x2: b.x + ox, y2: b.y + oy },
-        ];
-      }),
-    );
-    return { points, lines };
-  }, [graph]);
+  const { points, paths, viewBox } = useMemo(
+    () => networkGeometry(graph),
+    [graph],
+  );
+  const journeys = {
+    baseline: orderedJourney(graph, result, "baseline"),
+    weighted: orderedJourney(graph, result, "weighted"),
+  };
+  const baseline = new Set(journeys.baseline.flatMap((leg) => leg.edgeIds));
+  const weighted = new Set(journeys.weighted.flatMap((leg) => leg.edgeIds));
+  const activeIds = new Set(journeys[selected].flatMap((leg) => leg.edgeIds));
+  const alternativeIds = selected === "weighted" ? baseline : weighted;
+  const orderedIds = [
+    ...new Set([
+      ...graph.edges
+        .filter((e) => !activeIds.has(e.edge_id))
+        .map((e) => e.edge_id),
+      ...journeys[selected].flatMap((leg) => leg.edgeIds),
+    ]),
+  ];
+  const stops = [
+    { role: "origin", label: "stopStart", Icon: Navigation2 },
+    { role: "pickup", label: "stopPickup", Icon: UserRound },
+    { role: "destination", label: "stopDestination", Icon: Flag },
+  ] as const;
   const changed = new Set(result.frame.changed_edge_ids);
-  const hoverLine = hovered ? lines.get(hovered) : undefined;
+  const hoverPath = hovered ? paths.get(hovered) : undefined;
   const number = (v: number | null | undefined) =>
     v == null
       ? t("unknown")
@@ -89,176 +77,215 @@ export function ExperimentalNetwork({
         }
       }}
     >
-      <div className="network-surface relative mx-auto max-w-[528px] rounded-xl border p-1">
+      <ol
+        className="grid grid-cols-3 gap-2 border-b pb-3"
+        aria-label={t("tripStops")}
+      >
+        {stops.map(({ role, label, Icon }, index) => (
+          <li key={role} data-stop-summary={role} className="min-w-0">
+            <div className="flex items-center gap-1.5 text-xs font-semibold sm:text-sm">
+              <Icon
+                aria-hidden="true"
+                className="size-4 shrink-0 text-primary"
+              />
+              <span>{t(label)}</span>
+            </div>
+            <p className="mt-1 break-all text-xs text-muted-foreground">
+              <span aria-hidden="true">{index + 1} · </span>
+              {result.request[role]}
+            </p>
+          </li>
+        ))}
+      </ol>
+      <div className="network-surface relative rounded-xl border">
         <svg
-          viewBox="0 0 480 440"
+          viewBox={viewBox}
           role="img"
           aria-label={t("preview")}
           aria-describedby={`${id}-help`}
-          className="mx-auto w-full max-w-[520px]"
+          className="route-canvas block w-full"
           data-frame={result.frame.step}
           data-selected-route={selected}
         >
-          <defs>
-            <marker
-              id={`${id}-arrow`}
-              viewBox="0 0 10 10"
-              refX="18"
-              refY="5"
-              markerUnits="userSpaceOnUse"
-              markerWidth="8"
-              markerHeight="8"
-              orient="auto-start-reverse"
-            >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke" />
-            </marker>
-          </defs>
-          {graph.edges.map((e) => {
-            const line = lines.get(e.edge_id)!;
-            const isChanged = changed.has(e.edge_id);
-            const isSelected = (
-              selected === "weighted" ? weighted : baseline
-            ).has(e.edge_id);
-            const active = edgeId === e.edge_id || hovered === e.edge_id;
+          <desc>
+            {stops
+              .map(({ role, label }) => `${t(label)}: ${result.request[role]}`)
+              .join(" → ")}
+          </desc>
+          {orderedIds.map((edgeId) => {
+            const geometry = paths.get(edgeId)!;
+            const isSelected = activeIds.has(edgeId);
+            const isAlternative = !isSelected && alternativeIds.has(edgeId);
+            const active = inspected === edgeId || hovered === edgeId;
+            const color = isSelected
+              ? selected === "weighted"
+                ? "var(--primary)"
+                : "var(--route-baseline)"
+              : isAlternative
+                ? selected === "weighted"
+                  ? "var(--route-baseline)"
+                  : "var(--primary)"
+                : "var(--edge-unrelated)";
             return (
               <g
-                key={e.edge_id}
-                data-edge-id={e.edge_id}
-                data-changed={isChanged}
+                key={edgeId}
+                data-edge-id={edgeId}
+                data-changed={changed.has(edgeId)}
                 data-on-route={isSelected}
-                data-inspected={edgeId === e.edge_id}
+                data-alternative={isAlternative}
+                data-shared={baseline.has(edgeId) && weighted.has(edgeId)}
+                data-inspected={inspected === edgeId}
+                data-legs={journeys[selected]
+                  .filter((leg) => leg.edgeIds.includes(edgeId))
+                  .map((leg) => leg.leg)
+                  .join(" ")}
                 onPointerEnter={(event) => {
-                  if (event.pointerType === "mouse") setHovered(e.edge_id);
+                  if (event.pointerType === "mouse") setHovered(edgeId);
                 }}
                 onPointerLeave={() => setHovered(null)}
-                onClick={() => setInspected(e.edge_id)}
+                onClick={() => setInspected(edgeId)}
                 className="cursor-pointer"
               >
-                <title>{t("inspectNamed", { edge: e.edge_id })}</title>
+                <title>{t("inspectNamed", { edge: edgeId })}</title>
                 {active && (
-                  <line
-                    {...line}
+                  <path
+                    d={geometry.d}
+                    fill="none"
                     stroke="var(--foreground)"
-                    strokeWidth="10"
+                    strokeWidth="13"
                     opacity="0.18"
                   />
                 )}
-                <line
-                  {...line}
-                  stroke="var(--edge-unrelated)"
-                  strokeWidth="1.5"
-                  opacity="0.4"
-                  markerEnd={`url(#${id}-arrow)`}
+                <path
+                  data-edge-stroke
+                  d={geometry.d}
+                  fill="none"
+                  stroke={color}
+                  strokeWidth={isSelected ? 5 : isAlternative ? 2.5 : 1.5}
+                  strokeDasharray={isAlternative ? "6 6" : undefined}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity={isSelected ? 1 : isAlternative ? 0.8 : 0.3}
                 />
-                {baseline.has(e.edge_id) && (
-                  <line
-                    {...line}
-                    stroke="var(--route-baseline)"
-                    strokeWidth={
-                      weighted.has(e.edge_id)
-                        ? 9
-                        : selected === "baseline"
-                          ? 5
-                          : 3
-                    }
-                    opacity={selected === "baseline" ? 1 : 0.55}
-                    markerEnd={`url(#${id}-arrow)`}
+                {geometry.length > 30 && (
+                  <path
+                    d="M -3 -3 L 1 0 L -3 3"
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={isSelected ? 2 : 1.5}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    transform={`translate(${geometry.mid.x} ${geometry.mid.y}) rotate(${geometry.angle})`}
+                    opacity={isSelected || isAlternative ? 1 : 0.5}
                   />
                 )}
-                {weighted.has(e.edge_id) && (
-                  <line
-                    {...line}
-                    stroke="var(--primary)"
-                    strokeWidth={selected === "weighted" ? 5 : 3}
-                    strokeDasharray={
-                      selected === "baseline" ? "5 5" : undefined
-                    }
-                    opacity={selected === "weighted" ? 1 : 0.6}
-                    markerEnd={`url(#${id}-arrow)`}
-                  />
-                )}
-                {isChanged && isSelected && (
+                {changed.has(edgeId) && (
                   <circle
-                    cx={(line.x1 + line.x2) / 2}
-                    cy={(line.y1 + line.y2) / 2}
-                    r="3.5"
+                    cx={geometry.mid.x}
+                    cy={geometry.mid.y}
+                    r={isSelected ? 3.5 : 2.5}
                     fill="var(--edge-change)"
                     stroke="var(--card)"
                     strokeWidth="1.5"
                   />
                 )}
-                <line {...line} stroke="transparent" strokeWidth="20" />
+                <path
+                  data-edge-hit
+                  d={geometry.d}
+                  fill="none"
+                  stroke="transparent"
+                  strokeWidth="20"
+                />
               </g>
             );
           })}
-          {graph.nodes.map((n) => {
-            const p = points[n.node_id];
-            const stop = [
-              result.request.origin,
-              result.request.pickup,
-              result.request.destination,
-            ].includes(n.node_id);
+          {graph.nodes.map((node) => {
+            const p = points.get(node.node_id)!;
+            const roles = stops.filter(
+              ({ role }) => result.request[role] === node.node_id,
+            );
             return (
-              <g key={n.node_id} className="pointer-events-none">
+              <g key={node.node_id} className="pointer-events-none">
                 <circle
                   cx={p.x}
                   cy={p.y}
-                  r={stop ? 9 : 5}
-                  fill={stop ? "var(--primary)" : "var(--card)"}
-                  stroke={stop ? "var(--card)" : "var(--edge-unrelated)"}
-                  strokeWidth="3"
+                  r={roles.length ? 15 : 3.5}
+                  fill="var(--card)"
+                  stroke={
+                    roles.length ? "var(--foreground)" : "var(--edge-unrelated)"
+                  }
+                  strokeWidth={roles.length ? 2 : 1.5}
                 />
-                <text
-                  x={p.x}
-                  y={p.y - 16}
-                  textAnchor="middle"
-                  fontSize="15"
-                  fontWeight={stop ? 700 : 500}
-                  fill="var(--foreground)"
-                  stroke="var(--card)"
-                  strokeWidth="4"
-                  paintOrder="stroke"
-                >
-                  {n.node_id}
-                </text>
+                {roles.map(({ role, label, Icon }, index) => (
+                  <g
+                    key={role}
+                    data-stop-role={role}
+                    data-node-id={node.node_id}
+                    transform={`translate(${p.x} ${p.y})`}
+                  >
+                    <Icon
+                      x={-9 + index * 20}
+                      y={-9}
+                      width={18}
+                      height={18}
+                      stroke="var(--foreground)"
+                    />
+                    <text
+                      x="0"
+                      y={-24 - index * 24}
+                      textAnchor="middle"
+                      fontSize="17"
+                      fontWeight="650"
+                      fill="var(--foreground)"
+                      stroke="var(--background)"
+                      strokeWidth="5"
+                      paintOrder="stroke"
+                    >
+                      {t(label)}
+                    </text>
+                  </g>
+                ))}
               </g>
             );
           })}
         </svg>
-        {hovered && hoverLine && (
+        {hovered && hoverPath && (
           <div
             role="tooltip"
-            className="pointer-events-none absolute z-10 max-w-[210px] rounded-lg border bg-popover px-3 py-2 text-xs shadow-md"
-            style={{
-              left: `${Math.min(52, Math.max(2, ((hoverLine.x1 + hoverLine.x2) / 960) * 100))}%`,
-              top: `${Math.max(2, ((hoverLine.y1 + hoverLine.y2) / 880) * 100 - 16)}%`,
-            }}
+            className="pointer-events-none absolute bottom-2 left-2 z-10 max-w-[calc(100%-1rem)] rounded-lg border bg-popover px-3 py-2 text-xs shadow-md"
           >
-            <p className="font-semibold">{hovered}</p>
+            <p className="break-all font-semibold">{hovered}</p>
             <p>
               {t("weight")}: {number(result.frame.samples[hovered]?.weight)}
-            </p>
-            <p>
-              {t("h_m")}: {number(result.frame.samples[hovered]?.h_m)}
             </p>
           </div>
         )}
       </div>
       <ul
-        className="grid grid-cols-2 gap-3 text-xs text-muted-foreground"
+        className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground"
         aria-label={t("networkLegend")}
       >
-        {(
-          ["baseline", "weighted", "changedLegend", "inspectedLegend"] as const
-        ).map((key, index) => (
-          <li key={key} className="flex items-center gap-2">
-            <span
-              aria-hidden="true"
-              className={`w-6 shrink-0 border-t-[3px] ${index === 0 ? "border-route-baseline" : index === 1 ? "border-primary" : index === 2 ? "border-[var(--edge-change)] border-dotted" : "border-foreground"}`}
-            />
-            {t(key)}
-          </li>
-        ))}
+        <li className="flex items-center gap-2">
+          <span
+            aria-hidden="true"
+            className={`w-5 border-t-[3px] ${selected === "weighted" ? "border-primary" : "border-route-baseline"}`}
+          />
+          {t("selectedLegend")}
+        </li>
+        <li className="flex items-center gap-2">
+          <span
+            aria-hidden="true"
+            className={`w-5 border-t-2 border-dashed ${selected === "weighted" ? "border-route-baseline" : "border-primary"}`}
+          />
+          {t("alternativeLegend")}
+        </li>
+        <li className="flex items-center gap-2">
+          <span
+            aria-hidden="true"
+            className="size-2 rounded-full bg-[var(--edge-change)]"
+          />
+          {t("changedValueLegend")}
+        </li>
       </ul>
       <div className="rounded-xl border p-3">
         <DemoSelect

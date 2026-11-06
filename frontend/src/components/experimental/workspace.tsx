@@ -77,14 +77,6 @@ function Workspace() {
         ]
       : [],
   );
-  const baseline = new Set(
-    result
-      ? [
-          ...result.origin_to_pickup.baseline.edge_ids,
-          ...result.pickup_to_destination.baseline.edge_ids,
-        ]
-      : [],
-  );
   return (
     <section className="space-y-5" aria-label={t("title")}>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
@@ -214,8 +206,6 @@ function Workspace() {
                   <ExperimentalNetwork
                     key={replayVersion}
                     graph={graph}
-                    weighted={weighted}
-                    baseline={baseline}
                     result={result}
                     selected={selected}
                   />

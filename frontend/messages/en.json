@@ -419,7 +419,14 @@
     "segmentDistance": "Segment length (m)",
     "clearSelection": "Clear segment selection",
     "noRelevantChange": "No relevant change on the selected route.",
-    "routePath": "Route stops"
+    "routePath": "Route stops",
+    "tripStops": "Trip stops",
+    "stopStart": "Start",
+    "stopPickup": "Pickup",
+    "stopDestination": "Destination",
+    "selectedLegend": "Selected",
+    "alternativeLegend": "Alternative",
+    "changedValueLegend": "Value changed"
   },
   "Evidence": {
     "title": "Experimental Evidence Preview",

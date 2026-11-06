@@ -419,7 +419,14 @@
     "segmentDistance": "Panjang ruas (m)",
     "clearSelection": "Tutup detail ruas",
     "noRelevantChange": "Tidak ada perubahan pada rute terpilih.",
-    "routePath": "Urutan titik rute"
+    "routePath": "Urutan titik rute",
+    "tripStops": "Titik perjalanan",
+    "stopStart": "Mulai",
+    "stopPickup": "Jemput",
+    "stopDestination": "Tujuan",
+    "selectedLegend": "Terpilih",
+    "alternativeLegend": "Alternatif",
+    "changedValueLegend": "Nilai berubah"
   },
   "Evidence": {
     "title": "Pratinjau Bukti Eksperimental",

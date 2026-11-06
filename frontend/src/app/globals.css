@@ -288,3 +288,27 @@ body {
     stroke-width 140ms ease,
     opacity 140ms ease;
 }
+
+/* Short emphasis transitions; the global reduced-motion rule disables these. */
+.route-canvas [data-edge-stroke] {
+  transition:
+    stroke 200ms ease,
+    stroke-width 200ms ease,
+    opacity 200ms ease;
+}
+@media (forced-colors: active) {
+  .route-canvas path {
+    stroke: CanvasText;
+  }
+  .route-canvas [data-edge-hit] {
+    stroke: transparent;
+  }
+  .route-canvas circle {
+    fill: Canvas;
+    stroke: CanvasText;
+  }
+  .route-canvas text {
+    fill: CanvasText;
+    stroke: Canvas;
+  }
+}
