@@ -1,4 +1,5 @@
 "use client";
+import { Disclosure } from "@/components/ui/disclosure";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useQuery } from "@tanstack/react-query";
@@ -213,7 +214,19 @@ export function FrameSummary({
             : failed
               ? t("comparisonUnavailable")
               : previous
-                ? t(paths(result) !== paths(previous) ? "changed" : "unchanged")
+                ? t(
+                    paths(result) !== paths(previous)
+                      ? "changed"
+                      : delta !== 0 ||
+                          result.frame.changed_edge_ids.some((id) =>
+                            [
+                              ...result.origin_to_pickup.weighted.edge_ids,
+                              ...result.pickup_to_destination.weighted.edge_ids,
+                            ].includes(id),
+                          )
+                        ? "unchanged"
+                        : "noRelevantChange",
+                  )
                 : t("loading")}
         </h2>
         <dl className="mt-4 grid grid-cols-2 gap-4">
@@ -251,10 +264,7 @@ export function FrameSummary({
         </p>
       )}
       {result.frame.changed_edge_ids.length > 0 && (
-        <details className="mt-4 border-t pt-2">
-          <summary className="min-h-11 cursor-pointer py-3 text-sm font-medium">
-            {t("affected")}
-          </summary>
+        <Disclosure className="mt-4 border-t pt-2" title={<>{t("affected")}</>}>
           <p className="mb-3 text-xs text-muted-foreground">
             {t("unitsCaveat")}
           </p>
@@ -287,7 +297,7 @@ export function FrameSummary({
               </tbody>
             </table>
           </div>
-        </details>
+        </Disclosure>
       )}
     </section>
   );

@@ -1,3 +1,4 @@
+import { Disclosure } from "@/components/ui/disclosure";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
@@ -105,9 +106,6 @@ export default function Dashboard() {
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               {t("limits")}
             </p>
-            <div className="mt-5">
-              <DemoEntry experimental={false} />
-            </div>
           </div>
           {[
             {
@@ -136,17 +134,15 @@ export default function Dashboard() {
           ))}
         </section>
       </div>
-      <details
+      <Disclosure
         id="system-status"
         className="group scroll-mt-4 rounded-2xl border bg-card"
+        title={<>{t("diagnostics")}</>}
       >
-        <summary className="min-h-12 cursor-pointer rounded-2xl p-4 text-sm font-medium focus-visible:ring-2 focus-visible:ring-ring">
-          {t("diagnostics")}
-        </summary>
         <div className="px-4 pb-4">
           <SystemStatus />
         </div>
-      </details>
+      </Disclosure>
     </>
   );
 }

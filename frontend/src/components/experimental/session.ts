@@ -35,7 +35,7 @@ const empty = schema.parse({
   dataset_version: "1",
   network_id: "small-directed-v1",
   network_version: "1",
-  enabled: false,
+  enabled: true,
   request: initial,
   route_refs: [],
 });
@@ -52,7 +52,7 @@ function snapshot() {
 }
 function parse(raw: string | null | undefined) {
   try {
-    return schema.parse(JSON.parse(raw ?? "null"));
+    return { ...schema.parse(JSON.parse(raw ?? "null")), enabled: true };
   } catch {
     return empty;
   }

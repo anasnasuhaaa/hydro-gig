@@ -1,4 +1,5 @@
 "use client";
+import { Disclosure } from "@/components/ui/disclosure";
 import { useTranslations, useFormatter } from "next-intl";
 import { ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -98,11 +99,15 @@ export function RouteResults({
         ))}
       </div>
       <p className="text-sm font-medium">{t("risk")}</p>
-      <details className="group min-w-0 rounded-xl border bg-card">
-        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-medium focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none [&::-webkit-details-marker]:hidden">
-          {t("details")}
-          <ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180" />
-        </summary>
+      <Disclosure
+        className="group min-w-0 rounded-xl border bg-card"
+        title={
+          <>
+            {t("details")}
+            <ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180" />
+          </>
+        }
+      >
         <div className="space-y-4 border-t p-4 text-sm">
           <p className="text-sm text-muted-foreground">
             {t("snapshot")}{" "}
@@ -176,7 +181,7 @@ export function RouteResults({
           <p className="text-muted-foreground">{t("limits")}</p>
           <p className="text-muted-foreground">{t("scientificLimits")}</p>
         </div>
-      </details>
+      </Disclosure>
     </section>
   );
 }

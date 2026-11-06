@@ -1,8 +1,9 @@
 "use client";
-import { useState, type ReactNode } from "react";
+import { Disclosure } from "@/components/ui/disclosure";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowLeft, ArrowRight, FlaskConical, RotateCcw } from "lucide-react";
+import { ArrowLeft, ArrowRight, RotateCcw } from "lucide-react";
 import { initial, useExperimentalSession } from "./session";
 import { useQuery } from "@tanstack/react-query";
 import { Controller, useForm } from "react-hook-form";
@@ -20,50 +21,24 @@ import {
   type FixtureRequest,
 } from "@/lib/api/experimental";
 
-export function DatasetMode({ children }: { children: ReactNode }) {
+export function DatasetMode() {
   const t = useTranslations("Experimental");
-  const { enabled, setEnabled, ready, invalid } = useExperimentalSession();
+  const { ready, invalid } = useExperimentalSession();
   return (
-    <div className="space-y-6">
-      <section
-        aria-label={t("mode")}
-        className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-card p-3 sm:px-5"
-      >
-        <div className="flex items-center gap-2 text-sm font-medium">
-          <FlaskConical className="size-4 text-primary" />
-          {t("mode")}
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={enabled ? "default" : "outline"}
-            className="h-auto min-h-11 whitespace-normal"
-            aria-pressed={enabled}
-            onClick={() => setEnabled(true)}
-          >
-            {t("enable")}
-          </Button>
-          <Button
-            variant={enabled ? "ghost" : "secondary"}
-            className="h-auto min-h-11 whitespace-normal"
-            aria-pressed={!enabled}
-            onClick={() => setEnabled(false)}
-          >
-            {t("synthetic")}
-          </Button>
-        </div>
-      </section>
+    <div className="space-y-4">
       {invalid && (
-        <p role="status" className="rounded-xl border p-4 text-sm">
+        <p role="status" className="text-sm">
           {t("sessionInvalid")}
         </p>
       )}
-      {ready && enabled ? <Workspace /> : children}
+      {ready ? <Workspace /> : <Skeleton className="h-80 rounded-2xl" />}
     </div>
   );
 }
 function Workspace() {
   const t = useTranslations("Experimental");
   const locale = useLocale();
+  const guide = useTranslations("Guide");
   const session = useExperimentalSession();
   const { request, setRequest } = session;
   const navigation = usePathname() === "/navigation";
@@ -121,7 +96,10 @@ function Workspace() {
             {t(navigation ? "navigationTitle" : "screenTitle")}
           </h1>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            {t(navigation ? "navigationHelp" : "screenHelp")}
+            {t(navigation ? "navigationHelp" : "screenHelp")}{" "}
+            <Link className="underline" href="/guide">
+              {guide("help")}
+            </Link>
           </p>
         </div>
         <Button
@@ -138,7 +116,17 @@ function Workspace() {
           {t("resetTrip")}
         </Button>
       </div>
-      {graph && (
+      {navigation && (
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border bg-card px-4 py-2 text-sm">
+          <span>
+            {request.origin} → {request.pickup} → {request.destination}
+          </span>
+          <Button asChild variant="ghost">
+            <Link href="/pre-order">{t("backScreen")}</Link>
+          </Button>
+        </div>
+      )}
+      {graph && !navigation && (
         <form
           className="grid items-end gap-4 rounded-2xl border bg-card p-4 sm:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_auto] sm:p-5"
           onSubmit={form.handleSubmit((values) =>
@@ -191,7 +179,7 @@ function Workspace() {
       {pendingEdits ? (
         <p
           role="status"
-          className="rounded-2xl border border-primary/30 bg-secondary p-5 text-sm"
+          className="border-l-2 border-primary px-3 py-2 text-sm"
         >
           {t("pendingEdits")}
         </p>
@@ -215,7 +203,7 @@ function Workspace() {
         </div>
       ) : (
         <>
-          <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.65fr)_minmax(300px,1fr)]">
+          <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.65fr)_minmax(260px,1fr)]">
             <div className="min-w-0 space-y-4">
               <section className="overflow-hidden rounded-2xl border bg-card">
                 <div className="border-b p-4 sm:p-5">
@@ -235,6 +223,8 @@ function Workspace() {
                   />
                 </div>
               </section>
+            </div>
+            <div className="min-w-0 space-y-4">
               <FrameSummary
                 result={result}
                 previous={previous.data}
@@ -243,17 +233,17 @@ function Workspace() {
                   void previous.refetch();
                 }}
               />
+              <RouteComparison
+                result={result}
+                selected={selected}
+                onSelect={setSelected}
+              />
             </div>
-            <RouteComparison
-              result={result}
-              selected={selected}
-              onSelect={setSelected}
-            />
           </div>
-          <details className="rounded-2xl border bg-card p-4">
-            <summary className="min-h-11 cursor-pointer py-3 text-sm font-medium">
-              {t("values")}
-            </summary>
+          <Disclosure
+            className="rounded-2xl border bg-card p-4"
+            title={<>{t("values")}</>}
+          >
             <p className="my-3 text-sm text-muted-foreground">
               {t("unitsCaveat")}
             </p>
@@ -306,7 +296,7 @@ function Workspace() {
                 </tbody>
               </table>
             </div>
-          </details>
+          </Disclosure>
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-card p-4">
             <Button asChild variant="ghost" className="min-h-11">
               <Link href={navigation ? "/pre-order" : "/dashboard"}>
