@@ -1,7 +1,7 @@
 "use client";
 import { useTranslations, useLocale } from "next-intl";
 import { Disclosure } from "@/components/ui/disclosure";
-import { Check, Route } from "lucide-react";
+import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type FixtureResult } from "@/lib/api/experimental";
 export type RouteMode = "baseline" | "weighted";
@@ -39,14 +39,13 @@ export function RouteComparison({
     <section aria-label={t("compare")} className="min-w-0 space-y-3">
       <div>
         <h2 className="text-lg font-semibold">{t("compare")}</h2>
-        <p className="mt-1 text-sm text-muted-foreground">{t("compareHelp")}</p>
       </div>
       {(["baseline", "weighted"] as const).map((mode) => (
         <article
           key={mode}
           data-route={mode}
           data-selected={selected === mode}
-          className={`rounded-2xl border bg-card p-4 transition-colors ${selected === mode ? "border-primary ring-1 ring-primary" : ""}`}
+          className={`rounded-xl border bg-card p-3 transition-colors duration-200 ${selected === mode ? "border-primary bg-accent/30 ring-1 ring-primary" : ""}`}
         >
           <Button
             variant="ghost"
@@ -55,21 +54,20 @@ export function RouteComparison({
             onClick={() => onSelect(mode)}
           >
             <span className="flex items-center gap-2">
-              <Route
-                className={
-                  mode === "baseline" ? "text-route-baseline" : "text-primary"
-                }
+              <span
+                aria-hidden="true"
+                className={`w-5 shrink-0 border-t-[3px] ${mode === "baseline" ? "border-route-baseline" : "border-primary"} ${selected === mode ? "" : "border-dashed"}`}
               />
               {t(mode)}
             </span>
             {selected === mode && <Check className="shrink-0 text-primary" />}
           </Button>
-          <dl className="mt-2 grid grid-cols-2 gap-3 border-b pb-4">
+          <dl className="mt-2 grid grid-cols-2 gap-3">
             <div>
               <dt className="text-xs text-muted-foreground">
                 {t("tripDistance")}
               </dt>
-              <dd className="mt-1 text-xl font-semibold tabular-nums">
+              <dd className="mt-1 text-lg font-semibold tabular-nums">
                 {number(routeTotal(result, mode, "distance_m"))}{" "}
                 <span className="text-xs font-normal">{t("metres")}</span>
               </dd>
@@ -78,7 +76,7 @@ export function RouteComparison({
               <dt className="text-xs text-muted-foreground">
                 {t("objective")}
               </dt>
-              <dd className="mt-1 break-words text-xl font-semibold tabular-nums">
+              <dd className="mt-1 break-words text-lg font-semibold tabular-nums">
                 {number(routeTotal(result, mode, "objective_cost"), 3)}
               </dd>
               <p className="text-xs text-muted-foreground">
@@ -86,23 +84,21 @@ export function RouteComparison({
               </p>
             </div>
           </dl>
-          <Disclosure title={t("routePath")}>
-            {(["origin_to_pickup", "pickup_to_destination"] as const).map(
-              (leg) => (
-                <div key={leg} className="mt-3 text-sm">
-                  <h3 className="text-xs text-muted-foreground">{t(leg)}</h3>
-                  <h4 className="sr-only">{t(mode)}</h4>
-                  <p className="mt-1 break-words font-medium">
-                    {result[leg][mode].status === "unreachable"
-                      ? t("unreachable")
-                      : result[leg][mode].node_ids.join(" → ")}
-                  </p>
-                </div>
-              ),
-            )}
-          </Disclosure>
         </article>
       ))}
+      <Disclosure title={t("routePath")}>
+        {(["origin_to_pickup", "pickup_to_destination"] as const).map((leg) => (
+          <div key={leg} className="mt-3 text-sm">
+            <h3 className="text-xs text-muted-foreground">{t(leg)}</h3>
+            <h4 className="sr-only">{t(selected)}</h4>
+            <p className="mt-1 break-words font-medium">
+              {result[leg][selected].status === "unreachable"
+                ? t("unreachable")
+                : result[leg][selected].node_ids.join(" → ")}
+            </p>
+          </div>
+        ))}
+      </Disclosure>
       <p className="text-xs leading-relaxed text-muted-foreground">
         {t("distance")} · {t("costHelp")}
       </p>

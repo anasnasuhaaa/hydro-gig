@@ -1,3 +1,4 @@
+import { inspectSegment } from "./network-helpers";
 import { test, expect } from "@playwright/test";
 import id from "../messages/id.json";
 // Shared trip, reset, invalid storage, export and previous-frame recovery are
@@ -70,12 +71,12 @@ test("hover previews, selection pins, keyboard clears and disclosures work", asy
   const edge = page.locator('[data-edge-id="E_01_02"]');
   await expect(edge).toBeVisible();
   if (!isMobile) {
-    await edge.locator("line").last().hover({ force: true });
+    await inspectSegment(page, "E_01_02", "hover");
     await expect(page.getByRole("tooltip")).toContainText("E_01_02");
     await expect(page.getByTestId("edge-inspector")).toHaveCount(0);
   }
-  if (isMobile) await edge.locator("line").last().tap();
-  else await edge.locator("line").last().click();
+  if (isMobile) await inspectSegment(page, "E_01_02", "tap");
+  else await inspectSegment(page, "E_01_02");
   await page.getByRole("heading", { level: 1 }).hover();
   await expect(page.getByTestId("edge-inspector")).toContainText("E_01_02");
   const clear = page.getByRole("button", {

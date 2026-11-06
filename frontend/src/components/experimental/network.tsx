@@ -1,33 +1,61 @@
 "use client";
 import { useId, useState, useMemo, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { Flag, Navigation2, UserRound, X } from "lucide-react";
+import {
+  networkGeometry,
+  orderedJourney,
+  stopLabels,
+} from "./network-geometry";
 import { type z } from "zod";
 import { type networkSchema, type FixtureResult } from "@/lib/api/experimental";
 import { Button } from "@/components/ui/button";
 import { DemoSelect } from "@/components/demo/shared";
+import { Disclosure } from "@/components/ui/disclosure";
+import { type PointerEvent } from "react";
 import { type RouteMode } from "./route-comparison";
 
 export function ExperimentalNetwork({
   graph,
-  baseline,
-  weighted,
   result,
   selected,
+  inspected,
+  onInspect,
 }: {
   graph: z.infer<typeof networkSchema>;
-  baseline: Set<string>;
-  weighted: Set<string>;
   result: FixtureResult;
   selected: RouteMode;
+  inspected: string | null;
+  onInspect: (edge: string | null) => void;
 }) {
   const t = useTranslations("Experimental");
   const locale = useLocale();
   const id = useId().replaceAll(":", "");
-  const [inspected, setInspected] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
+  const surfaceRef = useRef<HTMLDivElement>(null);
+  const [previewPosition, setPreviewPosition] = useState({
+    x: 8,
+    y: 8,
+    width: 192,
+  });
+  const preview = (event: PointerEvent<SVGGElement>, edgeId: string) => {
+    if (event.pointerType !== "mouse") return;
+    const rect = surfaceRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const width = Math.min(192, rect.width - 16);
+    setPreviewPosition({
+      x: Math.max(
+        8,
+        Math.min(event.clientX - rect.left + 12, rect.width - width - 8),
+      ),
+      y: Math.max(8, Math.min(event.clientY - rect.top + 12, rect.height - 72)),
+      width,
+    });
+    setHovered(edgeId);
+  };
   const selectRef = useRef<HTMLButtonElement>(null);
   const clear = () => {
-    setInspected(null);
+    onInspect(null);
     setHovered(null);
     selectRef.current?.focus();
   };
@@ -38,241 +66,336 @@ export function ExperimentalNetwork({
   );
   const edge = edges.get(edgeId);
   const sample = result.frame.samples[edgeId];
-  const { points, lines } = useMemo(() => {
-    const xs = graph.nodes.map((n) => n.x),
-      ys = graph.nodes.map((n) => n.y);
-    const minX = Math.min(...xs),
-      minY = Math.min(...ys);
-    const dx = Math.max(...xs) - minX || 1,
-      dy = Math.max(...ys) - minY || 1;
-    const points = Object.fromEntries(
-      graph.nodes.map((n) => [
-        n.node_id,
-        {
-          x: 38 + (400 * (n.x - minX)) / dx,
-          y: 400 - (350 * (n.y - minY)) / dy,
-        },
-      ]),
-    );
-    const pairs = new Set(
-      graph.edges.map((e) => `${e.source_node}:${e.target_node}`),
-    );
-    const lines = new Map(
-      graph.edges.map((e) => {
-        const a = points[e.source_node],
-          b = points[e.target_node];
-        const length = Math.hypot(b.x - a.x, b.y - a.y) || 1;
-        const offset = pairs.has(`${e.target_node}:${e.source_node}`) ? 10 : 0;
-        const ox = (-(b.y - a.y) / length) * offset,
-          oy = ((b.x - a.x) / length) * offset;
-        return [
-          e.edge_id,
-          { x1: a.x + ox, y1: a.y + oy, x2: b.x + ox, y2: b.y + oy },
-        ];
-      }),
-    );
-    return { points, lines };
-  }, [graph]);
+  const { points, paths, viewBox } = useMemo(
+    () => networkGeometry(graph),
+    [graph],
+  );
+  const journeys = {
+    baseline: orderedJourney(graph, result, "baseline"),
+    weighted: orderedJourney(graph, result, "weighted"),
+  };
+  const baseline = new Set(journeys.baseline.flatMap((leg) => leg.edgeIds));
+  const weighted = new Set(journeys.weighted.flatMap((leg) => leg.edgeIds));
+  const activeIds = new Set(journeys[selected].flatMap((leg) => leg.edgeIds));
+  const alternativeIds = selected === "weighted" ? baseline : weighted;
+  const orderedIds = [
+    ...new Set([
+      ...graph.edges
+        .filter((e) => !activeIds.has(e.edge_id))
+        .map((e) => e.edge_id),
+      ...journeys[selected].flatMap((leg) => leg.edgeIds),
+    ]),
+  ];
+  const stops = [
+    { role: "origin", label: "stopStart", Icon: Navigation2 },
+    { role: "pickup", label: "stopPickup", Icon: UserRound },
+    { role: "destination", label: "stopDestination", Icon: Flag },
+  ] as const;
+  const labelLayout = stopLabels(
+    points,
+    stops.map(({ role, label }) => ({
+      role,
+      nodeId: result.request[role],
+      label: t(label),
+    })),
+    viewBox,
+  );
   const changed = new Set(result.frame.changed_edge_ids);
-  const hoverLine = hovered ? lines.get(hovered) : undefined;
   const number = (v: number | null | undefined) =>
     v == null
       ? t("unknown")
       : new Intl.NumberFormat(locale, { maximumFractionDigits: 3 }).format(v);
   return (
     <div
-      className="space-y-3"
+      className="contents"
       onKeyDown={(event) => {
         if (event.key === "Escape") {
-          setInspected(null);
-          setHovered(null);
+          event.stopPropagation();
+          clear();
         }
       }}
     >
-      <div className="network-surface relative mx-auto max-w-[528px] rounded-xl border p-1">
-        <svg
-          viewBox="0 0 480 440"
-          role="img"
-          aria-label={t("preview")}
-          aria-describedby={`${id}-help`}
-          className="mx-auto w-full max-w-[520px]"
-          data-frame={result.frame.step}
-          data-selected-route={selected}
+      <section className="order-1 min-w-0 space-y-3 rounded-2xl border bg-card p-3 sm:p-5 lg:col-start-1 lg:row-start-1 lg:row-span-2">
+        <div>
+          <h2 className="text-lg font-semibold">{t("networkTitle")}</h2>
+          <p className="mt-1 text-xs text-muted-foreground">{t("schematic")}</p>
+        </div>
+        <ol
+          className="grid grid-cols-3 gap-2 border-b pb-3"
+          aria-label={t("tripStops")}
         >
-          <defs>
-            <marker
-              id={`${id}-arrow`}
-              viewBox="0 0 10 10"
-              refX="18"
-              refY="5"
-              markerUnits="userSpaceOnUse"
-              markerWidth="8"
-              markerHeight="8"
-              orient="auto-start-reverse"
-            >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke" />
-            </marker>
-          </defs>
-          {graph.edges.map((e) => {
-            const line = lines.get(e.edge_id)!;
-            const isChanged = changed.has(e.edge_id);
-            const isSelected = (
-              selected === "weighted" ? weighted : baseline
-            ).has(e.edge_id);
-            const active = edgeId === e.edge_id || hovered === e.edge_id;
-            return (
-              <g
-                key={e.edge_id}
-                data-edge-id={e.edge_id}
-                data-changed={isChanged}
-                data-on-route={isSelected}
-                data-inspected={edgeId === e.edge_id}
-                onPointerEnter={(event) => {
-                  if (event.pointerType === "mouse") setHovered(e.edge_id);
-                }}
-                onPointerLeave={() => setHovered(null)}
-                onClick={() => setInspected(e.edge_id)}
-                className="cursor-pointer"
-              >
-                <title>{t("inspectNamed", { edge: e.edge_id })}</title>
-                {active && (
-                  <line
-                    {...line}
-                    stroke="var(--foreground)"
-                    strokeWidth="10"
-                    opacity="0.18"
-                  />
-                )}
-                <line
-                  {...line}
-                  stroke="var(--edge-unrelated)"
-                  strokeWidth="1.5"
-                  opacity="0.4"
-                  markerEnd={`url(#${id}-arrow)`}
+          {stops.map(({ role, label, Icon }, index) => (
+            <li key={role} data-stop-summary={role} className="min-w-0">
+              <div className="flex items-center gap-1.5 text-xs font-semibold sm:text-sm">
+                <Icon
+                  aria-hidden="true"
+                  className="size-4 shrink-0 text-primary"
                 />
-                {baseline.has(e.edge_id) && (
-                  <line
-                    {...line}
-                    stroke="var(--route-baseline)"
-                    strokeWidth={
-                      weighted.has(e.edge_id)
-                        ? 9
-                        : selected === "baseline"
-                          ? 5
-                          : 3
-                    }
-                    opacity={selected === "baseline" ? 1 : 0.55}
-                    markerEnd={`url(#${id}-arrow)`}
-                  />
-                )}
-                {weighted.has(e.edge_id) && (
-                  <line
-                    {...line}
-                    stroke="var(--primary)"
-                    strokeWidth={selected === "weighted" ? 5 : 3}
-                    strokeDasharray={
-                      selected === "baseline" ? "5 5" : undefined
-                    }
-                    opacity={selected === "weighted" ? 1 : 0.6}
-                    markerEnd={`url(#${id}-arrow)`}
-                  />
-                )}
-                {isChanged && isSelected && (
-                  <circle
-                    cx={(line.x1 + line.x2) / 2}
-                    cy={(line.y1 + line.y2) / 2}
-                    r="3.5"
-                    fill="var(--edge-change)"
-                    stroke="var(--card)"
-                    strokeWidth="1.5"
-                  />
-                )}
-                <line {...line} stroke="transparent" strokeWidth="20" />
-              </g>
-            );
-          })}
-          {graph.nodes.map((n) => {
-            const p = points[n.node_id];
-            const stop = [
-              result.request.origin,
-              result.request.pickup,
-              result.request.destination,
-            ].includes(n.node_id);
-            return (
-              <g key={n.node_id} className="pointer-events-none">
-                <circle
-                  cx={p.x}
-                  cy={p.y}
-                  r={stop ? 9 : 5}
-                  fill={stop ? "var(--primary)" : "var(--card)"}
-                  stroke={stop ? "var(--card)" : "var(--edge-unrelated)"}
-                  strokeWidth="3"
-                />
-                <text
-                  x={p.x}
-                  y={p.y - 16}
-                  textAnchor="middle"
-                  fontSize="15"
-                  fontWeight={stop ? 700 : 500}
-                  fill="var(--foreground)"
-                  stroke="var(--card)"
-                  strokeWidth="4"
-                  paintOrder="stroke"
-                >
-                  {n.node_id}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
-        {hovered && hoverLine && (
-          <div
-            role="tooltip"
-            className="pointer-events-none absolute z-10 max-w-[210px] rounded-lg border bg-popover px-3 py-2 text-xs shadow-md"
-            style={{
-              left: `${Math.min(52, Math.max(2, ((hoverLine.x1 + hoverLine.x2) / 960) * 100))}%`,
-              top: `${Math.max(2, ((hoverLine.y1 + hoverLine.y2) / 880) * 100 - 16)}%`,
-            }}
+                <span>{t(label)}</span>
+              </div>
+              <p className="mt-1 break-all text-xs text-muted-foreground">
+                <span aria-hidden="true">{index + 1} · </span>
+                {result.request[role]}
+              </p>
+            </li>
+          ))}
+        </ol>
+        <div
+          ref={surfaceRef}
+          className="network-surface relative rounded-xl border"
+        >
+          <svg
+            viewBox={labelLayout.viewBox}
+            role="img"
+            aria-label={t("preview")}
+            aria-describedby={`${id}-help`}
+            className="route-canvas block w-full"
+            data-frame={result.frame.step}
+            data-selected-route={selected}
           >
-            <p className="font-semibold">{hovered}</p>
-            <p>
-              {t("weight")}: {number(result.frame.samples[hovered]?.weight)}
-            </p>
-            <p>
-              {t("h_m")}: {number(result.frame.samples[hovered]?.h_m)}
-            </p>
-          </div>
-        )}
-      </div>
-      <ul
-        className="grid grid-cols-2 gap-3 text-xs text-muted-foreground"
-        aria-label={t("networkLegend")}
-      >
-        {(
-          ["baseline", "weighted", "changedLegend", "inspectedLegend"] as const
-        ).map((key, index) => (
-          <li key={key} className="flex items-center gap-2">
+            <desc>
+              {stops
+                .map(
+                  ({ role, label }) => `${t(label)}: ${result.request[role]}`,
+                )
+                .join(" → ")}
+            </desc>
+            {orderedIds.map((edgeId) => {
+              const geometry = paths.get(edgeId)!;
+              const isSelected = activeIds.has(edgeId);
+              const isAlternative = !isSelected && alternativeIds.has(edgeId);
+              const active = inspected === edgeId || hovered === edgeId;
+              const color = isSelected
+                ? selected === "weighted"
+                  ? "var(--primary)"
+                  : "var(--route-baseline)"
+                : isAlternative
+                  ? selected === "weighted"
+                    ? "var(--route-baseline)"
+                    : "var(--primary)"
+                  : "var(--edge-unrelated)";
+              return (
+                <g
+                  key={edgeId}
+                  data-edge-id={edgeId}
+                  data-changed={changed.has(edgeId)}
+                  data-on-route={isSelected}
+                  data-alternative={isAlternative}
+                  data-shared={baseline.has(edgeId) && weighted.has(edgeId)}
+                  data-inspected={inspected === edgeId}
+                  data-legs={journeys[selected]
+                    .filter((leg) => leg.edgeIds.includes(edgeId))
+                    .map((leg) => leg.leg)
+                    .join(" ")}
+                  onPointerEnter={(event) => preview(event, edgeId)}
+                  onPointerMove={(event) => preview(event, edgeId)}
+                  onPointerLeave={() => setHovered(null)}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onInspect(edgeId);
+                    setHovered(null);
+                    selectRef.current?.focus({ preventScroll: true });
+                  }}
+                  className="cursor-pointer"
+                >
+                  <title>{t("inspectNamed", { edge: edgeId })}</title>
+                  {active && (
+                    <path
+                      d={geometry.d}
+                      fill="none"
+                      stroke="var(--foreground)"
+                      strokeWidth="13"
+                      opacity="0.18"
+                    />
+                  )}
+                  <path
+                    data-edge-stroke
+                    d={geometry.d}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={isSelected ? 5 : isAlternative ? 2.5 : 1.5}
+                    strokeDasharray={isAlternative ? "6 6" : undefined}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    opacity={isSelected ? 1 : isAlternative ? 0.8 : 0.3}
+                  />
+                  {geometry.length > 30 && (
+                    <path
+                      d="M -4 -4 L 1 0 L -4 4"
+                      fill="none"
+                      stroke={isSelected ? "var(--card)" : color}
+                      strokeWidth={isSelected ? 2 : 1.5}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      transform={`translate(${geometry.mid.x} ${geometry.mid.y}) rotate(${geometry.angle})`}
+                      opacity={isSelected || isAlternative ? 1 : 0.5}
+                    />
+                  )}
+                  {changed.has(edgeId) && (
+                    <circle
+                      cx={
+                        geometry.mid.x -
+                        Math.sin((geometry.angle * Math.PI) / 180) * 8
+                      }
+                      cy={
+                        geometry.mid.y +
+                        Math.cos((geometry.angle * Math.PI) / 180) * 8
+                      }
+                      r={isSelected ? 3.5 : 2.5}
+                      fill="var(--edge-change)"
+                      stroke="var(--card)"
+                      strokeWidth="1.5"
+                    />
+                  )}
+                  <path
+                    data-edge-hit
+                    d={geometry.d}
+                    fill="none"
+                    stroke="transparent"
+                    strokeWidth="20"
+                  />
+                </g>
+              );
+            })}
+            {graph.nodes.map((node) => {
+              const p = points.get(node.node_id)!;
+              const roles = stops.filter(
+                ({ role }) => result.request[role] === node.node_id,
+              );
+              return (
+                <g key={node.node_id} className="pointer-events-none">
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={roles.length ? 15 : 3.5}
+                    fill="var(--card)"
+                    stroke={
+                      roles.length
+                        ? "var(--foreground)"
+                        : "var(--edge-unrelated)"
+                    }
+                    strokeWidth={roles.length ? 2 : 1.5}
+                  />
+                  {roles.length > 1 && (
+                    <rect
+                      x={p.x - 15}
+                      y={p.y - 15}
+                      width={30 + (roles.length - 1) * 20}
+                      height={30}
+                      rx={15}
+                      fill="var(--card)"
+                      stroke="var(--foreground)"
+                      strokeWidth={2}
+                    />
+                  )}
+                  {roles.map(({ role, label, Icon }, index) => (
+                    <g
+                      key={role}
+                      data-stop-role={role}
+                      data-node-id={node.node_id}
+                      transform={`translate(${p.x} ${p.y})`}
+                    >
+                      <Icon
+                        x={-9 + index * 20}
+                        y={-9}
+                        width={18}
+                        height={18}
+                        stroke="var(--foreground)"
+                      />
+                      <text
+                        x={(labelLayout.labels.get(role)?.x ?? p.x) - p.x}
+                        y={(labelLayout.labels.get(role)?.y ?? p.y - 30) - p.y}
+                        textAnchor="middle"
+                        fontSize="17"
+                        fontWeight="650"
+                        fill="var(--foreground)"
+                        stroke="var(--background)"
+                        strokeWidth="5"
+                        paintOrder="stroke"
+                      >
+                        {t(label)}
+                      </text>
+                    </g>
+                  ))}
+                </g>
+              );
+            })}
+          </svg>
+          {hovered && (
+            <div
+              role="tooltip"
+              className="pointer-events-none absolute z-10 flex h-16 flex-col justify-center rounded-lg border bg-popover px-3 text-xs shadow-md"
+              style={{
+                left: previewPosition.x,
+                top: previewPosition.y,
+                width: previewPosition.width,
+              }}
+            >
+              <p className="truncate font-semibold">{hovered}</p>
+              <p>
+                {t("weight")}: {number(result.frame.samples[hovered]?.weight)}
+              </p>
+            </div>
+          )}
+        </div>
+        <ul
+          className="flex flex-wrap gap-x-4 gap-y-2 text-xs text-muted-foreground"
+          aria-label={t("networkLegend")}
+        >
+          <li className="flex items-center gap-2">
             <span
               aria-hidden="true"
-              className={`w-6 shrink-0 border-t-[3px] ${index === 0 ? "border-route-baseline" : index === 1 ? "border-primary" : index === 2 ? "border-[var(--edge-change)] border-dotted" : "border-foreground"}`}
+              className={`w-5 border-t-[3px] ${selected === "weighted" ? "border-primary" : "border-route-baseline"}`}
             />
-            {t(key)}
+            {t("selectedLegend")}
           </li>
-        ))}
-      </ul>
-      <div className="rounded-xl border p-3">
+          <li className="flex items-center gap-2">
+            <span
+              aria-hidden="true"
+              className={`w-5 border-t-2 border-dashed ${selected === "weighted" ? "border-route-baseline" : "border-primary"}`}
+            />
+            {t("alternativeLegend")}
+          </li>
+          <li className="flex items-center gap-2">
+            <span
+              aria-hidden="true"
+              className="size-2 rounded-full bg-[var(--edge-change)]"
+            />
+            {t("changedValueLegend")}
+          </li>
+        </ul>
+        {journeys.baseline.every(
+          (leg, index) =>
+            leg.status === "found" &&
+            journeys.weighted[index].status === "found" &&
+            JSON.stringify(leg.edgeIds) ===
+              JSON.stringify(journeys.weighted[index].edgeIds),
+        ) && <p className="text-xs text-muted-foreground">{t("sharedPath")}</p>}
+        <p className="border-t pt-3 text-xs text-muted-foreground">
+          {t("networkProvenance")}
+        </p>
+        {journeys[selected].some((leg) => leg.status === "unreachable") && (
+          <p role="status" className="text-sm">
+            {t("unreachable")}
+          </p>
+        )}
+      </section>
+      <div className="order-3 min-w-0 rounded-2xl border bg-card p-4 lg:col-start-2 lg:row-start-2">
         <DemoSelect
           id={`${id}-edge`}
           label={t("inspect")}
           inputRef={selectRef}
           value={edgeId}
-          onChange={setInspected}
+          onChange={onInspect}
           options={graph.edges.map((e) => ({
             value: e.edge_id,
             label: `${e.edge_id} · ${e.source_node} → ${e.target_node}`,
           }))}
         />
-        <p id={`${id}-help`} className="my-3 text-xs text-muted-foreground">
+        <p
+          id={`${id}-help`}
+          className={edge ? "sr-only" : "my-3 text-xs text-muted-foreground"}
+        >
           {t("inspectHelp")}
         </p>
         {edge && (
@@ -281,42 +404,90 @@ export function ExperimentalNetwork({
             aria-live="polite"
             className="space-y-3"
           >
-            <Button variant="ghost" className="min-h-11" onClick={clear}>
-              {t("clearSelection")}
-            </Button>
-            <p className="text-sm font-semibold">
-              {edge.edge_id}{" "}
-              <span className="font-normal text-muted-foreground">
-                · {edge.source_node} → {edge.target_node}
-              </span>
-            </p>
-            <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
-              {[
-                ["h_m", sample?.h_m],
-                ["u_ms", sample?.u_ms],
-                ["v_ms", sample?.v_ms],
-                ["weight", sample?.weight],
-                [
-                  "delta",
-                  result.frame.previous_step === null
-                    ? null
-                    : result.frame.weight_deltas[edgeId],
-                ],
-                ["segmentDistance", edge.length_m],
-              ].map(([label, value]) => (
-                <div key={label}>
-                  <dt className="text-xs text-muted-foreground">
-                    {t(label as string)}
-                  </dt>
-                  <dd className="mt-1 font-medium tabular-nums">
-                    {number(value as number | null | undefined)}
-                  </dd>
-                </div>
-              ))}
+            <div className="mt-3 flex items-start justify-between gap-2">
+              <p className="min-w-0 break-all text-sm font-semibold">
+                {edge.edge_id}
+                <span className="mt-1 block font-normal text-muted-foreground">
+                  {edge.source_node} → {edge.target_node}
+                </span>
+              </p>
+              <Button
+                variant="ghost"
+                className="min-h-11 min-w-11 shrink-0"
+                onClick={clear}
+                aria-label={t("clearSelection")}
+              >
+                <X aria-hidden="true" className="size-4" />
+              </Button>
+            </div>
+            <dl className="space-y-2 text-sm">
+              <div className="flex flex-wrap justify-between gap-2">
+                <dt className="text-muted-foreground">{t("weight")}</dt>
+                <dd className="font-semibold tabular-nums">
+                  {number(sample?.weight)}{" "}
+                  <span className="text-xs font-normal">{t("units")}</span>
+                </dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground">
+                  {t("membership")}
+                </dt>
+                <dd className="mt-1">
+                  {[
+                    baseline.has(edgeId) ? t("baseline") : null,
+                    weighted.has(edgeId) ? t("weighted") : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ") || t("contextSegment")}
+                </dd>
+              </div>
+              <div>
+                <dt className="sr-only">{t("changedValueLegend")}</dt>
+                <dd className="text-xs text-muted-foreground">
+                  {result.frame.previous_step === null
+                    ? t("initial")
+                    : !sample
+                      ? t("unknown")
+                      : changed.has(edgeId)
+                        ? t("segmentChanged")
+                        : t("segmentUnchanged")}
+                </dd>
+              </div>
             </dl>
-            <p className="text-xs leading-relaxed text-muted-foreground">
-              {t("unitsCaveat")}
-            </p>
+            <Disclosure title={t("technicalDetails")}>
+              <dl className="grid grid-cols-2 gap-3 text-sm">
+                {(
+                  [
+                    ["h_m", sample?.h_m],
+                    ["u_ms", sample?.u_ms],
+                    ["v_ms", sample?.v_ms],
+                    [
+                      "delta",
+                      result.frame.previous_step === null
+                        ? null
+                        : result.frame.weight_deltas[edgeId],
+                    ],
+                    ["segmentDistance", edge.length_m],
+                  ] as const
+                ).map(([label, value]) => (
+                  <div key={label}>
+                    <dt className="text-xs text-muted-foreground">
+                      {t(label)}
+                    </dt>
+                    <dd className="mt-1 font-medium tabular-nums">
+                      {number(value)}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                {t("unitsCaveat")}
+              </p>
+              <p className="mt-3 break-words text-xs text-muted-foreground">
+                {t("source")}: {result.dataset_id} / {result.dataset_version} ·{" "}
+                {result.network_id} · {result.weighting_version}
+              </p>
+            </Disclosure>
           </div>
         )}
       </div>

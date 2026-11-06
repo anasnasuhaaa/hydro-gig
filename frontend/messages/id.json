@@ -419,7 +419,21 @@
     "segmentDistance": "Panjang ruas (m)",
     "clearSelection": "Tutup detail ruas",
     "noRelevantChange": "Tidak ada perubahan pada rute terpilih.",
-    "routePath": "Urutan titik rute"
+    "routePath": "Urutan titik rute",
+    "tripStops": "Titik perjalanan",
+    "stopStart": "Mulai",
+    "stopPickup": "Jemput",
+    "stopDestination": "Tujuan",
+    "selectedLegend": "Terpilih",
+    "alternativeLegend": "Alternatif",
+    "changedValueLegend": "Nilai berubah",
+    "networkProvenance": "Simulasi eksperimental · Belum terverifikasi · Bukan pemantauan banjir langsung",
+    "technicalDetails": "Detail teknis",
+    "membership": "Keanggotaan rute",
+    "contextSegment": "Di luar kedua rute",
+    "segmentChanged": "Nilai eksperimental berubah dari bingkai sebelumnya.",
+    "segmentUnchanged": "Nilai eksperimental tidak berubah dari bingkai sebelumnya.",
+    "sharedPath": "Kedua rute mengikuti jalur yang sama."
   },
   "Evidence": {
     "title": "Pratinjau Bukti Eksperimental",

@@ -1,3 +1,29 @@
+# Trip network enhancement validation — 2026-11-06
+
+The public `/pre-order` and `/navigation` route explorer is implemented and committed locally by stage. See [the audit, implementation record and before/after screenshots](TRIP-NETWORK-ENHANCEMENT.md).
+
+| Check | Final result |
+| --- | --- |
+| Backend `.venv/bin/python -m pytest -q` | **87 passed**; existing Starlette/httpx deprecation warning |
+| Backend `.venv/bin/ruff check .` | Passed |
+| Backend `.venv/bin/ruff format --check .` | Passed; 44 files |
+| Frontend `pnpm typecheck` | Passed |
+| Frontend `pnpm lint` | Passed |
+| Frontend `pnpm format:check` | Passed |
+| Frontend `pnpm build` | Passed with `NEXT_DIST_DIR=.next-e2e NEXT_PUBLIC_API_BASE_URL=http://localhost:8100` |
+| Frontend `pnpm build:e2e` | Passed; final build includes the coincident-edge geometry correction |
+| Frontend `pnpm test:e2e --workers=4` | **117 passed, 3 existing platform-specific skips**, 2.8 minutes |
+| `git diff --check` and screenshot links | Passed |
+| Visual review | Fresh desktop/mobile screening and navigation; ID/light and EN/dark, t1 and pinned inspector; compared with the prior UX baseline |
+
+The browser suite runs production servers on 3100/8100 without reuse or a database. Skips are the existing opposite-platform sidebar cases; each runs on its applicable project. New coverage checks ordered two-leg API routes at all five frames, shared/reciprocal/parallel/degenerate edges, distinct stops, no API recalculation on visual selection, hover bounds, keyboard/touch inspection and focus restoration, pinned values after frame refresh, missing samples/unreachable legs, and label bounds/overflow at 320/375/768/1024/1440px in both locales/themes with reduced motion.
+
+Intermediate failures were corrected before the final run: pointer tests originally targeted straight-line bounding boxes instead of points on curves; a safety-word assertion matched a substring inside Indonesian “kedalaman”; and an in-progress screenshot-test argument edit interrupted one separate production-check build. The temporary generated-directory additions to tsconfig were removed; both required builds and the full final suite then passed. Review also separated reciprocal loops at coincident coordinates.
+
+Screenshots are retained in `docs/screenshots/trip-network/before/` and `after/`; the enhancement record links representative images. Additional matrix captures remain ignored in `frontend/test-results/`. Curves are schematic presentation geometry; source coordinates, lengths and experimental values are unverified. No live flood monitoring, calibrated risk/safety claims, ETA, driver tracking, backend/scientific change, physical-device/assistive-technology certification, live DB validation or deployment is claimed. No push was performed. `HydroGig_Trip_Network_UI_Enhancement_Codex.md`, `PROMPT.md` and unrelated dataset files were not staged.
+
+---
+
 # Interactive demonstration validation — 2026-11-06
 
 Branch `feat/interactive-demo-ux`, based on main `990806e`. See [delivery report, file inventory and before/after screenshots](INTERACTIVE-DEMO-UX.md).

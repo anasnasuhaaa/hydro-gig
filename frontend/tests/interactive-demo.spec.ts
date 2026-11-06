@@ -1,3 +1,4 @@
+import { inspectSegment } from "./network-helpers";
 import { test, expect } from "@playwright/test";
 
 test("network layers and keyboard segment inspection use returned values", async ({
@@ -52,7 +53,7 @@ test("network layers and keyboard segment inspection use returned values", async
   }).format(data.frame.samples[edge].weight);
   await expect(inspector).toContainText(expected);
   const another = Object.keys(data.frame.samples)[0];
-  await svg.locator(`[data-edge-id="${another}"] line`).last().click();
+  await inspectSegment(page, another);
   await expect(inspector).toContainText(another);
 });
 
