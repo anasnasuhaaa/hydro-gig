@@ -9,7 +9,7 @@ for (const locale of ["id", "en"] as const)
     baseURL,
     isMobile,
   }, info) => {
-    test.setTimeout(90000);
+    test.setTimeout(180000);
     const m = locale === "id" ? id : en;
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
@@ -23,7 +23,7 @@ for (const locale of ["id", "en"] as const)
     await context.addCookies([
       { name: "hydrogig_locale", value: locale, url: baseURL! },
     ]);
-    for (const width of isMobile ? [320, 375] : [768, 1440]) {
+    for (const width of isMobile ? [320, 375] : [768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto("/dashboard");
       await page

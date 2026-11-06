@@ -256,3 +256,35 @@ body {
   background-image: radial-gradient(var(--border) 1px, transparent 1px);
   background-size: 20px 20px;
 }
+
+.disclosure-content[data-state="open"] {
+  animation: disclose-open 180ms ease-out;
+}
+.disclosure-content[data-state="closed"] {
+  animation: disclose-close 160ms ease-in;
+}
+@keyframes disclose-open {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+}
+@keyframes disclose-close {
+  from {
+    height: var(--radix-collapsible-content-height);
+    opacity: 1;
+  }
+  to {
+    height: 0;
+    opacity: 0;
+  }
+}
+[data-edge-id] line {
+  transition:
+    stroke-width 140ms ease,
+    opacity 140ms ease;
+}

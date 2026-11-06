@@ -1,3 +1,4 @@
+import { Disclosure } from "@/components/ui/disclosure";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
@@ -97,18 +98,14 @@ export default function Dashboard() {
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <WeatherCard />
         <section className="space-y-3" aria-label={t("workflows")}>
-          <div className="rounded-2xl border bg-card p-5 sm:p-6">
-            <p className="mb-2 text-xs font-semibold tracking-widest text-primary">
-              {t("research")}
-            </p>
-            <h2 className="text-xl font-semibold">{t("contextTitle")}</h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          <Disclosure
+            title={t("contextTitle")}
+            className="rounded-2xl border bg-card p-4"
+          >
+            <p className="text-sm leading-relaxed text-muted-foreground">
               {t("limits")}
             </p>
-            <div className="mt-5">
-              <DemoEntry experimental={false} />
-            </div>
-          </div>
+          </Disclosure>
           {[
             {
               icon: BookOpen,
@@ -136,17 +133,15 @@ export default function Dashboard() {
           ))}
         </section>
       </div>
-      <details
+      <Disclosure
         id="system-status"
         className="group scroll-mt-4 rounded-2xl border bg-card"
+        title={<>{t("diagnostics")}</>}
       >
-        <summary className="min-h-12 cursor-pointer rounded-2xl p-4 text-sm font-medium focus-visible:ring-2 focus-visible:ring-ring">
-          {t("diagnostics")}
-        </summary>
         <div className="px-4 pb-4">
           <SystemStatus />
         </div>
-      </details>
+      </Disclosure>
     </>
   );
 }

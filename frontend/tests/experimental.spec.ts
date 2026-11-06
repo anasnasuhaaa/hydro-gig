@@ -4,9 +4,7 @@ test("opt-in fixture routes and five frames use the backend", async ({
   page,
 }) => {
   await page.goto("/pre-order");
-  await page
-    .getByRole("button", { name: "Gunakan dataset eksperimental" })
-    .click();
+
   await expect(
     page.getByText("Simulasi / Dataset Belum Terverifikasi", { exact: true }),
   ).toBeVisible();
@@ -14,11 +12,11 @@ test("opt-in fixture routes and five frames use the backend", async ({
     page.getByRole("img", { name: /Pratinjau koordinat/ }),
   ).toBeVisible();
   await expect(
-    page.getByRole("heading", {
+    page.getByRole("button", {
       name: "Rute berbobot eksperimental",
       exact: true,
     }),
-  ).toHaveCount(2);
+  ).toHaveAttribute("aria-pressed", "true");
   const response = page.waitForResponse(
     (r) =>
       r.url().includes("experimental/routes/screen") &&
@@ -37,10 +35,9 @@ test("opt-in fixture routes and five frames use the backend", async ({
     })
     .click();
   await expect(page.getByRole("table")).toBeVisible();
-  await page.getByRole("button", { name: "Kembali ke demo sintetis" }).click();
   await expect(
-    page.getByRole("button", { name: "Coba contoh perjalanan" }),
-  ).toBeVisible();
+    page.getByRole("button", { name: "Kembali ke demo sintetis" }),
+  ).toHaveCount(0);
 });
 
 test("navigation fixture failure is explicit", async ({ page }) => {
@@ -48,9 +45,7 @@ test("navigation fixture failure is explicit", async ({ page }) => {
     route.fulfill({ status: 503, body: "{}" }),
   );
   await page.goto("/navigation");
-  await page
-    .getByRole("button", { name: "Gunakan dataset eksperimental" })
-    .click();
+
   await expect(
     page
       .getByRole("region", {
@@ -65,15 +60,21 @@ test("fixture validates responses and explains directed unreachable trips", asyn
   page,
 }) => {
   await page.goto("/navigation");
-  await page
-    .getByRole("button", { name: "Gunakan dataset eksperimental" })
-    .click();
+
   await expect(
     page.getByRole("img", { name: /Pratinjau koordinat/ }),
   ).toBeVisible();
+  await page
+    .getByRole("link", { name: "Ubah perjalanan", exact: true })
+    .first()
+    .click();
   await page.getByLabel("Asal", { exact: true }).click();
   await page.getByRole("option", { name: "N12", exact: true }).click();
   await page.getByRole("button", { name: "Bandingkan rute" }).click();
+  await page
+    .getByRole("button", { name: "Urutan titik rute", exact: true })
+    .first()
+    .click();
   await expect(
     page
       .getByText(

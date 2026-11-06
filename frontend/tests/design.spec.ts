@@ -49,7 +49,9 @@ for (const locale of ["id", "en"] as const)
           await expect(page.locator("html")).toHaveAttribute("lang", locale);
           if (path === "navigation")
             await expect(
-              page.getByRole("img", { name: /sintetis|Synthetic directed/ }),
+              page.getByRole("img", {
+                name: /Pratinjau koordinat|coordinate preview/,
+              }),
             ).toBeVisible();
           expect(
             await page.evaluate(

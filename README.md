@@ -1,8 +1,10 @@
 # HydroGig-Mesh
 
+> Pembaruan UX (2026-11-06): alur dataset eksperimental kini menjadi satu-satunya pengalaman publik. `/pre-order`, `/navigation`, dan `/claims` dapat dibuka langsung; tidak ada pemilih mode. Sesi versi 1 yang valid tetap dipulihkan meskipun flag lama `enabled` bernilai false. Backend sintetis tetap tersedia untuk regresi internal. Lihat [audit refinement](docs/UX-REFINEMENT-AUDIT.md) untuk perilaku dan screenshot terbaru.
+
 **Purwarupa penelitian mobilitas sepeda motor sadar banjir untuk pengemudi ojek online, dengan konteks awal Bogor, Indonesia.**
 
-> **Demonstrasi riset — bukan layanan keselamatan operasional.** Pemeriksaan rute dan EWS menyediakan mode dataset eksperimental dengan sumber **belum terverifikasi**, serta demo sintetis lama yang terpisah. Keduanya bukan pemantauan banjir langsung. Cuaca berasal dari model penyedia eksternal dan tidak membuktikan kondisi banjir atau keselamatan suatu jalan. Belum tersedia dataset banjir tervalidasi, model DeepONet terlatih, atau ambang risiko terkalibrasi.
+> **Demonstrasi riset — bukan layanan keselamatan operasional.** Pemeriksaan rute dan EWS menggunakan dataset eksperimental dengan sumber **belum terverifikasi**, bukan pemantauan banjir langsung. Cuaca berasal dari model penyedia eksternal dan tidak membuktikan kondisi banjir atau keselamatan suatu jalan. Belum tersedia dataset banjir tervalidasi, model DeepONet terlatih, atau ambang risiko terkalibrasi.
 
 Repositori: [github.com/anasnasuhaaa/hydro-gig](https://github.com/anasnasuhaaa/hydro-gig). Mulai dari `/dashboard` atau baca [panduan singkat](docs/USER-GUIDE.md).
 
@@ -31,8 +33,8 @@ Pengemudi ojek online dan kurir roda dua menghadapi paparan genangan perkotaan k
 
 | Fitur                                        | Perilaku dan status saat ini                                                                                                                                                                     |
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Pre-order Flood Screening** — `/pre-order` | Pilih mode dan tiga titik → Bandingkan rute; dua alternatif dari FastAPI, jarak dan biaya terpisah, skema interaktif dan pemeriksaan ruas                                                        |
-| **EWS Navigation** — `/navigation`           | Lima bingkai historis t0–t4 pada mode dataset; waktu API, sebelumnya/berikutnya, pemutaran opsional 2 detik per bingkai, perubahan nilai/biaya/jalur dari API; bukan navigasi geografis atau GPS |
+| **Pre-order Flood Screening** — `/pre-order` | Pilih tiga titik → Bandingkan rute; dua alternatif dari FastAPI, jarak dan biaya terpisah, skema interaktif dan pemeriksaan ruas                                                        |
+| **EWS Navigation** — `/navigation`           | Lima bingkai historis t0–t4 pada alur publik; waktu API, sebelumnya/berikutnya, pemutaran opsional 2 detik per bingkai, perubahan nilai/biaya/jalur dari API; bukan navigasi geografis atau GPS |
 | **Digital Evidence Preview** — `/claims`     | Tinjau perjalanan dan sumber, buat pratinjau tanpa tanda tangan, ekspor JSON lokal. Tidak dikirim ke platform; tidak ada persetujuan atau pembebasan penalti                                     |
 | **Konteks cuaca** — `/dashboard`             | Kondisi kini berbasis model Open-Meteo, sumber/satuan/waktu, lokasi perangkat atas tindakan eksplisit, atau Bogor pilihan manual; terpisah dari simulasi banjir                                  |
 | **Bahasa dan panduan** — `/guide`            | Bahasa Indonesia sebagai default, pilihan ID/EN tersimpan melalui cookie, panduan empat langkah, tema terang/gelap, sidebar resmi shadcn dan navigasi bawah ponsel                               |
@@ -44,14 +46,13 @@ Tidak ada statistik operasional, profil pengemudi, sensor genangan, atau grafik 
 
 **Dasbor → Pemeriksaan pra-pesanan → Navigasi EWS → Pratinjau bukti digital.**
 
-1. Tekan **Jelajahi Simulasi Skenario Banjir** pada `/dashboard` (English: **Explore Flood Scenario Simulation**). Mode dataset aktif di `/pre-order`; contoh awal N01 → N03 → N12. Ubah tiga titik bila perlu, lalu tekan **Bandingkan rute**.
+1. Tekan **Mulai periksa rute** pada `/dashboard` (English: **Start route screening**). Alur eksperimental langsung tersedia di `/pre-order`; contoh awal N01 → N03 → N12. Ubah tiga titik bila perlu, lalu tekan **Bandingkan rute**.
 2. Pilih **Acuan jarak** atau **Rute berbobot eksperimental** untuk menyorot jalur. Sentuh garis atau gunakan **Periksa ruas** untuk nilai sumber mentah. Panjang dan biaya memakai satuan berbeda; biaya rendah tidak menjamin aman. Skema bukan peta jalan terverifikasi.
 3. Tekan **Lanjut ke navigasi**. Pilih t0–t4, gunakan bingkai sebelumnya/berikutnya, atau **Putar simulasi** (2 detik per bingkai). Waktu historis berasal dari API dan ditampilkan Asia/Jakarta. Pada contoh awal, jalur berbobot berubah di t1, lalu tetap sama melalui t4; biaya dan nilai ruas tetap berubah. Ringkasan selalu membandingkan bingkai sumber sebelumnya, termasuk lompatan langsung.
 4. Tekan **Lanjut ke pratinjau bukti**. Tinjau perjalanan, waktu, referensi ruas dan nilai mentah; tekan **Buat pratinjau bukti**, lalu **Ekspor pratinjau JSON**. Paket tanpa tanda tangan, sumber belum terverifikasi, dan tidak dikirim ke platform. SHA-256 memeriksa integritas konten, bukan keaslian insiden.
 
-Pilihan mode/perjalanan/bingkai eksperimental tetap memakai `sessionStorage` tervalidasi (`hydrogig-experimental-v1`), terpisah dari `hydrogig-demo-v1`. Pilihan bertahan lintas layar dan muat ulang; hasil API, paket bukti dan GPS tidak disimpan. Data rusak/versi lama menghasilkan pesan pemulihan. Penyimpanan terblokir memakai memori selama navigasi klien; muat ulang memerlukan penyimpanan browser agar pulih.
+Pilihan perjalanan/bingkai eksperimental tetap memakai `sessionStorage` tervalidasi (`hydrogig-experimental-v1`), terpisah dari `hydrogig-demo-v1`. Pilihan bertahan lintas layar dan muat ulang; hasil API, paket bukti dan GPS tidak disimpan. Data rusak/versi lama menghasilkan pesan pemulihan. Penyimpanan terblokir memakai memori selama navigasi klien; muat ulang memerlukan penyimpanan browser agar pulih.
 
-**Buka demo sintetis lama** di Dasbor atau **Kembali ke demo sintetis** di pemilih mode mempertahankan alur lama A → C → F, tiga bingkai t0–t2, dan validasi yang sama. Bukti eksperimental memerlukan perjalanan dataset. Lihat [panduan](docs/USER-GUIDE.md) dan [laporan UI/screenshot](docs/INTERACTIVE-DEMO-UX.md).
 
 - Di Dasbor, tekan **Gunakan lokasi saya** untuk meminta satu lokasi perangkat. Izin tidak diminta saat halaman dibuka. GPS memerlukan HTTPS atau localhost yang sesuai; penolakan, timeout, offline, atau perangkat tidak mendukung ditampilkan dengan jelas.
 - Tekan **Pilih Bogor manual** untuk memuat cuaca tanpa GPS. Konteks selalu menandainya sebagai pilihan manual, bukan lokasi pengguna yang terdeteksi.
@@ -107,7 +108,7 @@ Status Phase 1.7 berdasarkan kode dan pengujian lokal, bukan kesiapan operasiona
 | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | UI responsif, sidebar, navigasi bawah, tema                   | Tersedia dan diuji di Chromium/emulasi                                                             |
 | API demo tanpa DB, graf delapan titik, Dijkstra deterministik | Tersedia; seluruhnya sintetis                                                                      |
-| Pemeriksaan dan EWS                                           | Dataset t0–t4 serta demo sintetis t0–t2; belum prediksi sepanjang waktu tempuh                     |
+| Pemeriksaan dan EWS                                           | Publik dataset t0–t4; backend sintetis t0–t2 untuk regresi internal; belum prediksi sepanjang waktu tempuh                     |
 | Bahasa Indonesia/English dan Panduan                          | Tersedia; SSR, cookie, dan perubahan bahasa diuji                                                  |
 | Lokasi perangkat opsional dan cuaca Open-Meteo                | Tersedia; provider dimock dalam tes, smoke eksternal berhasil; ketersediaan jaringan tidak dijamin |
 | Model/migrasi PostGIS                                         | Disiapkan; migrasi/koneksi DB langsung belum diverifikasi                                          |

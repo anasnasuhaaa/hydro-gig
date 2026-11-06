@@ -1,5 +1,6 @@
 "use client";
-import { useState, type ReactNode } from "react";
+import { Disclosure } from "@/components/ui/disclosure";
+import { useState } from "react";
 import Link from "next/link";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
@@ -14,13 +15,10 @@ import { experimentalApi, getEvidencePreview } from "@/lib/api/experimental";
 import { useExperimentalSession } from "./session";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-export function EvidencePreviewWorkspace({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export function EvidencePreviewWorkspace() {
   const session = useExperimentalSession();
   const t = useTranslations("Evidence");
+  const experimental = useTranslations("Experimental");
   const locale = useLocale();
   const request = session.request;
   const query = useQuery({
@@ -59,19 +57,14 @@ export function EvidencePreviewWorkspace({
       setExportFailed(true);
     }
   };
-  if (!session.ready || !session.enabled)
-    return (
-      <>
-        {children}
-        <Button asChild className="mt-4 h-auto min-h-11 whitespace-normal">
-          <Link href="/pre-order" onClick={() => session.setEnabled(true)}>
-            {t("start")}
-          </Link>
-        </Button>
-      </>
-    );
+  if (!session.ready) return <Skeleton className="h-80 rounded-2xl" />;
   return (
     <section aria-label={t("title")} className="space-y-5">
+      {session.invalid && (
+        <p role="status" className="text-sm">
+          {experimental("sessionInvalid")}
+        </p>
+      )}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="mb-2 text-xs font-semibold tracking-wide text-primary">
@@ -185,6 +178,7 @@ export function EvidencePreviewWorkspace({
                 {t("limitations")}
               </p>
               <Button
+                variant={matches ? "ghost" : "default"}
                 className="h-auto min-h-12 w-full whitespace-normal"
                 disabled={mutation.isPending}
                 onClick={() => {
@@ -208,23 +202,20 @@ export function EvidencePreviewWorkspace({
                   </p>
                   <Button
                     className="h-auto min-h-11 w-full whitespace-normal"
-                    variant="outline"
+                    variant="default"
                     onClick={exportPreview}
                   >
                     <Download className="size-4 shrink-0" />
                     {t("export")}
                   </Button>
-                  <details>
-                    <summary className="min-h-11 cursor-pointer py-3 text-sm">
-                      {t("digestTitle")}
-                    </summary>
+                  <Disclosure title={<>{t("digestTitle")}</>}>
                     <p className="text-xs leading-relaxed text-muted-foreground">
                       {t("digestHelp")}
                     </p>
                     <p className="mt-3 break-all font-mono text-xs">
                       {preview.sha256}
                     </p>
-                  </details>
+                  </Disclosure>
                 </div>
               )}
               {exportFailed && (
@@ -234,8 +225,10 @@ export function EvidencePreviewWorkspace({
               )}
             </aside>
           </div>
-          <section className="min-w-0 rounded-2xl border bg-card p-4 sm:p-6">
-            <h2 className="text-lg font-semibold">{t("segments")}</h2>
+          <Disclosure
+            className="min-w-0 rounded-2xl border bg-card p-4 sm:p-6"
+            title={t("segments")}
+          >
             <p className="my-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
               {t("valuesHelp")}
             </p>
@@ -291,10 +284,10 @@ export function EvidencePreviewWorkspace({
                 </tbody>
               </table>
             </div>
-            <details className="mt-4 border-t pt-2">
-              <summary className="min-h-11 cursor-pointer py-3 text-sm font-medium">
-                {t("sourceDetails")}
-              </summary>
+            <Disclosure
+              className="mt-4 border-t pt-2"
+              title={<>{t("sourceDetails")}</>}
+            >
               <dl className="grid gap-3 text-xs sm:grid-cols-2">
                 {Object.entries({
                   dataset: result.dataset_id,
@@ -312,8 +305,8 @@ export function EvidencePreviewWorkspace({
                   </div>
                 ))}
               </dl>
-            </details>
-          </section>
+            </Disclosure>
+          </Disclosure>
         </>
       )}
       <Button asChild variant="outline" className="min-h-11">

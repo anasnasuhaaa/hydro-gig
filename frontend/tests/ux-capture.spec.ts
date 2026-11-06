@@ -3,7 +3,7 @@ import { mkdir } from "node:fs/promises";
 test("capture research demonstration", async ({ page }, info) => {
   const phase = process.env.UX_CAPTURE;
   const directory = phase
-    ? `../docs/screenshots/interactive-demo/${phase}`
+    ? `../docs/screenshots/ux-refinement/${phase}`
     : info.outputPath("screenshots");
   await mkdir(directory, { recursive: true });
   await page.setViewportSize({
@@ -17,10 +17,11 @@ test("capture research demonstration", async ({ page }, info) => {
     path: `${directory}/${info.project.name}-dashboard.png`,
     fullPage: true,
   });
+  await page.screenshot({
+    path: `${directory}/${info.project.name}-dashboard-viewport.png`,
+  });
   await page.goto("/pre-order");
-  await page
-    .getByRole("button", { name: "Gunakan dataset eksperimental", exact: true })
-    .click();
+
   await expect(
     page.getByRole("img", { name: /Pratinjau koordinat/ }),
   ).toBeVisible();
@@ -28,6 +29,9 @@ test("capture research demonstration", async ({ page }, info) => {
   await page.screenshot({
     path: `${directory}/${info.project.name}-screening.png`,
     fullPage: true,
+  });
+  await page.screenshot({
+    path: `${directory}/${info.project.name}-screening-viewport.png`,
   });
   await page
     .getByRole("link", { name: "Lanjut ke navigasi", exact: true })
@@ -43,6 +47,9 @@ test("capture research demonstration", async ({ page }, info) => {
     path: `${directory}/${info.project.name}-navigation.png`,
     fullPage: true,
   });
+  await page.screenshot({
+    path: `${directory}/${info.project.name}-navigation-viewport.png`,
+  });
   await page
     .getByRole("link", { name: "Lanjut ke pratinjau bukti", exact: true })
     .click();
@@ -56,5 +63,8 @@ test("capture research demonstration", async ({ page }, info) => {
   await page.screenshot({
     path: `${directory}/${info.project.name}-evidence.png`,
     fullPage: true,
+  });
+  await page.screenshot({
+    path: `${directory}/${info.project.name}-evidence-viewport.png`,
   });
 });

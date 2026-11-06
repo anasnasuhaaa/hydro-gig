@@ -1,8 +1,9 @@
 "use client";
-import { useId, useState } from "react";
+import { useId, useState, useMemo, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { type z } from "zod";
 import { type networkSchema, type FixtureResult } from "@/lib/api/experimental";
+import { Button } from "@/components/ui/button";
 import { DemoSelect } from "@/components/demo/shared";
 import { type RouteMode } from "./route-comparison";
 
@@ -24,38 +25,77 @@ export function ExperimentalNetwork({
   const id = useId().replaceAll(":", "");
   const [inspected, setInspected] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
-  const edgeId =
-    hovered ??
-    inspected ??
-    [...(selected === "weighted" ? weighted : baseline)][0] ??
-    graph.edges[0]?.edge_id;
-  const edge = graph.edges.find((e) => e.edge_id === edgeId);
-  const sample = result.frame.samples[edgeId];
-  const xs = graph.nodes.map((n) => n.x),
-    ys = graph.nodes.map((n) => n.y);
-  const minX = Math.min(...xs),
-    minY = Math.min(...ys),
-    dx = Math.max(...xs) - minX || 1,
-    dy = Math.max(...ys) - minY || 1;
-  const points = Object.fromEntries(
-    graph.nodes.map((n) => [
-      n.node_id,
-      { x: 38 + (400 * (n.x - minX)) / dx, y: 400 - (350 * (n.y - minY)) / dy },
-    ]),
+  const selectRef = useRef<HTMLButtonElement>(null);
+  const clear = () => {
+    setInspected(null);
+    setHovered(null);
+    selectRef.current?.focus();
+  };
+  const edgeId = inspected ?? "";
+  const edges = useMemo(
+    () => new Map(graph.edges.map((e) => [e.edge_id, e])),
+    [graph],
   );
+  const edge = edges.get(edgeId);
+  const sample = result.frame.samples[edgeId];
+  const { points, lines } = useMemo(() => {
+    const xs = graph.nodes.map((n) => n.x),
+      ys = graph.nodes.map((n) => n.y);
+    const minX = Math.min(...xs),
+      minY = Math.min(...ys);
+    const dx = Math.max(...xs) - minX || 1,
+      dy = Math.max(...ys) - minY || 1;
+    const points = Object.fromEntries(
+      graph.nodes.map((n) => [
+        n.node_id,
+        {
+          x: 38 + (400 * (n.x - minX)) / dx,
+          y: 400 - (350 * (n.y - minY)) / dy,
+        },
+      ]),
+    );
+    const pairs = new Set(
+      graph.edges.map((e) => `${e.source_node}:${e.target_node}`),
+    );
+    const lines = new Map(
+      graph.edges.map((e) => {
+        const a = points[e.source_node],
+          b = points[e.target_node];
+        const length = Math.hypot(b.x - a.x, b.y - a.y) || 1;
+        const offset = pairs.has(`${e.target_node}:${e.source_node}`) ? 10 : 0;
+        const ox = (-(b.y - a.y) / length) * offset,
+          oy = ((b.x - a.x) / length) * offset;
+        return [
+          e.edge_id,
+          { x1: a.x + ox, y1: a.y + oy, x2: b.x + ox, y2: b.y + oy },
+        ];
+      }),
+    );
+    return { points, lines };
+  }, [graph]);
+  const changed = new Set(result.frame.changed_edge_ids);
+  const hoverLine = hovered ? lines.get(hovered) : undefined;
   const number = (v: number | null | undefined) =>
     v == null
       ? t("unknown")
       : new Intl.NumberFormat(locale, { maximumFractionDigits: 3 }).format(v);
   return (
-    <div className="space-y-4">
-      <div className="network-surface rounded-xl border p-1">
+    <div
+      className="space-y-3"
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          setInspected(null);
+          setHovered(null);
+        }
+      }}
+    >
+      <div className="network-surface relative mx-auto max-w-[528px] rounded-xl border p-1">
         <svg
           viewBox="0 0 480 440"
           role="img"
           aria-label={t("preview")}
           aria-describedby={`${id}-help`}
-          className="mx-auto w-full max-w-[680px]"
+          className="mx-auto w-full max-w-[520px]"
           data-frame={result.frame.step}
           data-selected-route={selected}
         >
@@ -65,42 +105,28 @@ export function ExperimentalNetwork({
               viewBox="0 0 10 10"
               refX="18"
               refY="5"
-              markerWidth="4"
-              markerHeight="4"
+              markerUnits="userSpaceOnUse"
+              markerWidth="8"
+              markerHeight="8"
               orient="auto-start-reverse"
             >
               <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke" />
             </marker>
           </defs>
           {graph.edges.map((e) => {
-            const a = points[e.source_node],
-              b = points[e.target_node];
-            const reciprocal = graph.edges.some(
-              (other) =>
-                other.source_node === e.target_node &&
-                other.target_node === e.source_node,
-            );
-            const length = Math.hypot(b.x - a.x, b.y - a.y) || 1;
-            const ox = reciprocal ? (-(b.y - a.y) / length) * 12 : 0,
-              oy = reciprocal ? ((b.x - a.x) / length) * 12 : 0;
-            const line = {
-              x1: a.x + ox,
-              y1: a.y + oy,
-              x2: b.x + ox,
-              y2: b.y + oy,
-            };
-            const isChanged = result.frame.changed_edge_ids.includes(e.edge_id);
+            const line = lines.get(e.edge_id)!;
+            const isChanged = changed.has(e.edge_id);
             const isSelected = (
               selected === "weighted" ? weighted : baseline
             ).has(e.edge_id);
-            const active = edgeId === e.edge_id;
+            const active = edgeId === e.edge_id || hovered === e.edge_id;
             return (
               <g
                 key={e.edge_id}
                 data-edge-id={e.edge_id}
                 data-changed={isChanged}
                 data-on-route={isSelected}
-                data-inspected={active}
+                data-inspected={edgeId === e.edge_id}
                 onPointerEnter={(event) => {
                   if (event.pointerType === "mouse") setHovered(e.edge_id);
                 }}
@@ -109,35 +135,33 @@ export function ExperimentalNetwork({
                 className="cursor-pointer"
               >
                 <title>{t("inspectNamed", { edge: e.edge_id })}</title>
-                {isChanged && (
-                  <line
-                    {...line}
-                    stroke="var(--edge-change)"
-                    strokeWidth="12"
-                    strokeDasharray="2 6"
-                    opacity="0.7"
-                  />
-                )}
                 {active && (
                   <line
                     {...line}
                     stroke="var(--foreground)"
                     strokeWidth="10"
-                    opacity="0.5"
+                    opacity="0.18"
                   />
                 )}
                 <line
                   {...line}
                   stroke="var(--edge-unrelated)"
-                  strokeWidth="2"
+                  strokeWidth="1.5"
+                  opacity="0.4"
                   markerEnd={`url(#${id}-arrow)`}
                 />
                 {baseline.has(e.edge_id) && (
                   <line
                     {...line}
                     stroke="var(--route-baseline)"
-                    strokeWidth={selected === "baseline" ? 6 : 3}
-                    opacity={selected === "baseline" ? 1 : 0.6}
+                    strokeWidth={
+                      weighted.has(e.edge_id)
+                        ? 9
+                        : selected === "baseline"
+                          ? 5
+                          : 3
+                    }
+                    opacity={selected === "baseline" ? 1 : 0.55}
                     markerEnd={`url(#${id}-arrow)`}
                   />
                 )}
@@ -146,9 +170,21 @@ export function ExperimentalNetwork({
                     {...line}
                     stroke="var(--primary)"
                     strokeWidth={selected === "weighted" ? 5 : 3}
-                    strokeDasharray="9 5"
+                    strokeDasharray={
+                      selected === "baseline" ? "5 5" : undefined
+                    }
                     opacity={selected === "weighted" ? 1 : 0.6}
                     markerEnd={`url(#${id}-arrow)`}
+                  />
+                )}
+                {isChanged && isSelected && (
+                  <circle
+                    cx={(line.x1 + line.x2) / 2}
+                    cy={(line.y1 + line.y2) / 2}
+                    r="3.5"
+                    fill="var(--edge-change)"
+                    stroke="var(--card)"
+                    strokeWidth="1.5"
                   />
                 )}
                 <line {...line} stroke="transparent" strokeWidth="20" />
@@ -189,6 +225,24 @@ export function ExperimentalNetwork({
             );
           })}
         </svg>
+        {hovered && hoverLine && (
+          <div
+            role="tooltip"
+            className="pointer-events-none absolute z-10 max-w-[210px] rounded-lg border bg-popover px-3 py-2 text-xs shadow-md"
+            style={{
+              left: `${Math.min(52, Math.max(2, ((hoverLine.x1 + hoverLine.x2) / 960) * 100))}%`,
+              top: `${Math.max(2, ((hoverLine.y1 + hoverLine.y2) / 880) * 100 - 16)}%`,
+            }}
+          >
+            <p className="font-semibold">{hovered}</p>
+            <p>
+              {t("weight")}: {number(result.frame.samples[hovered]?.weight)}
+            </p>
+            <p>
+              {t("h_m")}: {number(result.frame.samples[hovered]?.h_m)}
+            </p>
+          </div>
+        )}
       </div>
       <ul
         className="grid grid-cols-2 gap-3 text-xs text-muted-foreground"
@@ -200,16 +254,17 @@ export function ExperimentalNetwork({
           <li key={key} className="flex items-center gap-2">
             <span
               aria-hidden="true"
-              className={`w-6 shrink-0 border-t-[3px] ${index === 0 ? "border-route-baseline" : index === 1 ? "border-primary border-dashed" : index === 2 ? "border-[var(--edge-change)] border-dotted" : "border-foreground"}`}
+              className={`w-6 shrink-0 border-t-[3px] ${index === 0 ? "border-route-baseline" : index === 1 ? "border-primary" : index === 2 ? "border-[var(--edge-change)] border-dotted" : "border-foreground"}`}
             />
             {t(key)}
           </li>
         ))}
       </ul>
-      <div className="rounded-xl bg-muted/60 p-4">
+      <div className="rounded-xl border p-3">
         <DemoSelect
           id={`${id}-edge`}
           label={t("inspect")}
+          inputRef={selectRef}
           value={edgeId}
           onChange={setInspected}
           options={graph.edges.map((e) => ({
@@ -226,6 +281,9 @@ export function ExperimentalNetwork({
             aria-live="polite"
             className="space-y-3"
           >
+            <Button variant="ghost" className="min-h-11" onClick={clear}>
+              {t("clearSelection")}
+            </Button>
             <p className="text-sm font-semibold">
               {edge.edge_id}{" "}
               <span className="font-normal text-muted-foreground">

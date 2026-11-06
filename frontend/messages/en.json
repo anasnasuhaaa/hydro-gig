@@ -189,7 +189,7 @@
     "guideDesc": "A short guide to the demonstration and its data limitations.",
     "diagnostics": "Technical diagnostics",
     "demoFlow": "Research simulation · Unverified source data · No safety guidance",
-    "explore": "Explore Flood Scenario Simulation",
+    "explore": "Start route screening",
     "legacy": "Open legacy synthetic demo",
     "research": "RESEARCH DEMONSTRATION",
     "contextTitle": "Understand the data behind the trip."
@@ -293,7 +293,7 @@
     },
     "explore": {
       "title": "Explore changes on the timeline",
-      "description": "Dataset mode has five historical frames t0–t4. Use frame buttons, previous/next, or Play simulation. A path can stay the same while segment values and costs change. The legacy synthetic demo has three frames.",
+      "description": "Choose t0–t4, use previous/next, or play the simulation. A path can stay the same while segment values and costs change.",
       "diagram": "t0 → t1 → t2 → t3 → t4"
     },
     "evidence": {
@@ -303,11 +303,11 @@
     },
     "dataTitle": "Two different data sources",
     "weather": "Weather: model-derived current conditions from Open-Meteo, with a model timestamp. Use device location by permission or select Bogor manually on Dashboard.",
-    "simulation": "Flood simulation: a dataset with unverified provenance or separate synthetic fixtures. No validated street flood measurements are available.",
+    "simulation": "Flood simulation: scenario values with unverified provenance, not validated street flood measurements.",
     "safety": "An available route is no safety guarantee. Do not enter floodwater to test this prototype.",
     "start": {
       "title": "Start a trip demo",
-      "description": "From Dashboard, choose Explore Flood Scenario Simulation for the experimental dataset. The legacy synthetic demo remains a separate mode.",
+      "description": "Start from Dashboard or open Pre-order. An example trip is ready to compare; adjust the stops if needed.",
       "diagram": "Starting point → pickup → destination"
     },
     "glossaryTitle": "Small glossary",
@@ -356,8 +356,8 @@
     "initial": "Initial frame; no previous comparison.",
     "comparisonUnavailable": "Previous frame comparison unavailable.",
     "changed": "Weighted route changed from the previous frame.",
-    "unchanged": "Weighted route unchanged from the previous frame.",
-    "affected": "Edges with changed fixture values",
+    "unchanged": "Route unchanged; scenario values changed.",
+    "affected": "Segment changes",
     "none": "None",
     "origin_to_pickup": "Origin → pickup",
     "pickup_to_destination": "Pickup → destination",
@@ -383,9 +383,9 @@
     "continueNavigation": "Continue to navigation",
     "mode": "Demonstration mode",
     "screenTitle": "Plan a sample trip.",
-    "screenHelp": "Choose stops, calculate routes, then compare distance and experimental cost. All trips are simulated with unverified source data.",
+    "screenHelp": "Choose three network stops, then compare routes.",
     "navigationTitle": "See the scenario change.",
-    "navigationHelp": "Replay five historical frames. Segment values can change while the selected path stays the same. No live monitoring or prediction.",
+    "navigationHelp": "Choose t0–t4 to compare paths and historical scenario values.",
     "compare": "Compare routes",
     "compareHelp": "Select an alternative to highlight its path on the schematic.",
     "tripDistance": "Trip distance",
@@ -396,11 +396,11 @@
     "backScreen": "Edit trip",
     "backDashboard": "Back to dashboard",
     "networkLegend": "Network legend",
-    "changedLegend": "Values changed · dotted",
+    "changedLegend": "Changed value on route",
     "inspectedLegend": "Inspected edge · thick outline",
     "inspect": "Inspect segment",
     "inspectNamed": "Inspect segment {edge}",
-    "inspectHelp": "Tap a line or select a segment above. Arrows follow network direction; source values are unverified.",
+    "inspectHelp": "Tap a segment or select from the list. Escape clears details.",
     "timelineTitle": "Scenario timeline",
     "historical": "Historical replay · No live monitoring",
     "currentFrame": "Frame {step}",
@@ -415,8 +415,11 @@
     "costDelta": "Weighted route cost change",
     "retryComparison": "Retry comparison",
     "deltaHelp": "Compared with {step}. The same path can have a different cost.",
-    "pendingEdits": "Trip stops have changed. Press Compare routes to update routes before continuing.",
-    "segmentDistance": "Segment length (m)"
+    "pendingEdits": "Stops changed. Recalculate to continue.",
+    "segmentDistance": "Segment length (m)",
+    "clearSelection": "Clear segment selection",
+    "noRelevantChange": "No relevant change on the selected route.",
+    "routePath": "Route stops"
   },
   "Evidence": {
     "title": "Experimental Evidence Preview",

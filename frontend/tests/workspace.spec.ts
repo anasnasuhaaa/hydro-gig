@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import en from "../messages/en.json";
 
 test.beforeEach(async ({ context, baseURL }) => {
   await context.addCookies([
@@ -45,17 +46,17 @@ test("routes, navigation, and responsive workspace", async ({
   for (const route of [
     {
       path: "/pre-order",
-      heading: "Screen your route.",
-      action: "Check route",
+      heading: "Plan a sample trip.",
+      action: "Compare routes",
     },
     {
       path: "/navigation",
-      heading: "Explore your route.",
-      action: "Next",
+      heading: "See the scenario change.",
+      action: "Next frame",
     },
     {
       path: "/claims",
-      heading: "Claims",
+      heading: "Experimental Evidence Preview",
       action: "Create evidence token",
     },
   ]) {
@@ -64,27 +65,12 @@ test("routes, navigation, and responsive workspace", async ({
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
       route.heading,
     );
-    if (route.path === "/claims") {
-      await expect(
-        page.getByText("Coming soon", { exact: true }),
-      ).toBeVisible();
-      await expect(
-        page.getByRole("button", { name: route.action }),
-      ).toHaveCount(0);
-      await page.screenshot({
-        path: testInfo.outputPath("claims-light.png"),
-        fullPage: true,
-      });
-    } else {
-      await expect(
-        page.getByRole("button", { name: route.action }),
-      ).toBeEnabled();
-      await expect(
-        page.getByText("SIMULATED DATA - NOT REAL-TIME FLOOD MONITORING", {
-          exact: true,
-        }),
-      ).toBeVisible();
-    }
+    await expect(
+      page.getByText(
+        route.path === "/claims" ? en.Evidence.label : en.Experimental.label,
+        { exact: true },
+      ),
+    ).toBeVisible();
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth <= window.innerWidth,
@@ -160,10 +146,10 @@ test("compact screens remain usable at 320px in both themes", async ({
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
       if (path === "/navigation") {
         await expect(
-          page.getByRole("img", { name: /Synthetic directed/ }),
+          page.getByRole("img", { name: /coordinate preview/ }),
         ).toBeVisible();
         await expect(
-          page.getByText("Scientific risk: unavailable for all segments."),
+          page.getByText("Directed network schematic · No verified road map"),
         ).toBeVisible();
       }
       expect(
@@ -185,19 +171,19 @@ test("demo loading is explicit before real results arrive", async ({
   const pending = new Promise<void>((resolve) => {
     release = resolve;
   });
-  await page.route("**/api/v1/demo/network", async (route) => {
+  await page.route("**/api/v1/experimental/network", async (route) => {
     await pending;
     await route.continue();
   });
   await page.goto("/pre-order");
   await expect(
-    page.getByRole("status", { name: "Loading demonstration" }),
+    page.getByText("Loading simulation…", { exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Check route", exact: true }),
+    page.getByRole("button", { name: "Compare routes", exact: true }),
   ).not.toBeVisible();
   release();
   await expect(
-    page.getByRole("button", { name: "Check route", exact: true }),
+    page.getByRole("button", { name: "Compare routes", exact: true }),
   ).toBeEnabled();
 });
