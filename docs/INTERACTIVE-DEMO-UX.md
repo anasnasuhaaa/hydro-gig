@@ -1,10 +1,12 @@
 # Interactive driver demonstration
 
+> Pembaruan UX (2026-11-06): alur dataset eksperimental kini menjadi satu-satunya pengalaman publik. `/pre-order`, `/navigation`, dan `/claims` dapat dibuka langsung; tidak ada pemilih mode. Sesi versi 1 yang valid tetap dipulihkan meskipun flag lama `enabled` bernilai false. Backend sintetis tetap tersedia untuk regresi internal. Lihat [audit refinement](UX-REFINEMENT-AUDIT.md) untuk perilaku dan screenshot terbaru; uraian implementasi lama di bawah merupakan riwayat.
+
 Delivered 2026-11-06 (Asia/Jakarta) on `feat/interactive-demo-ux`, based on latest fetched main `990806e`. No push, merge, deployment or database migration was performed. Existing untracked `data/`, `scripts/`, dataset audit/plan and local PROMPT input were excluded. Backend code, datasets, routing, session schema, evidence canonicalization and API contracts remain unchanged.
 
 ## Access and two-minute walkthrough
 
-Run backend/frontend using [README](../README.md#menjalankan-proyek-secara-lokal). Open `/dashboard` and press **Jelajahi Simulasi Skenario Banjir** / **Explore Flood Scenario Simulation**. This explicitly enables the experimental session before opening `/pre-order`; it preserves the user's saved trip. Direct visits retain the saved mode, and new sessions keep the existing synthetic default.
+Run backend/frontend using [README](../README.md#menjalankan-proyek-secara-lokal). Open `/dashboard` and press **Mulai periksa rute** / **Start route screening**. This explicitly enables the experimental session before opening `/pre-order`; it preserves the user's saved trip. Direct visits retain the saved mode, and new sessions keep the existing synthetic default.
 
 - **Screen:** use N01 → N03 → N12 or change stops and press **Bandingkan rute / Compare routes**. Select either route alternative and inspect a segment by pointer, tap or keyboard Select.
 - **Replay:** continue to navigation. Select t1 to see the default weighted path change; select t2–t4 to see its path remain unchanged while source values and cost change. Previous/next and opt-in playback are available. Playback uses two seconds per frame after each response, not historical wall time or vehicle speed.
