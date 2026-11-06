@@ -3,15 +3,13 @@ import { test, expect } from "@playwright/test";
 test("network layers and keyboard segment inspection use returned values", async ({
   page,
 }) => {
-  await page.goto("/pre-order");
   const response = page.waitForResponse(
     (r) =>
       r.url().includes("/experimental/routes/screen") &&
       r.request().postDataJSON().step === "t0",
   );
-  await page
-    .getByRole("button", { name: "Gunakan dataset eksperimental", exact: true })
-    .click();
+
+  await page.goto("/pre-order");
   const data = await (await response).json();
   const svg = page.getByRole("img", { name: /Pratinjau koordinat/ });
   await expect(svg).toHaveAttribute("data-selected-route", "weighted");
@@ -37,7 +35,7 @@ test("network layers and keyboard segment inspection use returned values", async
   );
   const edge = Object.keys(data.frame.samples).at(-1)!;
   const select = page.getByRole("combobox", {
-    name: "Periksa ruas",
+    name: "Lihat detail ruas",
     exact: true,
   });
   await select.focus();
@@ -54,10 +52,7 @@ test("network layers and keyboard segment inspection use returned values", async
   }).format(data.frame.samples[edge].weight);
   await expect(inspector).toContainText(expected);
   const another = Object.keys(data.frame.samples)[0];
-  await svg
-    .locator(`[data-edge-id="${another}"] line`)
-    .last()
-    .click({ force: true });
+  await svg.locator(`[data-edge-id="${another}"] line`).last().click();
   await expect(inspector).toContainText(another);
 });
 
@@ -65,9 +60,7 @@ test("five-frame timeline reports actual changed and unchanged paths and costs",
   page,
 }) => {
   await page.goto("/navigation");
-  await page
-    .getByRole("button", { name: "Gunakan dataset eksperimental", exact: true })
-    .click();
+
   const svg = page.getByRole("img", { name: /Pratinjau koordinat/ });
   await expect(svg).toHaveAttribute("data-frame", "t0");
   const initial = await page.request.post(
@@ -103,7 +96,7 @@ test("five-frame timeline reports actual changed and unchanged paths and costs",
       page.getByText(
         changed
           ? "Rute berbobot berubah dari bingkai sebelumnya."
-          : "Rute berbobot tetap sama dengan bingkai sebelumnya.",
+          : "Rute tetap sama; nilai skenario berubah.",
         { exact: true },
       ),
     ).toBeVisible();
@@ -145,9 +138,7 @@ test("explicit simulation playback stops at the last frame", async ({
   page,
 }) => {
   await page.goto("/navigation");
-  await page
-    .getByRole("button", { name: "Gunakan dataset eksperimental", exact: true })
-    .click();
+
   const svg = page.getByRole("img", { name: /Pratinjau koordinat/ });
   await expect(svg).toHaveAttribute("data-frame", "t0");
   await expect(
@@ -172,17 +163,14 @@ test("dashboard discovers the dataset and the three-stage journey includes evide
   await page.goto("/dashboard");
   await page
     .getByRole("link", {
-      name: "Jelajahi Simulasi Skenario Banjir",
+      name: "Mulai periksa rute",
       exact: true,
     })
     .click();
   await expect(page).toHaveURL(/pre-order$/);
   await expect(
-    page.getByRole("button", {
-      name: "Gunakan dataset eksperimental",
-      exact: true,
-    }),
-  ).toHaveAttribute("aria-pressed", "true");
+    page.getByRole("button", { name: "Gunakan dataset eksperimental" }),
+  ).toHaveCount(0);
   const journey = page.getByRole("navigation", {
     name: "Tiga tahap perjalanan",
     exact: true,
@@ -229,9 +217,7 @@ test("unapplied stop changes cannot carry stale routes into the journey", async 
   page,
 }) => {
   await page.goto("/pre-order");
-  await page
-    .getByRole("button", { name: "Gunakan dataset eksperimental", exact: true })
-    .click();
+
   await expect(
     page.getByRole("img", { name: /Pratinjau koordinat/ }),
   ).toBeVisible();
@@ -253,27 +239,25 @@ test("unapplied stop changes cannot carry stale routes into the journey", async 
   await page
     .getByRole("link", { name: "Lanjut ke navigasi", exact: true })
     .click();
-  await expect(page.getByLabel("Penjemputan", { exact: true })).toContainText(
-    "N04",
-  );
+  await expect(
+    page.getByText("N01 → N04 → N12", { exact: true }),
+  ).toBeVisible();
   await page
     .getByRole("button", {
       name: "Atur ulang perjalanan eksperimental",
       exact: true,
     })
     .click();
-  await expect(page.getByLabel("Penjemputan", { exact: true })).toContainText(
-    "N03",
-  );
+  await expect(
+    page.getByText("N01 → N03 → N12", { exact: true }),
+  ).toBeVisible();
 });
 
 test("previous frame failure never implies an unchanged path or a zero cost change", async ({
   page,
 }) => {
   await page.goto("/navigation");
-  await page
-    .getByRole("button", { name: "Gunakan dataset eksperimental", exact: true })
-    .click();
+
   await page.getByRole("button", { name: "t1", exact: true }).click();
   await expect(
     page.getByRole("img", { name: /Pratinjau koordinat/ }),

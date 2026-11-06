@@ -87,7 +87,7 @@ function Workspace() {
   );
   return (
     <section className="space-y-5" aria-label={t("title")}>
-      <div className="flex flex-wrap items-start justify-between gap-3">
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-2">
         <div className="max-w-2xl">
           <p className="mb-2 text-xs font-semibold tracking-wide text-primary">
             {t("label")}
@@ -114,7 +114,7 @@ function Workspace() {
           }}
         >
           <RotateCcw className="size-4" />
-          <span className="sr-only sm:not-sr-only">{t("resetTrip")}</span>
+          <span className="sr-only xl:not-sr-only">{t("resetTrip")}</span>
         </Button>
       </div>
       {navigation && (
@@ -223,14 +223,16 @@ function Workspace() {
               </section>
             </div>
             <div className="min-w-0 space-y-4">
-              <FrameSummary
-                result={result}
-                previous={previous.data}
-                failed={previous.isError}
-                onRetry={() => {
-                  void previous.refetch();
-                }}
-              />
+              {navigation && (
+                <FrameSummary
+                  result={result}
+                  previous={previous.data}
+                  failed={previous.isError}
+                  onRetry={() => {
+                    void previous.refetch();
+                  }}
+                />
+              )}
               <RouteComparison
                 result={result}
                 selected={selected}

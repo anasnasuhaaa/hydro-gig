@@ -1,33 +1,5 @@
 import { expect, test, type Page } from "@playwright/test";
 
-async function select(page: Page, label: string, option: string | RegExp) {
-  if (
-    label === "Simulation frame" &&
-    !(await page
-      .getByRole("combobox", { name: label, exact: true })
-      .isVisible())
-  )
-    await page
-      .getByRole("button", { name: "Simulation settings", exact: true })
-      .click();
-  await page.getByRole("combobox", { name: label, exact: true }).click();
-  await page
-    .getByRole("option", { name: option, exact: typeof option === "string" })
-    .click();
-}
-async function trip(page: Page, origin = "A") {
-  if (
-    !(await page
-      .getByRole("combobox", { name: "My starting point", exact: true })
-      .isVisible())
-  )
-    await page
-      .getByRole("button", { name: "Change locations", exact: true })
-      .click();
-  await select(page, "My starting point", new RegExp(`^${origin} ·`));
-  await select(page, "Pickup", /^C ·/);
-  await select(page, "Destination", /^F ·/);
-}
 async function noOverflow(page: Page) {
   expect(
     await page.evaluate(
@@ -158,179 +130,66 @@ test("mobile sidebar closes on selection and Escape with focus restored", async 
   await expect(open).toBeFocused();
 });
 
-test("form validates selections and distinct nodes without requesting screening", async ({
-  page,
-}) => {
-  let requests = 0;
-  page.on("request", (request) => {
-    if (request.url().endsWith("/api/v1/demo/screen")) requests++;
+// Public route regression cases now exercise the experimental contract.
+for (const invalid of [false, true])
+  test(`screening failure and recovery (malformed=${invalid})`, async ({
+    page,
+  }) => {
+    await page.route("**/api/v1/experimental/routes/screen", (route) =>
+      route.fulfill(
+        invalid ? { json: { replay_status: "observed" } } : { status: 503 },
+      ),
+    );
+    await page.goto("/pre-order");
+    await expect(
+      page.getByRole("alert").filter({
+        hasText:
+          "Fixture data is unavailable or invalid. Check your connection and retry.",
+      }),
+    ).toBeVisible();
+    await expect(page.locator("svg[data-frame]")).toHaveCount(0);
+    await page.unroute("**/api/v1/experimental/routes/screen");
+    await page.getByRole("button", { name: "Retry", exact: true }).click();
+    await expect(page.locator("svg[data-frame]")).toBeVisible();
   });
-  await page.goto("/pre-order");
-  await page.getByRole("button", { name: "Check route", exact: true }).click();
-  await expect(page.locator('#origin[aria-invalid="true"]')).toBeVisible();
-  await expect(page.locator("#origin")).toBeFocused();
-  await trip(page);
-  await select(page, "Destination", /^C ·/);
-  await page.getByRole("button", { name: "Check route", exact: true }).click();
-  await expect(page.getByText("Choose three different stops.")).toBeVisible();
-  expect(requests).toBe(0);
-});
-
-test("real screening, shared trip and frames, schematic warnings and themes", async ({
-  page,
-}, testInfo) => {
-  const errors: string[] = [];
-  page.on("pageerror", (error) => errors.push(error.message));
-  await page.goto("/pre-order");
-  await trip(page);
-  await select(page, "Simulation frame", "5 minutes later");
-  const response = page.waitForResponse(
-    (response) =>
-      response.url().endsWith("/api/v1/demo/screen") &&
-      response.request().method() === "POST",
-  );
-  await page.getByRole("button", { name: "Check route", exact: true }).click();
-  expect((await response).status()).toBe(200);
-  await expect(
-    page.getByRole("heading", { name: "Route comparison · 5 minutes later" }),
-  ).toBeVisible();
-  await expect(
-    page.getByText("Segments: AG, GC", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByText("Demo route comparison loaded.", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByText("Scientific risk: unavailable for all segments."),
-  ).toBeVisible();
-  const details = page.locator("details");
-  await expect(details).not.toHaveAttribute("open", "");
-  await details.locator("summary").focus();
-  await page.keyboard.press("Enter");
-  await expect(details).toHaveAttribute("open", "");
-  await expect(details.getByText(/Scenario:/)).toBeVisible();
-  await details.locator("summary").click();
-  await noOverflow(page);
-  await page.screenshot({
-    path: testInfo.outputPath("pre-order-light.png"),
-    fullPage: true,
-  });
-  await page.getByRole("link", { name: "Continue to navigation" }).click();
-  await expect(
-    page.getByRole("button", { name: "5 minutes later", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
-  await expect(
-    page.getByText("Simulated changes · 5 minutes later", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("img", {
-      name: "Synthetic directed road network at 5 minutes later",
-    }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Next" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Route comparison · 10 minutes later" }),
-  ).toBeVisible();
-  await expect(
-    page.getByText("Road costs increased on DF.", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByText("Segments: AG, GC", { exact: true }),
-  ).not.toBeVisible();
-  await expect(page.getByRole("button", { name: "Next" })).toBeDisabled();
-  await page
-    .getByRole("button", { name: "Initial condition", exact: true })
-    .click();
-  await expect(
-    page.getByRole("heading", { name: "Route comparison · Initial condition" }),
-  ).toBeVisible();
-  await expect(
-    page.getByText(/Initial snapshot: no authored cost increases/).first(),
-  ).toBeVisible();
-  await page.screenshot({
-    path: testInfo.outputPath("navigation-light.png"),
-    fullPage: true,
-  });
-  await page.getByRole("button", { name: "Toggle color theme" }).click();
-  await expect(page.locator("html")).toHaveClass(/dark/);
-  await noOverflow(page);
-  await page.screenshot({
-    path: testInfo.outputPath("navigation-dark.png"),
-    fullPage: true,
-  });
-  expect(errors).toEqual([]);
-});
-
-test("unreachable directed journey is explicit", async ({ page }) => {
-  await page.goto("/pre-order");
-  await trip(page, "H");
-  await page.getByRole("button", { name: "Check route", exact: true }).click();
-  await expect(
-    page
-      .getByText(
-        "Route unavailable — these stops cannot be connected in this one-way demo. Change locations to try again.",
-      )
-      .first(),
-  ).toBeVisible();
-});
-
-test("screening failure has no success toast and retry recovers", async ({
-  page,
-}) => {
-  await page.route("**/api/v1/demo/screen", (route) =>
-    route.fulfill({ status: 503, body: "unavailable" }),
-  );
-  await page.goto("/pre-order");
-  await trip(page);
-  await page.getByRole("button", { name: "Check route", exact: true }).click();
-  await expect(
-    page.getByText("Demonstration unavailable", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByText("Demo route comparison loaded.", { exact: true }),
-  ).not.toBeVisible();
-  await page.unroute("**/api/v1/demo/screen");
-  await page.getByRole("button", { name: "Retry" }).click();
-  await expect(
-    page.getByRole("heading", { name: "Route comparison · Initial condition" }),
-  ).toBeVisible();
-  await select(page, "Simulation frame", "10 minutes later");
-  await expect(
-    page.getByRole("region", { name: "Screening results" }),
-  ).not.toBeVisible();
-});
-
-test("malformed demo responses are rejected", async ({ page }) => {
-  await page.route("**/api/v1/demo/screen", (route) =>
-    route.fulfill({ json: { experimental: true, provenance: "observed" } }),
-  );
+test("failed frame removes stale routes", async ({ page }) => {
   await page.goto("/navigation");
-  await expect(
-    page.getByText("Demonstration unavailable", { exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("img", { name: /Synthetic directed/ }),
-  ).not.toBeVisible();
-});
-
-test("failed frame switch removes stale route results", async ({ page }) => {
-  await page.goto("/navigation");
-  await expect(
-    page.getByRole("heading", { name: "Route comparison · Initial condition" }),
-  ).toBeVisible();
-  await page.route("**/api/v1/demo/screen", (route) =>
+  await expect(page.locator("svg[data-frame]")).toHaveAttribute(
+    "data-frame",
+    "t0",
+  );
+  await page.route("**/api/v1/experimental/routes/screen", (route) =>
     route.fulfill({ status: 503 }),
   );
-  await page
-    .getByRole("button", { name: "5 minutes later", exact: true })
-    .click();
+  await page.getByRole("button", { name: "t1", exact: true }).click();
   await expect(
-    page.getByText("Demonstration unavailable", { exact: true }),
+    page.getByRole("alert").filter({
+      hasText:
+        "Fixture data is unavailable or invalid. Check your connection and retry.",
+    }),
   ).toBeVisible();
-  await expect(
-    page.getByRole("heading", { name: "Route comparison · Initial condition" }),
-  ).not.toBeVisible();
-  await expect(
-    page.getByRole("img", { name: /Synthetic directed/ }),
-  ).not.toBeVisible();
+  await expect(page.locator("svg[data-frame]")).toHaveCount(0);
+});
+test("legacy synthetic backend remains available independently", async ({
+  request,
+}) => {
+  const response = await request.post(
+    "http://localhost:8100/api/v1/demo/screen",
+    {
+      data: {
+        origin: "A",
+        pickup: "C",
+        destination: "F",
+        scenario_id: "synthetic-corridors-v1",
+        step: "t1",
+      },
+    },
+  );
+  expect(response.ok()).toBe(true);
+  const body = await response.json();
+  expect(body.origin_to_pickup.demonstration_weighted.node_ids).toEqual([
+    "A",
+    "G",
+    "C",
+  ]);
 });

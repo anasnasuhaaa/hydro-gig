@@ -36,28 +36,26 @@ test("Indonesian SSR default, invalid cookie fallback and English persistence", 
   const response = await page.goto("/pre-order");
   expect(await response?.text()).toContain('lang="id"');
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    id.Screen.title,
+    id.Experimental.screenTitle,
   );
+
   await page
-    .getByRole("button", { name: id.Screen.changeLocations, exact: true })
+    .getByRole("combobox", { name: id.Experimental.origin, exact: true })
     .click();
-  await page
-    .getByRole("combobox", { name: id.Screen.origin, exact: true })
-    .click();
-  await page.getByRole("option", { name: /^A ·/ }).click();
+  await page.getByRole("option", { name: /^N02$/ }).click();
   await page.getByRole("button", { name: "English", exact: true }).click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await expect(
-    page.getByRole("combobox", { name: "My starting point", exact: true }),
-  ).toContainText("A ·");
+    page.getByRole("combobox", { name: en.Experimental.origin, exact: true }),
+  ).toContainText("N02");
   await page.reload();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    en.Screen.title,
+    en.Experimental.screenTitle,
   );
   for (const [path, title] of [
     ["/dashboard", en.Dashboard.title],
-    ["/navigation", en.Navigation.title],
-    ["/claims", en.Claims.title],
+    ["/navigation", en.Experimental.navigationTitle],
+    ["/claims", en.Evidence.title],
   ]) {
     await page.goto(path);
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
@@ -67,7 +65,7 @@ test("Indonesian SSR default, invalid cookie fallback and English persistence", 
     .getByRole("button", { name: "Bahasa Indonesia", exact: true })
     .click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    id.Claims.title,
+    id.Evidence.title,
   );
   expect(
     (await context.cookies()).find(
@@ -122,9 +120,19 @@ test("each route switches locale and metadata; selected EWS frame survives", asy
 }) => {
   const routes = [
     ["dashboard", "dashboard", en.Dashboard.title, id.Dashboard.title],
-    ["pre-order", "preOrder", en.Screen.title, id.Screen.title],
-    ["navigation", "navigation", en.Navigation.title, id.Navigation.title],
-    ["claims", "claims", en.Claims.title, id.Claims.title],
+    [
+      "pre-order",
+      "preOrder",
+      en.Experimental.screenTitle,
+      id.Experimental.screenTitle,
+    ],
+    [
+      "navigation",
+      "navigation",
+      en.Experimental.navigationTitle,
+      id.Experimental.navigationTitle,
+    ],
+    ["claims", "claims", en.Evidence.title, id.Evidence.title],
     ["guide", "guide", en.Guide.title, id.Guide.title],
   ] as const;
   for (const [path, key, enTitle, idTitle] of routes) {
@@ -133,15 +141,11 @@ test("each route switches locale and metadata; selected EWS frame survives", asy
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(enTitle);
     await expect(page).toHaveTitle(`${en.Shell[key]} | HydroGig-Mesh`);
     if (path === "navigation") {
-      await page
-        .getByRole("button", { name: "10 minutes later", exact: true })
-        .click();
-      await expect(
-        page.getByRole("heading", {
-          name: "Route comparison · 10 minutes later",
-          exact: true,
-        }),
-      ).toBeVisible();
+      await page.getByRole("button", { name: "t2", exact: true }).click();
+      await expect(page.locator("svg[data-frame]")).toHaveAttribute(
+        "data-frame",
+        "t2",
+      );
     }
     await page
       .getByRole("button", { name: "Bahasa Indonesia", exact: true })
@@ -150,14 +154,12 @@ test("each route switches locale and metadata; selected EWS frame survives", asy
     await expect(page).toHaveTitle(`${id.Shell[key]} | HydroGig-Mesh`);
     if (path === "navigation") {
       await expect(
-        page.getByRole("button", { name: "10 menit kemudian", exact: true }),
+        page.getByRole("button", { name: "t2", exact: true }),
       ).toHaveAttribute("aria-pressed", "true");
-      await expect(
-        page.getByRole("heading", {
-          name: "Perbandingan rute · 10 menit kemudian",
-          exact: true,
-        }),
-      ).toBeVisible();
+      await expect(page.locator("svg[data-frame]")).toHaveAttribute(
+        "data-frame",
+        "t2",
+      );
     }
     await expect(page).toHaveURL(new RegExp(`/${path}$`));
   }
