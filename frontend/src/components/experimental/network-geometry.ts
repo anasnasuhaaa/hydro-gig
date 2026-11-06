@@ -50,10 +50,13 @@ export function networkGeometry(graph: Graph) {
       },
     ]),
   );
-  // JSON tuples avoid ambiguous IDs (including colons or object prototype names).
+  // Group by display endpoints as distinct nodes can share coordinates.
+  // Stable sorted IDs keep parallel geometry independent of API edge order.
   const pairs = new Map<string, string[]>();
   for (const edge of graph.edges) {
-    const key = JSON.stringify([edge.source_node, edge.target_node]);
+    const a = points.get(edge.source_node)!,
+      b = points.get(edge.target_node)!;
+    const key = JSON.stringify([a.x, a.y, b.x, b.y]);
     pairs.set(key, [...(pairs.get(key) ?? []), edge.edge_id].sort());
   }
   const bounds = [...points.values()];
@@ -62,23 +65,19 @@ export function networkGeometry(graph: Graph) {
       const a = points.get(edge.source_node)!,
         b = points.get(edge.target_node)!;
       const length = Math.hypot(b.x - a.x, b.y - a.y);
-      const siblings = pairs.get(
-        JSON.stringify([edge.source_node, edge.target_node]),
-      )!;
+      const siblings = pairs.get(JSON.stringify([a.x, a.y, b.x, b.y]))!;
       const rank = siblings.indexOf(edge.edge_id);
-      const reverse = pairs.has(
-        JSON.stringify([edge.target_node, edge.source_node]),
-      );
+      const reverse = pairs.has(JSON.stringify([b.x, b.y, a.x, a.y]));
       const bend = reverse ? 24 + rank * 20 : 8 + rank * 20;
       let d: string, mid: Point, angle: number;
       if (length < 1) {
         // Coincident coordinates/self-links remain inspectable loops, not NaN paths.
         const radius = 28 + rank * 14;
         const side = edge.source_node <= edge.target_node ? 1 : -1;
-        const c1 = { x: a.x + radius * side, y: a.y - radius * 2 };
-        const c2 = { x: b.x - radius * side, y: b.y - radius * 2 };
+        const c1 = { x: a.x + radius * side, y: a.y - radius * 2 * side };
+        const c2 = { x: b.x - radius * side, y: b.y - radius * 2 * side };
         d = `M ${a.x} ${a.y} C ${c1.x} ${c1.y} ${c2.x} ${c2.y} ${b.x} ${b.y}`;
-        mid = { x: a.x, y: a.y - radius * 1.5 };
+        mid = { x: a.x, y: a.y - radius * 1.5 * side };
         angle = side === 1 ? 180 : 0;
         bounds.push(c1, c2);
       } else {
