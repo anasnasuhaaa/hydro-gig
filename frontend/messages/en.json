@@ -426,7 +426,14 @@
     "stopDestination": "Destination",
     "selectedLegend": "Selected",
     "alternativeLegend": "Alternative",
-    "changedValueLegend": "Value changed"
+    "changedValueLegend": "Value changed",
+    "networkProvenance": "Experimental simulation · Unverified · Not live flood monitoring",
+    "technicalDetails": "Technical details",
+    "membership": "Route membership",
+    "contextSegment": "Outside both routes",
+    "segmentChanged": "Experimental value changed from the previous frame.",
+    "segmentUnchanged": "No experimental value change from the previous frame.",
+    "sharedPath": "Both routes share this path."
   },
   "Evidence": {
     "title": "Experimental Evidence Preview",

@@ -43,6 +43,7 @@ function Workspace() {
   const { request, setRequest } = session;
   const navigation = usePathname() === "/navigation";
   const [replayVersion, setReplayVersion] = useState(0);
+  const [inspected, setInspected] = useState<string | null>(null);
   const [selected, setSelected] = useState<RouteMode>("weighted");
   const form = useForm<FixtureRequest>({
     resolver: zodResolver(requestSchema),
@@ -102,6 +103,7 @@ function Workspace() {
             session.reset();
             form.reset(initial);
             setSelected("weighted");
+            setInspected(null);
             setReplayVersion((v) => v + 1);
           }}
         >
@@ -138,6 +140,7 @@ function Workspace() {
                   value={field.value}
                   onChange={(value) => {
                     field.onChange(value);
+                    setInspected(null);
                     setReplayVersion((v) => v + 1);
                   }}
                   onBlur={field.onBlur}
@@ -156,64 +159,51 @@ function Workspace() {
           </Button>
         </form>
       )}
-      <ScenarioTimeline
-        key={replayVersion}
-        compact={!navigation}
-        locked={pendingEdits}
-        request={request}
-        onChange={(step) => setRequest({ ...request, step })}
-        result={result}
-        busy={query.isFetching}
-        error={query.isError}
-      />
-      {pendingEdits ? (
-        <p
-          role="status"
-          className="border-l-2 border-primary px-3 py-2 text-sm"
-        >
-          {t("pendingEdits")}
-        </p>
-      ) : network.isError || query.isError ? (
-        <div role="alert" className="rounded-2xl border p-5">
-          <p>{t("error")}</p>
-          <Button
-            className="mt-3 min-h-11"
-            onClick={() => {
-              void network.refetch();
-              void query.refetch();
-            }}
+      <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_300px] xl:grid-cols-[minmax(0,1fr)_320px]">
+        {pendingEdits ? (
+          <p
+            role="status"
+            className="border-l-2 border-primary px-3 py-2 text-sm"
           >
-            {t("retry")}
-          </Button>
-        </div>
-      ) : !result || !graph ? (
-        <div role="status" className="space-y-3">
-          <p className="text-sm text-muted-foreground">{t("loading")}</p>
-          <Skeleton className="h-80 w-full rounded-2xl" />
-        </div>
-      ) : (
-        <>
-          <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.65fr)_minmax(260px,1fr)]">
-            <div className="min-w-0 space-y-4">
-              <section className="overflow-hidden rounded-2xl border bg-card">
-                <div className="border-b p-4 sm:p-5">
-                  <h2 className="text-lg font-semibold">{t("networkTitle")}</h2>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {t("schematic")}
-                  </p>
-                </div>
-                <div className="p-3 sm:p-5">
-                  <ExperimentalNetwork
-                    key={replayVersion}
-                    graph={graph}
-                    result={result}
-                    selected={selected}
-                  />
-                </div>
-              </section>
+            {t("pendingEdits")}
+          </p>
+        ) : network.isError || query.isError ? (
+          <div role="alert" className="rounded-2xl border p-5">
+            <p>{t("error")}</p>
+            <Button
+              className="mt-3 min-h-11"
+              onClick={() => {
+                void network.refetch();
+                void query.refetch();
+              }}
+            >
+              {t("retry")}
+            </Button>
+          </div>
+        ) : !result || !graph ? (
+          <div role="status" className="space-y-3">
+            <p className="text-sm text-muted-foreground">{t("loading")}</p>
+            <Skeleton className="h-80 w-full rounded-2xl" />
+          </div>
+        ) : (
+          <>
+            <ExperimentalNetwork
+              key={replayVersion}
+              graph={graph}
+              result={result}
+              selected={selected}
+              inspected={inspected}
+              onInspect={setInspected}
+            />
+            <div className="order-2 min-w-0 lg:col-start-2 lg:row-start-1">
+              <RouteComparison
+                result={result}
+                selected={selected}
+                onSelect={setSelected}
+              />
             </div>
-            <div className="min-w-0 space-y-4">
-              {navigation && (
+            {navigation && (
+              <div className="order-5 min-w-0 lg:col-start-2 lg:row-start-3">
                 <FrameSummary
                   result={result}
                   previous={previous.data}
@@ -222,91 +212,106 @@ function Workspace() {
                     void previous.refetch();
                   }}
                 />
-              )}
-              <RouteComparison
-                result={result}
-                selected={selected}
-                onSelect={setSelected}
-              />
-            </div>
-          </div>
-          <Disclosure
-            className="rounded-2xl border bg-card p-4"
-            title={<>{t("values")}</>}
-          >
-            <p className="my-3 text-sm text-muted-foreground">
-              {t("unitsCaveat")}
-            </p>
-            <p className="my-3 text-sm">
-              {t("time")}:{" "}
-              {new Intl.DateTimeFormat(locale, {
-                dateStyle: "medium",
-                timeStyle: "short",
-                timeZone: "Asia/Jakarta",
-              }).format(new Date(result.frame.timestamp))}{" "}
-              {t("timezone")}
-            </p>
-            <p className="my-3 break-words text-xs text-muted-foreground">
-              {t("source")}: {result.dataset_id} / {result.dataset_version} ·{" "}
-              {result.network_id} · {result.weighting_version}
-            </p>
-            <p className="my-3 text-sm text-muted-foreground">
-              {t("limitations")}
-            </p>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm">
-                <thead>
-                  <tr>
-                    {["edge", "h_m", "u_ms", "v_ms", "weight", "delta"].map(
-                      (k) => (
-                        <th className="p-2" key={k}>
-                          {t(k)}
-                        </th>
-                      ),
-                    )}
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(result.frame.samples).map(([edge, s]) => (
-                    <tr key={edge} className="border-t">
-                      <td className="p-2 font-mono">{edge}</td>
-                      {[
-                        s.h_m,
-                        s.u_ms,
-                        s.v_ms,
-                        s.weight,
-                        result.frame.weight_deltas[edge] ?? null,
-                      ].map((v, i) => (
-                        <td className="p-2 tabular-nums" key={i}>
-                          {v ?? t("unknown")}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Disclosure>
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-card p-4">
-            <Button asChild variant="ghost" className="min-h-11">
-              <Link href={navigation ? "/pre-order" : "/dashboard"}>
-                <ArrowLeft className="size-4" />
-                {t(navigation ? "backScreen" : "backDashboard")}
-              </Link>
-            </Button>
-            <Button
-              asChild
-              className="h-auto min-h-11 whitespace-normal"
-              onClick={() => session.remember([...weighted])}
+              </div>
+            )}
+          </>
+        )}
+        <div className="order-4 min-w-0 lg:col-start-1 lg:row-start-3">
+          <ScenarioTimeline
+            key={replayVersion}
+            compact={!navigation}
+            locked={pendingEdits}
+            request={request}
+            onChange={(step) => setRequest({ ...request, step })}
+            result={result}
+            busy={query.isFetching}
+            error={query.isError}
+          />
+        </div>
+      </div>
+      {!pendingEdits &&
+        !network.isError &&
+        !query.isError &&
+        result &&
+        graph && (
+          <>
+            <Disclosure
+              className="rounded-2xl border bg-card p-4"
+              title={<>{t("values")}</>}
             >
-              <Link href={navigation ? "/claims" : "/navigation"}>
-                {t(navigation ? "continueClaims" : "continueNavigation")}
-                <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-          </div>
-        </>
-      )}
+              <p className="my-3 text-sm text-muted-foreground">
+                {t("unitsCaveat")}
+              </p>
+              <p className="my-3 text-sm">
+                {t("time")}:{" "}
+                {new Intl.DateTimeFormat(locale, {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                  timeZone: "Asia/Jakarta",
+                }).format(new Date(result.frame.timestamp))}{" "}
+                {t("timezone")}
+              </p>
+              <p className="my-3 break-words text-xs text-muted-foreground">
+                {t("source")}: {result.dataset_id} / {result.dataset_version} ·{" "}
+                {result.network_id} · {result.weighting_version}
+              </p>
+              <p className="my-3 text-sm text-muted-foreground">
+                {t("limitations")}
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr>
+                      {["edge", "h_m", "u_ms", "v_ms", "weight", "delta"].map(
+                        (k) => (
+                          <th className="p-2" key={k}>
+                            {t(k)}
+                          </th>
+                        ),
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.entries(result.frame.samples).map(([edge, s]) => (
+                      <tr key={edge} className="border-t">
+                        <td className="p-2 font-mono">{edge}</td>
+                        {[
+                          s.h_m,
+                          s.u_ms,
+                          s.v_ms,
+                          s.weight,
+                          result.frame.weight_deltas[edge] ?? null,
+                        ].map((v, i) => (
+                          <td className="p-2 tabular-nums" key={i}>
+                            {v ?? t("unknown")}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Disclosure>
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-card p-4">
+              <Button asChild variant="ghost" className="min-h-11">
+                <Link href={navigation ? "/pre-order" : "/dashboard"}>
+                  <ArrowLeft className="size-4" />
+                  {t(navigation ? "backScreen" : "backDashboard")}
+                </Link>
+              </Button>
+              <Button
+                asChild
+                className="h-auto min-h-11 whitespace-normal"
+                onClick={() => session.remember([...weighted])}
+              >
+                <Link href={navigation ? "/claims" : "/navigation"}>
+                  {t(navigation ? "continueClaims" : "continueNavigation")}
+                  <ArrowRight className="size-4" />
+                </Link>
+              </Button>
+            </div>
+          </>
+        )}
     </section>
   );
 }

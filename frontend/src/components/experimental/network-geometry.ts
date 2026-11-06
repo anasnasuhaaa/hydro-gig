@@ -100,3 +100,55 @@ export function networkGeometry(graph: Graph) {
   const height = Math.max(...bounds.map((p) => p.y)) + 60 - top;
   return { points, paths, viewBox: `${left} ${top} ${width} ${height}` };
 }
+
+// Labels are placed in schematic space, independently of node IDs. Include
+// their measured-by-design extents in the viewBox so edge stops never clip.
+export function stopLabels(
+  points: Map<string, Point>,
+  stops: { role: string; nodeId: string; label: string }[],
+  viewBox: string,
+) {
+  const boxes: { x: number; y: number; width: number; height: number }[] = [];
+  const labels = new Map(
+    stops.map(({ role, nodeId, label }) => {
+      const p = points.get(nodeId);
+      if (!p) return [role, null];
+      const width = Array.from(label).length * 10 + 12;
+      const candidates = [30, 58, 86, 114].flatMap((gap) => [
+        { x: p.x, y: p.y - gap },
+        { x: p.x, y: p.y + gap + 10 },
+        { x: p.x - width / 2 - gap, y: p.y + 5 },
+        { x: p.x + width / 2 + gap, y: p.y + 5 },
+      ]);
+      const overlaps = (q: Point) => {
+        const box = { x: q.x - width / 2, y: q.y - 18, width, height: 24 };
+        const nodes = [...points.values()].filter(
+          (n) =>
+            n.x + 17 > box.x &&
+            n.x - 17 < box.x + width &&
+            n.y + 17 > box.y &&
+            n.y - 17 < box.y + box.height,
+        ).length;
+        const labels = boxes.filter(
+          (b) =>
+            b.x + b.width + 6 > box.x &&
+            b.x - 6 < box.x + width &&
+            b.y + b.height + 6 > box.y &&
+            b.y - 6 < box.y + box.height,
+        ).length;
+        return nodes + labels * 10;
+      };
+      const q = candidates.reduce((best, candidate) =>
+        overlaps(candidate) < overlaps(best) ? candidate : best,
+      );
+      boxes.push({ x: q.x - width / 2, y: q.y - 18, width, height: 24 });
+      return [role, q];
+    }),
+  );
+  const [x, y, width, height] = viewBox.split(" ").map(Number);
+  const left = Math.min(x, ...boxes.map((b) => b.x - 8));
+  const top = Math.min(y, ...boxes.map((b) => b.y - 8));
+  const right = Math.max(x + width, ...boxes.map((b) => b.x + b.width + 8));
+  const bottom = Math.max(y + height, ...boxes.map((b) => b.y + b.height + 8));
+  return { labels, viewBox: `${left} ${top} ${right - left} ${bottom - top}` };
+}

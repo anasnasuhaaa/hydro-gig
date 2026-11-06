@@ -312,3 +312,9 @@ body {
     stroke: Canvas;
   }
 }
+
+@media (min-width: 1024px) {
+  .route-canvas {
+    max-height: 400px;
+  }
+}
