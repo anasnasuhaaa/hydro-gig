@@ -1,5 +1,5 @@
 "use client";
-import { useId, useState, useMemo } from "react";
+import { useId, useState, useMemo, useRef } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { type z } from "zod";
 import { type networkSchema, type FixtureResult } from "@/lib/api/experimental";
@@ -25,6 +25,12 @@ export function ExperimentalNetwork({
   const id = useId().replaceAll(":", "");
   const [inspected, setInspected] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
+  const selectRef = useRef<HTMLButtonElement>(null);
+  const clear = () => {
+    setInspected(null);
+    setHovered(null);
+    selectRef.current?.focus();
+  };
   const edgeId = inspected ?? "";
   const edges = useMemo(
     () => new Map(graph.edges.map((e) => [e.edge_id, e])),
@@ -83,7 +89,7 @@ export function ExperimentalNetwork({
         }
       }}
     >
-      <div className="network-surface relative rounded-xl border p-1">
+      <div className="network-surface relative mx-auto max-w-[528px] rounded-xl border p-1">
         <svg
           viewBox="0 0 480 440"
           role="img"
@@ -99,8 +105,9 @@ export function ExperimentalNetwork({
               viewBox="0 0 10 10"
               refX="18"
               refY="5"
-              markerWidth="4"
-              markerHeight="4"
+              markerUnits="userSpaceOnUse"
+              markerWidth="8"
+              markerHeight="8"
               orient="auto-start-reverse"
             >
               <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke" />
@@ -257,6 +264,7 @@ export function ExperimentalNetwork({
         <DemoSelect
           id={`${id}-edge`}
           label={t("inspect")}
+          inputRef={selectRef}
           value={edgeId}
           onChange={setInspected}
           options={graph.edges.map((e) => ({
@@ -273,11 +281,7 @@ export function ExperimentalNetwork({
             aria-live="polite"
             className="space-y-3"
           >
-            <Button
-              variant="ghost"
-              className="min-h-11"
-              onClick={() => setInspected(null)}
-            >
+            <Button variant="ghost" className="min-h-11" onClick={clear}>
               {t("clearSelection")}
             </Button>
             <p className="text-sm font-semibold">

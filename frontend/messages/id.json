@@ -189,7 +189,7 @@
     "guideDesc": "Panduan singkat alur demo dan keterbatasan data.",
     "diagnostics": "Diagnostik teknis",
     "demoFlow": "Simulasi riset · Data sumber belum terverifikasi · Bukan panduan keselamatan",
-    "explore": "Jelajahi Simulasi Skenario Banjir",
+    "explore": "Mulai periksa rute",
     "legacy": "Buka demo sintetis lama",
     "research": "DEMONSTRASI PENELITIAN",
     "contextTitle": "Pahami data di balik perjalanan."
@@ -293,7 +293,7 @@
     },
     "explore": {
       "title": "Jelajahi perubahan pada linimasa",
-      "description": "Mode dataset memiliki lima bingkai historis t0–t4. Gunakan tombol bingkai, sebelumnya/berikutnya, atau Putar simulasi. Jalur dapat tetap sama meskipun nilai ruas dan biaya berubah. Demo sintetis lama memiliki tiga bingkai.",
+      "description": "Pilih t0–t4, gunakan tombol sebelumnya/berikutnya, atau putar simulasi. Jalur dapat tetap sama meskipun nilai ruas dan biaya berubah.",
       "diagram": "t0 → t1 → t2 → t3 → t4"
     },
     "evidence": {
@@ -303,11 +303,11 @@
     },
     "dataTitle": "Dua sumber data berbeda",
     "weather": "Cuaca: kondisi terkini berbasis model Open-Meteo, dengan waktu model. Gunakan lokasi perangkat atas izin atau pilih Bogor manual di Dasbor.",
-    "simulation": "Simulasi banjir: dataset dengan sumber belum terverifikasi atau fixture sintetis terpisah. Tidak ada pengukuran banjir ruas yang tervalidasi.",
+    "simulation": "Simulasi banjir: nilai skenario dengan sumber belum terverifikasi, bukan pengukuran banjir jalan tervalidasi.",
     "safety": "Rute tersedia bukan jaminan keselamatan. Jangan memasuki genangan untuk menguji purwarupa ini.",
     "start": {
       "title": "Mulai demo perjalanan",
-      "description": "Dari Dasbor, pilih Jelajahi Simulasi Skenario Banjir untuk dataset eksperimental. Demo sintetis lama tetap tersedia sebagai mode terpisah.",
+      "description": "Mulai dari Dasbor atau buka Pra-pesanan. Contoh perjalanan siap dibandingkan; ubah titik bila perlu.",
       "diagram": "Lokasi awal → jemput → tujuan"
     },
     "glossaryTitle": "Istilah singkat",
@@ -383,9 +383,9 @@
     "continueNavigation": "Lanjut ke navigasi",
     "mode": "Mode demonstrasi",
     "screenTitle": "Rencanakan perjalanan contoh.",
-    "screenHelp": "Pilih titik, hitung rute, lalu bandingkan jarak dan biaya eksperimental. Seluruh perjalanan adalah simulasi dengan sumber belum terverifikasi.",
+    "screenHelp": "Pilih tiga titik jaringan, lalu bandingkan rute.",
     "navigationTitle": "Lihat perubahan sepanjang skenario.",
-    "navigationHelp": "Putar ulang lima bingkai historis. Nilai ruas dapat berubah meskipun rute yang dipilih tetap sama. Bukan pemantauan langsung atau prediksi.",
+    "navigationHelp": "Pilih t0–t4 untuk membandingkan jalur dan nilai skenario historis.",
     "compare": "Bandingkan rute",
     "compareHelp": "Pilih alternatif untuk menyorot jalurnya pada skema.",
     "tripDistance": "Jarak perjalanan",
@@ -418,7 +418,8 @@
     "pendingEdits": "Titik perjalanan telah diubah. Bandingkan ulang untuk melanjutkan.",
     "segmentDistance": "Panjang ruas (m)",
     "clearSelection": "Tutup detail ruas",
-    "noRelevantChange": "Tidak ada perubahan pada rute terpilih."
+    "noRelevantChange": "Tidak ada perubahan pada rute terpilih.",
+    "routePath": "Urutan titik rute"
   },
   "Evidence": {
     "title": "Pratinjau Bukti Eksperimental",

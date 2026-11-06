@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export function EvidencePreviewWorkspace() {
   const session = useExperimentalSession();
   const t = useTranslations("Evidence");
+  const experimental = useTranslations("Experimental");
   const locale = useLocale();
   const request = session.request;
   const query = useQuery({
@@ -59,6 +60,11 @@ export function EvidencePreviewWorkspace() {
   if (!session.ready) return <Skeleton className="h-80 rounded-2xl" />;
   return (
     <section aria-label={t("title")} className="space-y-5">
+      {session.invalid && (
+        <p role="status" className="text-sm">
+          {experimental("sessionInvalid")}
+        </p>
+      )}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="mb-2 text-xs font-semibold tracking-wide text-primary">
@@ -172,6 +178,7 @@ export function EvidencePreviewWorkspace() {
                 {t("limitations")}
               </p>
               <Button
+                variant={matches ? "ghost" : "default"}
                 className="h-auto min-h-12 w-full whitespace-normal"
                 disabled={mutation.isPending}
                 onClick={() => {
@@ -195,7 +202,7 @@ export function EvidencePreviewWorkspace() {
                   </p>
                   <Button
                     className="h-auto min-h-11 w-full whitespace-normal"
-                    variant="outline"
+                    variant="default"
                     onClick={exportPreview}
                   >
                     <Download className="size-4 shrink-0" />

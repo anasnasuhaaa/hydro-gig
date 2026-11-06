@@ -98,15 +98,14 @@ export default function Dashboard() {
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
         <WeatherCard />
         <section className="space-y-3" aria-label={t("workflows")}>
-          <div className="rounded-2xl border bg-card p-5 sm:p-6">
-            <p className="mb-2 text-xs font-semibold tracking-widest text-primary">
-              {t("research")}
-            </p>
-            <h2 className="text-xl font-semibold">{t("contextTitle")}</h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+          <Disclosure
+            title={t("contextTitle")}
+            className="rounded-2xl border bg-card p-4"
+          >
+            <p className="text-sm leading-relaxed text-muted-foreground">
               {t("limits")}
             </p>
-          </div>
+          </Disclosure>
           {[
             {
               icon: BookOpen,

@@ -1,5 +1,6 @@
 "use client";
 import { useTranslations, useLocale } from "next-intl";
+import { Disclosure } from "@/components/ui/disclosure";
 import { Check, Route } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type FixtureResult } from "@/lib/api/experimental";
@@ -85,19 +86,21 @@ export function RouteComparison({
               </p>
             </div>
           </dl>
-          {(["origin_to_pickup", "pickup_to_destination"] as const).map(
-            (leg) => (
-              <div key={leg} className="mt-3 text-sm">
-                <h3 className="text-xs text-muted-foreground">{t(leg)}</h3>
-                <h4 className="sr-only">{t(mode)}</h4>
-                <p className="mt-1 break-words font-medium">
-                  {result[leg][mode].status === "unreachable"
-                    ? t("unreachable")
-                    : result[leg][mode].node_ids.join(" → ")}
-                </p>
-              </div>
-            ),
-          )}
+          <Disclosure title={t("routePath")}>
+            {(["origin_to_pickup", "pickup_to_destination"] as const).map(
+              (leg) => (
+                <div key={leg} className="mt-3 text-sm">
+                  <h3 className="text-xs text-muted-foreground">{t(leg)}</h3>
+                  <h4 className="sr-only">{t(mode)}</h4>
+                  <p className="mt-1 break-words font-medium">
+                    {result[leg][mode].status === "unreachable"
+                      ? t("unreachable")
+                      : result[leg][mode].node_ids.join(" → ")}
+                  </p>
+                </div>
+              ),
+            )}
+          </Disclosure>
         </article>
       ))}
       <p className="text-xs leading-relaxed text-muted-foreground">

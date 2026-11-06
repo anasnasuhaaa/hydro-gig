@@ -76,9 +76,6 @@ export function ScenarioTimeline({
             </p>
           )}
         </div>
-        <span className="rounded-full bg-secondary px-3 py-1 text-sm font-semibold text-primary">
-          {t("currentFrame", { step: request.step })}
-        </span>
       </div>
       <div
         className="relative grid grid-cols-5 gap-1 sm:gap-3"
@@ -157,7 +154,10 @@ export function ScenarioTimeline({
         </div>
       )}
       {result && result.frame.step === request.step && !error && !locked && (
-        <p data-testid="scenario-time" className="mt-4 border-t pt-3 text-sm">
+        <p
+          data-testid="scenario-time"
+          className="mt-3 border-t pt-2 text-xs sm:text-sm"
+        >
           <span className="text-muted-foreground">{t("time")}: </span>
           {new Intl.DateTimeFormat(locale, {
             dateStyle: "medium",

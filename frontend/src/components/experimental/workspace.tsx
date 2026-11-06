@@ -104,6 +104,7 @@ function Workspace() {
         </div>
         <Button
           variant="ghost"
+          aria-label={t("resetTrip")}
           className="min-h-11"
           onClick={() => {
             session.reset();
@@ -113,7 +114,7 @@ function Workspace() {
           }}
         >
           <RotateCcw className="size-4" />
-          {t("resetTrip")}
+          <span className="sr-only sm:not-sr-only">{t("resetTrip")}</span>
         </Button>
       </div>
       {navigation && (
@@ -128,7 +129,7 @@ function Workspace() {
       )}
       {graph && !navigation && (
         <form
-          className="grid items-end gap-4 rounded-2xl border bg-card p-4 sm:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_auto] sm:p-5"
+          className="grid grid-cols-3 items-end gap-3 rounded-2xl border bg-card p-4 sm:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_auto] sm:p-5"
           onSubmit={form.handleSubmit((values) =>
             setRequest({ ...values, step: request.step }),
           )}
@@ -157,10 +158,7 @@ function Workspace() {
               )}
             />
           ))}
-          <Button
-            type="submit"
-            className="min-h-11 sm:col-span-3 lg:col-span-1"
-          >
+          <Button type="submit" className="min-h-11 col-span-3 lg:col-span-1">
             <ArrowRight className="size-4" />
             {t("screen")}
           </Button>
